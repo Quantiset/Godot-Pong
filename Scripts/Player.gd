@@ -6,7 +6,10 @@ export var max_speed := 300
 export var acceleration := 20
 
 const LINE = preload("res://Scenes/Line.tscn")
+
+var paddle: RigidBody2D
 var line: Line2D
+var start_pos: Vector2
 
 var creating_line := false
 
@@ -14,8 +17,12 @@ func _physics_process(delta: float) -> void:
 	
 	for col_idx in range(get_slide_count()):
 		var collision : KinematicCollision2D = get_slide_collision(col_idx)
-		print(velocity, collision.normal)
+		
+#		if collision.collider.is_in_group("Moveables"):
+#			collision.collider.add_impulse(to_local(collision.collider.global_position).normalized()*100)
+#
 		velocity = velocity.bounce(collision.normal)
+		velocity *= 0.7
 	
 	var has_moved := false
 	if Input.is_action_pressed("ui_up"):
@@ -33,21 +40,43 @@ func _physics_process(delta: float) -> void:
 	if not has_moved:
 		velocity = velocity.linear_interpolate(Vector2(), 0.05)
 	
+	if Input.is_action_just_pressed("ui_shift"):
+		max_speed *= 1.5
+		acceleration *= 1.5
+	elif Input.is_action_just_released("ui_shift"):
+		max_speed /= 1.5
+		acceleration /= 1.5
+	
 	if Input.is_action_just_pressed("ui_accept"):
 		creating_line = true
-		var l = LINE.instance()
-		get_node("/root").add_child(l)
-		line = l.get_node("Line2D")
-		line.add_point(global_position*2)
-		line.add_point(global_position*2)
+		paddle = LINE.instance()
+		paddle.get_node("CollisionShape2D").shape = paddle.get_node("CollisionShape2D").shape.duplicate()
+		paddle.get_node("Area2D/CollisionShape2D").shape = paddle.get_node("Area2D/CollisionShape2D").shape.duplicate()
+		get_node("/root").add_child(paddle)
+		line = paddle.get_node("Line2D")
+		line.add_point(Vector2())
+		line.add_point(Vector2())
+		start_pos = global_position
 	if Input.is_action_just_released("ui_accept"):
 		creating_line = false
+		paddle.set_collision_mask_bit(1, true)
 	
 	if creating_line:
+		line.remove_point(0)
 		line.remove_point(1)
-		line.add_point(global_position*2)
+		
+		var to_center := (global_position-start_pos)/2
+		
+		line.add_point(-to_center)
+		line.add_point(to_center)
+		
+		paddle.position = global_position-to_center
+		paddle.get_node("CollisionShape2D").shape.extents.x = to_center.length()
+		paddle.get_node("CollisionShape2D").rotation = to_center.angle()
+		paddle.get_node("Area2D/CollisionShape2D").shape.extents.x = to_center.length()+0.5
+		paddle.get_node("Area2D/CollisionShape2D").rotation = to_center.angle()
 	
 	velocity = velocity.clamped(max_speed)
 	
 	
-	move_and_slide(velocity)
+	move_and_slide(velocity, Vector2(), false, 4, 0.78, true)

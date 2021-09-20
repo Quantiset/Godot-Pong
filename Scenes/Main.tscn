@@ -1,28 +1,18 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/Main.gdshader" type="Shader" id=3]
+[ext_resource path="res://Scenes/Ball.tscn" type="PackedScene" id=4]
 
-[sub_resource type="Shader" id=2]
-code = "shader_type canvas_item;
-
-uniform float strength: float = 1.0;
-
-void fragment() {
-	vec2 uv = UV - vec2(0.5);
-	vec4 col = texture(SCREEN_TEXTURE, SCREEN_UV);
-	
-	COLOR = col*length(uv)*strength;
-}"
-
-[sub_resource type="ShaderMaterial" id=3]
-shader = SubResource( 2 )
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 3 )
 shader_param/strength = 0.9
 
-[sub_resource type="RectangleShape2D" id=4]
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 17, 239 )
 
-[sub_resource type="Environment" id=5]
+[sub_resource type="Environment" id=3]
 background_mode = 4
 glow_enabled = true
 glow_strength = 0.8
@@ -45,7 +35,7 @@ width = 6.0
 default_color = Color( 1, 1, 1, 1 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
-material = SubResource( 3 )
+material = SubResource( 1 )
 margin_left = 63.0
 margin_top = 78.0
 margin_right = 957.0
@@ -80,7 +70,7 @@ antialiased = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BlueArea"]
 position = Vector2( 40, 320 )
-shape = SubResource( 4 )
+shape = SubResource( 2 )
 
 [node name="RedArea" type="Area2D" parent="."]
 position = Vector2( 1020, 0 )
@@ -105,10 +95,14 @@ antialiased = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RedArea"]
 position = Vector2( 40, 320 )
-shape = SubResource( 4 )
+shape = SubResource( 2 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 412, 305 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 5 )
+environment = SubResource( 3 )
+
+[node name="Ball" parent="." instance=ExtResource( 4 )]
+position = Vector2( 617, 277 )
+gravity_scale = 0.0
