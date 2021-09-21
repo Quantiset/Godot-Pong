@@ -1,15 +1,16 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Ball.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Ball.gd" type="Script" id=2]
+[ext_resource path="res://Assets/Ball_n.png" type="Texture" id=3]
 
-[sub_resource type="PhysicsMaterial" id=3]
+[sub_resource type="PhysicsMaterial" id=1]
 bounce = 0.5
 
-[sub_resource type="CircleShape2D" id=1]
-radius = 13.0
+[sub_resource type="CircleShape2D" id=2]
+radius = 15.0
 
-[sub_resource type="Curve" id=2]
+[sub_resource type="Curve" id=3]
 _data = [ Vector2( 0, 0.318182 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
 
 [sub_resource type="Gradient" id=4]
@@ -17,7 +18,7 @@ colors = PoolColorArray( 0.157776, 0.686347, 0.917969, 1, 1, 1, 1, 1 )
 
 [node name="Ball" type="RigidBody2D"]
 mass = 0.3
-physics_material_override = SubResource( 3 )
+physics_material_override = SubResource( 1 )
 script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true
@@ -25,17 +26,17 @@ __meta__ = {
 max_points = 15
 
 [node name="Sprite" type="Sprite" parent="."]
-scale = Vector2( 0.4, 0.4 )
 texture = ExtResource( 1 )
+normal_map = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Node" type="Node" parent="."]
 
 [node name="Line2D" type="Line2D" parent="Node"]
 z_index = -1
 points = PoolVector2Array( 0, 1 )
-width_curve = SubResource( 2 )
+width_curve = SubResource( 3 )
 default_color = Color( 0.784314, 0.803922, 0.901961, 1 )
 gradient = SubResource( 4 )

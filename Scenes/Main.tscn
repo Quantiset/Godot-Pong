@@ -1,13 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Scripts/Main.gdshader" type="Shader" id=3]
+[ext_resource path="res://Assets/BG.png" type="Texture" id=3]
 [ext_resource path="res://Scenes/Ball.tscn" type="PackedScene" id=4]
-
-[sub_resource type="ShaderMaterial" id=1]
-shader = ExtResource( 3 )
-shader_param/strength = 0.9
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 17, 239 )
@@ -35,7 +31,6 @@ width = 6.0
 default_color = Color( 1, 1, 1, 1 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
-material = SubResource( 1 )
 margin_left = 63.0
 margin_top = 78.0
 margin_right = 957.0
@@ -106,3 +101,20 @@ environment = SubResource( 3 )
 [node name="Ball" parent="." instance=ExtResource( 4 )]
 position = Vector2( 617, 277 )
 gravity_scale = 0.0
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2( 1920, 1080 )
+
+[node name="TextureRect" type="Sprite" parent="ParallaxBackground/ParallaxLayer"]
+modulate = Color( 1, 1, 1, 0.278431 )
+texture = ExtResource( 3 )
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2( 1920, 1080 )
+
+[node name="TextureRect" type="Sprite" parent="ParallaxBackground/ParallaxLayer2"]
+modulate = Color( 1, 1, 1, 0.278431 )
+texture = ExtResource( 3 )
+offset = Vector2( 100, 150 )

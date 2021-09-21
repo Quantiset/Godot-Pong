@@ -2,18 +2,40 @@ extends KinematicBody2D
 
 var velocity := Vector2()
 
+export var trail_length := 100
+
+export var thrust_length := 6
+
 export var max_speed := 300
 export var acceleration := 20
 
 const LINE = preload("res://Scenes/Line.tscn")
 
+var creating_line := false
 var paddle: RigidBody2D
 var line: Line2D
 var start_pos: Vector2
 
-var creating_line := false
+onready var long_trail : Line2D = $Node/LongTrail
+onready var burst_inner_trail : Line2D = $Node/InnerThrust
+onready var burst_outer_trail : Line2D = $Node/OuterThrust
+
+onready var trails := [
+	long_trail, burst_inner_trail, burst_outer_trail
+]
+
+
 
 func _physics_process(delta: float) -> void:
+	
+	for trail in trails:
+		trail.add_point(position+Vector2(0, 10).rotated($Sprite.rotation))
+		
+		var max_points = trail_length if trail == long_trail else thrust_length
+		
+		if trail.get_point_count() > max_points:
+			trail.remove_point(0)
+	
 	
 	for col_idx in range(get_slide_count()):
 		var collision : KinematicCollision2D = get_slide_collision(col_idx)
@@ -78,5 +100,7 @@ func _physics_process(delta: float) -> void:
 	
 	velocity = velocity.clamped(max_speed)
 	
+	$Sprite.rotation = velocity.angle() + PI/2
+	$CollisionShape2D.rotation = velocity.angle() + PI/2
 	
 	move_and_slide(velocity, Vector2(), false, 4, 0.78, true)
