@@ -8,11 +8,25 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Area2D",
+"class": "Bullet",
+"language": "GDScript",
+"path": "res://Scripts/Bullet.gd"
+} ]
+_global_script_class_icons={
+"Bullet": ""
+}
+
 [application]
 
 config/name="PongRoguelike"
 run/main_scene="res://Scenes/Main.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+Globals="*res://Scripts/Globals.gd"
 
 [importer_defaults]
 

@@ -5,10 +5,10 @@
 [ext_resource path="res://Assets/BG.png" type="Texture" id=3]
 [ext_resource path="res://Scenes/Ball.tscn" type="PackedScene" id=4]
 
-[sub_resource type="RectangleShape2D" id=2]
+[sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 17, 239 )
 
-[sub_resource type="Environment" id=3]
+[sub_resource type="Environment" id=2]
 background_mode = 4
 glow_enabled = true
 glow_strength = 0.8
@@ -16,14 +16,16 @@ glow_blend_mode = 0
 glow_hdr_threshold = 0.1
 glow_bicubic_upscale = true
 
-[node name="Main" type="StaticBody2D"]
+[node name="Main" type="StaticBody2D" groups=[
+"Block",
+]]
 script = ExtResource( 1 )
 __meta__ = {
 "_editor_description_": "foo"
 }
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
-polygon = PoolVector2Array( 18, 96, 60, 75, 960, 75, 1002, 97, 1002, 549, 960, 570, 60, 570, 18, 550, 18, 96, 0, 95, 0, 600, 1024, 599, 1023, 67, 0, 57, 0, 95 )
+polygon = PoolVector2Array( 18, 96, 60, 75, 960, 75, 1002, 97, 1002, 549, 960, 570, 60, 570, 18, 550, 18, 96, -40, 96, -64, 624, 1048, 656, 1056, 32, -32, 24, 0, 95 )
 
 [node name="MainOutline" type="Line2D" parent="."]
 points = PoolVector2Array( 60, 75, 60, 547.973, 60, 570, 960, 570, 960, 75, 57, 75 )
@@ -65,7 +67,7 @@ antialiased = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BlueArea"]
 position = Vector2( 40, 320 )
-shape = SubResource( 2 )
+shape = SubResource( 1 )
 
 [node name="RedArea" type="Area2D" parent="."]
 position = Vector2( 1020, 0 )
@@ -90,13 +92,13 @@ antialiased = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RedArea"]
 position = Vector2( 40, 320 )
-shape = SubResource( 2 )
+shape = SubResource( 1 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 412, 305 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 3 )
+environment = SubResource( 2 )
 
 [node name="Ball" parent="." instance=ExtResource( 4 )]
 position = Vector2( 617, 277 )

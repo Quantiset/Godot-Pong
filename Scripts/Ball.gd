@@ -1,6 +1,6 @@
 extends RigidBody2D
 
-export (int) var max_points := 10
+export (int) var max_points := 20
 
 onready var line : Line2D = $Node/Line2D
 
