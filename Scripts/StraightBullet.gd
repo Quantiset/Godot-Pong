@@ -10,5 +10,4 @@ func _ready():
 func _physics_process(delta: float) -> void:
 	position += velocity
 	$Line2D.rotation = rot
-	$CollisionShape2D.rotation = rot
-
+	$CollisionShape2D.rotation = rot - PI/2
