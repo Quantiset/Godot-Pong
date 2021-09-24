@@ -161,4 +161,5 @@ process_material = SubResource( 18 )
 
 [node name="NormalDetector" type="RayCast2D" parent="."]
 cast_to = Vector2( 0, 0 )
+
 [connection signal="body_entered" from="." to="." method="_on_Bullet_body_entered"]

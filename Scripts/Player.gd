@@ -31,11 +31,13 @@ var angle: float
 var enemy_cursor_hovered
 
 func _ready():
+	aim_cursor.position = position
+	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
 	$ShotCooldownTimer.start()
 
 func _physics_process(delta: float) -> void:
-	if not is_instance_valid(enemy_cursor_hovered):
+	if enemy_cursor_hovered != null and not is_instance_valid(enemy_cursor_hovered):
 		enemy_cursor_hovered = get_closest_enemy_from_aim_cursor()
 	
 	if enemy_cursor_hovered:
@@ -45,7 +47,7 @@ func _physics_process(delta: float) -> void:
 	
 	
 	for col_idx in range(get_slide_count()):
-		var collision : KinematicCollision2D = get_slide_collision(col_idx)
+		var collision: KinematicCollision2D = get_slide_collision(col_idx)
 		
 #		if collision.collider.is_in_group("Moveables"):
 #			collision.collider.add_impulse(to_local(collision.collider.global_position).normalized()*100)

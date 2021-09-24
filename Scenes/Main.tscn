@@ -123,7 +123,7 @@ texture = ExtResource( 3 )
 offset = Vector2( 100, 150 )
 
 [node name="Enemy" parent="." instance=ExtResource( 5 )]
-position = Vector2( 552, 304 )
+position = Vector2( 552, 306 )
 
 [node name="Enemy2" parent="." instance=ExtResource( 5 )]
 position = Vector2( 584, 272 )

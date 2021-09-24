@@ -3,7 +3,8 @@ extends KinematicBody2D
 export (int) var max_hp := 100
 var hp := max_hp
 
-export (int) var speed := 100
+export (float) var acceleration := 3.0
+export (int) var max_speed := 125
 export (int) var trail_length = 100
 
 export (int) var thrust_length = 20
@@ -28,13 +29,14 @@ func _physics_process(delta: float) -> void:
 	var to_player := to_local(player.position)
 	
 	if to_player.length() > 100:
-		velocity = to_local(player.position).normalized() * speed
+		velocity += to_local(player.position).normalized() * acceleration
+		velocity = velocity.clamped(max_speed)
 		$Sprite/SmokeTrail.emitting = true
 	else:
 		velocity = velocity.linear_interpolate(Vector2(), 0.02)
 		$Sprite/SmokeTrail.emitting = false
 	
-	angle = lerp_angle(angle, velocity.angle(), 0.2)
+	angle = lerp_angle(angle, velocity.angle(), 0.1)
 	
 	$Sprite.rotation = angle + PI/2
 	$CollisionShape2D.rotation = angle+ PI/2
@@ -63,8 +65,15 @@ func _physics_process(delta: float) -> void:
 func take_damage(damage: int) -> void:
 	hp -= damage
 	if hp <= 0 and not is_queued_for_deletion():
-		$ExplosionParticles.emitting = true
-		Globals.remove_particle(self, $ExplosionParticles, false)
-		Globals.remove_particle(self, $Sprite/SmokeTrail, true)
-		set_physics_process(false)
-		queue_free()
+		die()
+
+func die():
+	#Globals.remove_trail($Node/LongTrail)
+	$ExplosionParticles.emitting = true
+	$Sprite/SmokeTrail.emitting = false
+	$ExplosionParticlesFire.emitting = true
+	Globals.remove_particle($ExplosionParticles)
+	Globals.remove_particle($Sprite/SmokeTrail)
+	Globals.remove_particle($ExplosionParticlesFire)
+	set_physics_process(false)
+	queue_free()

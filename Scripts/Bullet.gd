@@ -31,11 +31,12 @@ func collide(body):
 		pierces -= 1
 
 func delete():
-	Globals.remove_particle(self, $Particles2D, true)
+	$Particles2D.emitting = false
+	Globals.remove_particle($Particles2D)
 	
 	$ExplosionParticles.emitting = true
-	Globals.remove_particle(self, $ExplosionParticles, false)
+	Globals.remove_particle($ExplosionParticles)
 	$ExplosionParticles2.emitting = true
-	Globals.remove_particle(self, $ExplosionParticles2, false)
+	Globals.remove_particle($ExplosionParticles2)
 	
 	queue_free()

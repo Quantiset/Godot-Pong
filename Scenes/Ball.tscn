@@ -67,9 +67,6 @@ color_ramp = SubResource( 6 )
 mass = 0.3
 physics_material_override = SubResource( 1 )
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_group_": true
-}
 max_points = 15
 
 [node name="Sprite" type="Sprite" parent="."]
