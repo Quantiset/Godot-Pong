@@ -2,6 +2,9 @@ extends KinematicBody2D
 
 var velocity := Vector2()
 
+export var max_hp := 100
+var hp := max_hp
+
 export var aim_speed := 300
 export var shot_cooldown := 0.5
 
@@ -26,6 +29,8 @@ onready var trails := $Node.get_children()
 
 onready var aim_cursor: Area2D = $Node2/AimCursor
 
+onready var hp_bar := get_node("/root/Main/HPBar")
+
 var angle: float
 
 var enemy_cursor_hovered
@@ -44,16 +49,6 @@ func _physics_process(delta: float) -> void:
 		aim_cursor.position = enemy_cursor_hovered.position
 	
 	update_trails()
-	
-	
-	for col_idx in range(get_slide_count()):
-		var collision: KinematicCollision2D = get_slide_collision(col_idx)
-		
-#		if collision.collider.is_in_group("Moveables"):
-#			collision.collider.add_impulse(to_local(collision.collider.global_position).normalized()*100)
-#
-		velocity = velocity.bounce(collision.normal.round())
-		velocity *= 0.7
 	
 	var has_moved := false
 	if Input.is_action_pressed("ui_up"):
@@ -102,7 +97,7 @@ func _physics_process(delta: float) -> void:
 	$Sprite.rotation = angle + PI/2
 	$CollisionShape2D.rotation = angle+ PI/2
 	
-	move_and_slide(velocity, Vector2())
+	move_and_slide(velocity)
 
 func update_trails():
 	for trail in trails:
@@ -169,6 +164,13 @@ func create_pong_paddles(key: String):
 		paddle.get_node("CollisionShape2D").rotation = to_center.angle()
 		paddle.get_node("Area2D/CollisionShape2D").shape.extents.x = to_center.length() + 0.5
 		paddle.get_node("Area2D/CollisionShape2D").rotation = to_center.angle()
+
+func take_damage(damage: int):
+	hp -= damage
+	update_health()
+
+func update_health():
+	hp_bar.value = (hp*100)/max_hp
 
 
 func _on_AimCursor_body_entered(body):

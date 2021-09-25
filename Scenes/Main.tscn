@@ -1,10 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Assets/BG.png" type="Texture" id=3]
-[ext_resource path="res://Scenes/Ball.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Scenes/Enemy.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/HPBar.tscn" type="PackedScene" id=6]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 17, 239 )
@@ -22,7 +21,7 @@ glow_bicubic_upscale = true
 ]]
 script = ExtResource( 1 )
 __meta__ = {
-"_editor_description_": "foo"
+"_editor_description_": ""
 }
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
@@ -101,10 +100,6 @@ position = Vector2( 412, 305 )
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 2 )
 
-[node name="Ball" parent="." instance=ExtResource( 4 )]
-position = Vector2( 617, 277 )
-gravity_scale = 0.0
-
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
@@ -122,23 +117,15 @@ modulate = Color( 1, 1, 1, 0.278431 )
 texture = ExtResource( 3 )
 offset = Vector2( 100, 150 )
 
-[node name="Enemy" parent="." instance=ExtResource( 5 )]
-position = Vector2( 552, 306 )
+[node name="HPBar" parent="." instance=ExtResource( 6 )]
+margin_left = 59.0
+margin_top = 33.0
+margin_right = 267.0
+margin_bottom = 61.0
+value = 100.0
 
-[node name="Enemy2" parent="." instance=ExtResource( 5 )]
-position = Vector2( 584, 272 )
+[node name="TopLeft" type="Position2D" parent="."]
+position = Vector2( 72, 86 )
 
-[node name="Enemy3" parent="." instance=ExtResource( 5 )]
-position = Vector2( 528, 344 )
-
-[node name="Enemy4" parent="." instance=ExtResource( 5 )]
-position = Vector2( 520, 304 )
-
-[node name="Enemy5" parent="." instance=ExtResource( 5 )]
-position = Vector2( 552, 272 )
-
-[node name="Enemy6" parent="." instance=ExtResource( 5 )]
-position = Vector2( 584, 312 )
-
-[node name="Enemy7" parent="." instance=ExtResource( 5 )]
-position = Vector2( 560, 344 )
+[node name="BottomRight" type="Position2D" parent="."]
+position = Vector2( 946, 558 )

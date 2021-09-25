@@ -1,7 +1,7 @@
 extends Node
 
 var rng_seed := 1000
-var randomize_seed := false
+var randomize_seed := true
 
 func _ready():
 	
@@ -41,4 +41,3 @@ func queue_free_all(arr: Array):
 		obj.queue_free()
 
 
-const ITEMS = { }
