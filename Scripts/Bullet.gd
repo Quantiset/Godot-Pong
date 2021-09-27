@@ -6,6 +6,7 @@ onready var raycast: RayCast2D = $CollisionShape2D/RayCast2D
 
 var velocity := Vector2()
 
+var damage := 25
 var pierces := 0
 
 
@@ -22,13 +23,12 @@ func collide(body):
 		body.apply_central_impulse(velocity.normalized() * 20)
 	
 	if body.has_method("take_damage"):
-		body.take_damage(25)
+		body.take_damage(damage)
+		if pierces > 0:
+			pierces -= 1
+			return
 	
-	if pierces == 0:
-		if not is_queued_for_deletion():
-			delete()
-	else:
-		pierces -= 1
+	delete()
 
 func delete():
 	$Particles2D.emitting = false

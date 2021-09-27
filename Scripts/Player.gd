@@ -1,10 +1,13 @@
 extends KinematicBody2D
 
 var velocity := Vector2()
+var angle: float
 
 export var max_hp := 100
 var hp := max_hp
 
+export var shot_damage := 25
+export var shot_pierces := 0
 export var aim_speed := 300
 export var shot_cooldown := 0.5
 
@@ -31,11 +34,13 @@ onready var aim_cursor: Area2D = $Node2/AimCursor
 
 onready var hp_bar := get_node("/root/Main/HPBar")
 
-var angle: float
 
 var enemy_cursor_hovered
 
+var items := []
+
 func _ready():
+	add_item(Items.LeadTippedDarts)
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
@@ -114,6 +119,8 @@ func shoot():
 	b_inst.position = position
 	b_inst.rot = to_local(aim_cursor.position).angle()
 	b_inst.speed = 10
+	b_inst.damage = shot_damage
+	b_inst.pierces = shot_pierces
 	b_inst.get_node("CollisionShape2D/RayCast2D").add_exception(self)
 	b_inst.set_collision_mask_bit(2, true)
 	get_parent().add_child(b_inst)
@@ -168,6 +175,8 @@ func create_pong_paddles(key: String):
 func take_damage(damage: int):
 	hp -= damage
 	update_health()
+	if hp <= 0:
+		get_tree().reload_current_scene()
 
 func update_health():
 	hp_bar.value = (hp*100)/max_hp
@@ -176,3 +185,16 @@ func update_health():
 func _on_AimCursor_body_entered(body):
 	if enemy_cursor_hovered == null:
 		enemy_cursor_hovered = body
+
+
+
+func add_item(item):
+	if item is GDScript:
+		item = item.new()
+	
+	items.append(item)
+	max_hp += item.max_hp_increase
+	hp += item.hp_increase
+	hp = int(clamp(hp, 0, max_hp))
+	shot_damage += item.damage_increase
+	shot_pierces += item.pierce_increase
