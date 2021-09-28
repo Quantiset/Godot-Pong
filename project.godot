@@ -9,19 +9,55 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "KinematicBody2D",
+"class": "Actor",
+"language": "GDScript",
+"path": "res://Scripts/Actor.gd"
+}, {
 "base": "Area2D",
 "class": "Bullet",
 "language": "GDScript",
-"path": "res://Scripts/Bullet.gd"
+"path": "res://Scripts/Bullets/Bullet.gd"
 }, {
-"base": "KinematicBody2D",
+"base": "Actor",
 "class": "Enemy",
 "language": "GDScript",
-"path": "res://Scripts/Enemy.gd"
+"path": "res://Scripts/Enemies/Enemy.gd"
+}, {
+"base": "Bullet",
+"class": "HomingBullet",
+"language": "GDScript",
+"path": "res://Scripts/Bullets/HeatseekingBullet.gd"
+}, {
+"base": "Actor",
+"class": "Player",
+"language": "GDScript",
+"path": "res://Scripts/Player.gd"
+}, {
+"base": "Enemy",
+"class": "StandardEnemy",
+"language": "GDScript",
+"path": "res://Scripts/Enemies/StandardEnemy.gd"
+}, {
+"base": "Bullet",
+"class": "StraightBullet",
+"language": "GDScript",
+"path": "res://Scripts/Bullets/StraightBullet.gd"
+}, {
+"base": "Enemy",
+"class": "Turret",
+"language": "GDScript",
+"path": "res://Scripts/Enemies/StandardTurret.gd"
 } ]
 _global_script_class_icons={
+"Actor": "",
 "Bullet": "",
-"Enemy": ""
+"Enemy": "",
+"HomingBullet": "",
+"Player": "",
+"StandardEnemy": "",
+"StraightBullet": "",
+"Turret": ""
 }
 
 [application]
@@ -32,8 +68,8 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Globals="*res://Scripts/Globals.gd"
 Items="*res://Scripts/Items.gd"
+Globals="*res://Scripts/Globals.gd"
 
 [importer_defaults]
 

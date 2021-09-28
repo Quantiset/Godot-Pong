@@ -1,12 +1,12 @@
 extends StaticBody2D
 
-const ENEMY_SIGNALER := preload("res://Scenes/EnemySignaler.tscn")
+const ENEMY_SIGNALER = preload("res://Scenes/EnemySignaler.tscn")
 
-const ENEMY := preload("res://Scenes/StandardEnemy.tscn")
-
-var has_finished_spawning_enemies_for_this_stage := false
+var has_player_picked_an_item := false
 var enemies_left := 0
 var wave := 1
+
+var stage: int setget set_stage, get_stage
 
 onready var player: KinematicBody2D = $Player
 
@@ -38,17 +38,26 @@ func gen_random_spawn(enemies: int, automatically_add_to_enemies_left := true):
 	for i in range(enemies):
 		if automatically_add_to_enemies_left:
 			enemies_left += 1
-		var e := ENEMY.instance()
+		var e := get_random_enemy_per_weights().instance()
 		e.position = randomized_spawn + Vector2((randi()%20*i)-10, (randi()%20)*i-10)
 		e.get_node("InitParticles/SpawnParticles").position = randomized_spawn
 		e.get_node("InitParticles/SpawnParticles").emitting = true
 		e.get_node("InitParticles/SpawnParticles2").position = randomized_spawn
 		e.get_node("InitParticles/SpawnParticles2").emitting = true
 		e.connect("dead", self, "on_Enemy_dead")
+		e.connect("dead", player, "on_Enemy_dead", [e])
 		emit_signal("spawned_enemy", e)
 		add_child(e)
 		yield(get_tree().create_timer(0.2), "timeout")
 
+func get_random_enemy_per_weights() -> PackedScene:
+	var ENEMIES: Dictionary = Globals.ENEMY_POOL[get_stage()]
+	
+	if ENEMIES == null:
+		printerr("Main.gd: ENEMIES_POOL not defined for stage " + str(get_stage()))
+		breakpoint
+	
+	return Globals.parse_pool(ENEMIES)
 
 func _process(delta: float) -> void:
 	$ParallaxBackground/ParallaxLayer.motion_offset += Vector2(22, 18) * delta
@@ -58,20 +67,22 @@ func _process(delta: float) -> void:
 	(player.position - ($BottomRight.position - $TopLeft.position) / 2) / 20
 
 func on_Enemy_dead():
+	print(enemies_left)
 	enemies_left -= 1
 	if enemies_left == 0:
 		wave += 1
 		emit_signal("wave_begun", wave)
 
 func on_wave_begun(_wave_idx: int):
-	if wave % 5 == 1:
+	if wave % 5 == 1 and not has_player_picked_an_item:
 		setup_item_selection()
 		return
 	
+	has_player_picked_an_item = false
 	$WaveLabel.text = str(wave)
 	
-	var randomized_extra_enemies: int = randi() % int(min(wave, 4))
-	var total_enemies := (wave - wave * ((wave-1)/5)) * 2 + randomized_extra_enemies
+	var randomized_extra_enemies := randi() % int(min(wave, 4))
+	var total_enemies := get_stage() * 2 + randomized_extra_enemies
 	var placeoffs: int = clamp(randomized_extra_enemies, 1, 3) + wave / 4
 	
 	enemies_left += total_enemies
@@ -84,9 +95,9 @@ func on_wave_begun(_wave_idx: int):
 
 func setup_item_selection():
 	
-	setup_item(0, Items.LeadTippedDarts)
-	setup_item(1, Items.LeadTippedDarts)
-	setup_item(2, Items.LeadTippedDarts)
+	setup_item(0, Globals.parse_pool(Globals.ITEM_POOL))
+	setup_item(1, Globals.parse_pool(Globals.ITEM_POOL))
+	setup_item(2, Globals.parse_pool(Globals.ITEM_POOL))
 	
 	show_item_selection_UI()
 
@@ -98,7 +109,7 @@ func setup_item(idx: int, item: Resource):
 
 func hide_item_selection_UI():
 	for child in $ItemSelection.get_children():
-		if child is CanvasItem: child.hide()
+		if child is CanvasItem: child.call_deferred("hide")
 func show_item_selection_UI():
 	for child in $ItemSelection.get_children():
 		if child is CanvasItem: child.show()
@@ -108,6 +119,11 @@ func _on_TextureButton_pressed(choice: int):
 	
 	var item: Resource = item_choices[choice]
 	player.add_item(item)
+	has_player_picked_an_item = true
 	
 	hide_item_selection_UI()
 	emit_signal("wave_begun", wave)
+
+func set_stage(_val): pass
+func get_stage() -> int:
+	return 1 + (wave-1)/5

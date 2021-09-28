@@ -6,6 +6,8 @@ onready var raycast: RayCast2D = $CollisionShape2D/RayCast2D
 
 var velocity := Vector2()
 
+var rot: float
+var speed: float
 var damage := 25
 var pierces := 0
 
@@ -28,9 +30,11 @@ func collide(body):
 			pierces -= 1
 			return
 	
-	delete()
+	if not is_queued_for_deletion():
+		delete()
 
 func delete():
+	
 	$Particles2D.emitting = false
 	Globals.remove_particle($Particles2D)
 	

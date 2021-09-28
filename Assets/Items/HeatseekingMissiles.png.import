@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Enemy.png-72402df73d8eaf62a866d25afb325035.stex"
+path="res://.import/HeatseekingMissiles.png-258c9ef18a80ed8be7f33d1a771082f2.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Enemy.png"
-dest_files=[ "res://.import/Enemy.png-72402df73d8eaf62a866d25afb325035.stex" ]
+source_file="res://Assets/Items/HeatseekingMissiles.png"
+dest_files=[ "res://.import/HeatseekingMissiles.png-258c9ef18a80ed8be7f33d1a771082f2.stex" ]
 
 [params]
 

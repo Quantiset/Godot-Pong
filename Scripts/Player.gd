@@ -1,21 +1,7 @@
-extends KinematicBody2D
+extends Actor
+class_name Player
 
-var velocity := Vector2()
 var angle: float
-
-export var max_hp := 100
-var hp := max_hp
-
-export var shot_damage := 25
-export var shot_pierces := 0
-export var aim_speed := 300
-export var shot_cooldown := 0.5
-
-export var trail_length := 100
-export var thrust_length := 6
-
-export var max_speed := 300
-export var acceleration := 20
 
 const LINE = preload("res://Scenes/Line.tscn")
 
@@ -37,18 +23,13 @@ onready var hp_bar := get_node("/root/Main/HPBar")
 
 var enemy_cursor_hovered
 
-var items := []
-
 func _ready():
-	add_item(Items.LeadTippedDarts)
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
 	$ShotCooldownTimer.start()
 
 func _physics_process(delta: float) -> void:
-	if enemy_cursor_hovered != null and not is_instance_valid(enemy_cursor_hovered):
-		enemy_cursor_hovered = get_closest_enemy_from_aim_cursor()
 	
 	if enemy_cursor_hovered:
 		aim_cursor.position = enemy_cursor_hovered.position
@@ -114,20 +95,20 @@ func update_trails():
 			trail.remove_point(0)
 
 func shoot():
-	var b := preload("res://Scenes/StraightBullet.tscn")
-	var b_inst := b.instance()
+	var b_inst: Bullet = bullet.instance()
 	b_inst.position = position
 	b_inst.rot = to_local(aim_cursor.position).angle()
-	b_inst.speed = 10
+	b_inst.speed = shot_speed
 	b_inst.damage = shot_damage
 	b_inst.pierces = shot_pierces
 	b_inst.get_node("CollisionShape2D/RayCast2D").add_exception(self)
-	b_inst.set_collision_mask_bit(2, true)
+	b_inst.set_collision_mask_bit(Globals.BIT_ENEMY, true)
 	get_parent().add_child(b_inst)
 
-func get_closest_enemy_from_aim_cursor():
+func get_closest_enemy_from_aim_cursor(exception = null):
 	var enemies = get_tree().get_nodes_in_group("Enemy")
 	
+	enemies.erase(exception)
 	if enemies.size() == 0:
 		return null
 	
@@ -180,21 +161,13 @@ func take_damage(damage: int):
 
 func update_health():
 	hp_bar.value = (hp*100)/max_hp
-
+	hp_bar.rect_size.x = max_hp*2
 
 func _on_AimCursor_body_entered(body):
 	if enemy_cursor_hovered == null:
 		enemy_cursor_hovered = body
 
+func on_Enemy_dead(enemy: Enemy):
+	if enemy == enemy_cursor_hovered:
+		enemy_cursor_hovered = get_closest_enemy_from_aim_cursor(enemy)
 
-
-func add_item(item):
-	if item is GDScript:
-		item = item.new()
-	
-	items.append(item)
-	max_hp += item.max_hp_increase
-	hp += item.hp_increase
-	hp = int(clamp(hp, 0, max_hp))
-	shot_damage += item.damage_increase
-	shot_pierces += item.pierce_increase

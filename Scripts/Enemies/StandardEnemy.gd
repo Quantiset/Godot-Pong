@@ -1,4 +1,5 @@
-extends "res://Scripts/Enemy.gd"
+extends Enemy
+class_name StandardEnemy
 
 var angle := -PI/2
 
@@ -19,13 +20,12 @@ func _physics_process(delta: float) -> void:
 	$CollisionShape2D.rotation = angle+ PI/2
 	
 	if randi() % shoot_rate == 1:
-		var b = preload("res://Scenes/StraightBullet.tscn")
-		var b_inst = b.instance()
+		var b_inst = bullet.instance()
 		b_inst.position = position
 		b_inst.rot = velocity.angle()
 		b_inst.speed = 10
 		b_inst.get_node("CollisionShape2D/RayCast2D").add_exception(self)
-		b_inst.set_collision_mask_bit(1, true)
+		b_inst.set_collision_mask_bit(Globals.BIT_PLAYER, true)
 		get_parent().add_child(b_inst)
 	
 	move_and_slide(velocity, Vector2())

@@ -4,7 +4,7 @@
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Assets/BG.png" type="Texture" id=3]
 [ext_resource path="res://Assets/VCR_OSD_MONO_1.001.ttf" type="DynamicFontData" id=4]
-[ext_resource path="res://Assets/Items/LeadTippedDarts.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Items/HeatseekingMissiles.png" type="Texture" id=5]
 [ext_resource path="res://Scenes/HPBar.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Scripts/Shaders/MoveUpAndDown.shader" type="Shader" id=7]
 
@@ -144,7 +144,7 @@ offset = Vector2( 100, 150 )
 [node name="HPBar" parent="." instance=ExtResource( 6 )]
 margin_left = 59.0
 margin_top = 33.0
-margin_right = 267.0
+margin_right = 259.0
 margin_bottom = 61.0
 value = 100.0
 
@@ -203,9 +203,9 @@ visible = false
 [node name="Label" type="RichTextLabel" parent="ItemSelection/Option1"]
 material = SubResource( 6 )
 margin_left = 150.0
-margin_top = 300.0
+margin_top = 247.0
 margin_right = 331.0
-margin_bottom = 347.0
+margin_bottom = 294.0
 custom_fonts/normal_font = SubResource( 7 )
 text = "Lead-Tipped Darts"
 __meta__ = {
@@ -214,11 +214,11 @@ __meta__ = {
 
 [node name="TextureButton" type="TextureButton" parent="ItemSelection/Option1"]
 material = SubResource( 8 )
-margin_left = 142.0
-margin_top = 283.0
-margin_right = 190.0
-margin_bottom = 331.0
-rect_scale = Vector2( 4, 4 )
+margin_left = 138.0
+margin_top = 306.0
+margin_right = 234.0
+margin_bottom = 402.0
+rect_scale = Vector2( 2, 2 )
 texture_normal = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -231,9 +231,9 @@ position = Vector2( 275, 0 )
 [node name="Label" type="RichTextLabel" parent="ItemSelection/Option2"]
 material = SubResource( 6 )
 margin_left = 150.0
-margin_top = 300.0
+margin_top = 247.0
 margin_right = 331.0
-margin_bottom = 347.0
+margin_bottom = 294.0
 custom_fonts/normal_font = SubResource( 7 )
 text = "Lead-Tipped Darts"
 __meta__ = {
@@ -242,11 +242,11 @@ __meta__ = {
 
 [node name="TextureButton" type="TextureButton" parent="ItemSelection/Option2"]
 material = SubResource( 8 )
-margin_left = 142.0
-margin_top = 283.0
-margin_right = 190.0
-margin_bottom = 331.0
-rect_scale = Vector2( 4, 4 )
+margin_left = 138.0
+margin_top = 306.0
+margin_right = 234.0
+margin_bottom = 402.0
+rect_scale = Vector2( 2, 2 )
 texture_normal = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -259,9 +259,9 @@ position = Vector2( 550, 0 )
 [node name="Label" type="RichTextLabel" parent="ItemSelection/Option3"]
 material = SubResource( 6 )
 margin_left = 150.0
-margin_top = 300.0
+margin_top = 247.0
 margin_right = 331.0
-margin_bottom = 347.0
+margin_bottom = 294.0
 custom_fonts/normal_font = SubResource( 7 )
 text = "Lead-Tipped Darts"
 __meta__ = {
@@ -270,11 +270,11 @@ __meta__ = {
 
 [node name="TextureButton" type="TextureButton" parent="ItemSelection/Option3"]
 material = SubResource( 8 )
-margin_left = 142.0
-margin_top = 283.0
-margin_right = 190.0
-margin_bottom = 331.0
-rect_scale = Vector2( 4, 4 )
+margin_left = 138.0
+margin_top = 306.0
+margin_right = 234.0
+margin_bottom = 402.0
+rect_scale = Vector2( 2, 2 )
 texture_normal = ExtResource( 5 )
 __meta__ = {
 "_edit_use_anchors_": false

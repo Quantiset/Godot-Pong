@@ -3,6 +3,40 @@ extends Node
 var rng_seed := 1000
 var randomize_seed := true
 
+const BIT_WORLD = 0
+const BIT_PLAYER = 1
+const BIT_ENEMY = 2
+
+# each pool for each stage. Initial key is the weight
+const ENEMY_POOL = {
+	1: {
+		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 5,
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 1,
+	},
+	2: {
+		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 4,
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 3,
+		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 2,
+	},
+	3: {
+		preload("res://Scenes/Enemies/StandardTurret.tscn"): 4,
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 4,
+		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 4,
+	},
+	4: {
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 6,
+		preload("res://Scenes/Enemies/StandardTurret.tscn"): 10,
+		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 2,
+		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 4,
+	}
+}
+
+const ITEM_POOL = {
+	Items.HeatseekingMissiles: 5,
+	Items.LeadTippedDarts: 5,
+	Items.RefinedPlating: 5,
+}
+
 func _ready():
 	
 	rng_seed = clamp(rng_seed, 0, 9999)
@@ -38,6 +72,18 @@ func remove_trail(t: Line2D, fade_duration := 1.0):
 
 func queue_free_all(arr: Array):
 	for obj in arr:
-		obj.queue_free()
+		if is_instance_valid(obj):
+			obj.queue_free()
 
-
+func parse_pool(POOL: Dictionary):
+	var num_sum := 0
+	
+	for i in POOL.values():
+		num_sum += i
+	
+	var random_num: int = randi()%num_sum
+	
+	for pool_entry in POOL.keys():
+		random_num -= POOL[pool_entry]
+		if random_num < 0:
+			return pool_entry

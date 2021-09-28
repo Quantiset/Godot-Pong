@@ -1,20 +1,9 @@
-extends KinematicBody2D
+extends Actor
 class_name Enemy
 
-export (int) var max_hp := 100
-var hp := max_hp
-
-export (float) var acceleration := 5.0
-export (int) var max_speed := 150
-export (int) var trail_length = 100
-
-export (int) var thrust_length = 20
 
 export (int) var shoot_rate = 500
-
 export (int) var fog_amount := 10
-
-var velocity := Vector2()
 
 onready var player: KinematicBody2D = get_tree().get_nodes_in_group("Player")[0]
 
@@ -23,6 +12,8 @@ onready var trails := $Trails.get_children()
 signal dead()
 
 func _ready():
+	max_speed = 150
+	
 	$Sprite/SmokeTrail.amount = fog_amount
 	$Sprite/SmokeTrail.emitting = true
 
@@ -54,8 +45,8 @@ func die():
 	Globals.remove_particle($ExplosionParticlesFire)
 	Globals.remove_particle($ExplosionParticlesRed)
 	set_physics_process(false)
-	emit_signal("dead")
 	queue_free()
+	emit_signal("dead")
 
 
 func _on_VisibilityNotifier2D_screen_exited():
