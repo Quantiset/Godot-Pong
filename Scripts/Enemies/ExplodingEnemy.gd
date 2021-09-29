@@ -11,8 +11,7 @@ func die():
 		b_inst.position = position
 		b_inst.rot = i*2*PI/explosion_amount
 		b_inst.speed = 5
-		b_inst.get_node("CollisionShape2D/RayCast2D").add_exception(self)
 		b_inst.set_collision_mask_bit(Globals.BIT_PLAYER, true)
-		get_parent().add_child(b_inst)
+		get_parent().call_deferred("add_child", b_inst)
 	
 	.die()

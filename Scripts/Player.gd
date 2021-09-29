@@ -24,6 +24,10 @@ onready var hp_bar := get_node("/root/Main/HPBar")
 var enemy_cursor_hovered
 
 func _ready():
+	
+	add_item(Items.MachineGun)
+	add_item(Items.Grenade)
+	
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
@@ -31,7 +35,7 @@ func _ready():
 
 func _physics_process(delta: float) -> void:
 	
-	if enemy_cursor_hovered:
+	if is_instance_valid(enemy_cursor_hovered):
 		aim_cursor.position = enemy_cursor_hovered.position
 	
 	update_trails()
@@ -94,17 +98,6 @@ func update_trails():
 		if trail.get_point_count() > max_points:
 			trail.remove_point(0)
 
-func shoot():
-	var b_inst: Bullet = bullet.instance()
-	b_inst.position = position
-	b_inst.rot = to_local(aim_cursor.position).angle()
-	b_inst.speed = shot_speed
-	b_inst.damage = shot_damage
-	b_inst.pierces = shot_pierces
-	b_inst.get_node("CollisionShape2D/RayCast2D").add_exception(self)
-	b_inst.set_collision_mask_bit(Globals.BIT_ENEMY, true)
-	get_parent().add_child(b_inst)
-
 func get_closest_enemy_from_aim_cursor(exception = null):
 	var enemies = get_tree().get_nodes_in_group("Enemy")
 	
@@ -119,6 +112,21 @@ func get_closest_enemy_from_aim_cursor(exception = null):
 			closest_enemy = enemy
 	
 	return closest_enemy
+
+func shoot():
+	var b_: Array = .shoot()
+	
+	var i := 0
+	
+	for b in b_:
+		var addon := i*shot_fan_range/b_.size() - shot_fan_range/4
+		if b_.size() == 1:
+			b.rot = to_local(aim_cursor.position).angle()
+		else:
+			b.rot = to_local(aim_cursor.position).angle() + addon
+		b.set_collision_mask_bit(Globals.BIT_ENEMY, true)
+		get_parent().add_child(b)
+		i += 1
 
 func create_pong_paddles(key: String):
 	# rebind false to a key to create pong trails
@@ -160,6 +168,7 @@ func take_damage(damage: int):
 		get_tree().reload_current_scene()
 
 func update_health():
+	print(max_hp)
 	hp_bar.value = (hp*100)/max_hp
 	hp_bar.rect_size.x = max_hp*2
 
@@ -167,7 +176,7 @@ func _on_AimCursor_body_entered(body):
 	if enemy_cursor_hovered == null:
 		enemy_cursor_hovered = body
 
-func on_Enemy_dead(enemy: Enemy):
+func on_Enemy_dead(enemy: KinematicBody2D):
 	if enemy == enemy_cursor_hovered:
 		enemy_cursor_hovered = get_closest_enemy_from_aim_cursor(enemy)
 

@@ -16,7 +16,6 @@ func _physics_process(delta: float) -> void:
 		b_inst.position = position
 		b_inst.rot = velocity.angle()
 		b_inst.speed = 10
-		b_inst.get_node("CollisionShape2D/RayCast2D").add_exception(self)
 		b_inst.set_collision_mask_bit(Globals.BIT_PLAYER, true)
 		get_parent().add_child(b_inst)
 	

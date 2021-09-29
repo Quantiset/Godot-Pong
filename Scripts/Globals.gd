@@ -32,9 +32,13 @@ const ENEMY_POOL = {
 }
 
 const ITEM_POOL = {
-	Items.HeatseekingMissiles: 5,
-	Items.LeadTippedDarts: 5,
-	Items.RefinedPlating: 5,
+	Items.HeatseekingMissiles: 6,
+	Items.LeadTippedDarts: 10,
+	Items.RefinedPlating: 10,
+	Items.RubberBullets: 10,
+	Items.DoubledMuzzle: 8,
+	Items.Grenade: 10,
+	Items.MachineGun: 4,
 }
 
 func _ready():

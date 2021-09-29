@@ -3,61 +3,58 @@ class_name Actor
 
 var velocity := Vector2()
 
-export var max_hp := 100
+export var max_hp := 100 
 var hp := max_hp
 
 var bullet = preload("res://Scenes/Bullets/StraightBullet.tscn")
-export var shot_damage := 25
-export var shot_pierces := 0
-export var aim_speed := 300
-export var shot_speed := 10
-export var shot_cooldown := 0.5
+export var shot_amount    := 1
+export var shot_fan_range := PI/4
+export var aim_speed      := 300
+export var shot_cooldown  := 0.5
+export var shot_modulate  := Color("ffffff")
 
 export var trail_length := 100
 export var thrust_length := 6
 
-export var max_speed := 300
+export var max_speed := 300 setget set_max_speed
 export var acceleration := 20
 
 var items := []
 
+func set_max_speed(val):
+	if is_in_group("Player"):
+		breakpoint
+
 func add_item(item):
+	
 	if item is GDScript:
-		item = item.new()
+		item = item.new(self)
 	
-	parse_item_oddities(item)
 	
-	items.append(item)
-	max_hp += item.max_hp_increase
-	max_hp *= item.max_hp_multiplier_increase
-	max_hp = clamp(max_hp, 1, 450)
-	hp += item.hp_increase
-	hp *= item.hp_multiplier_increase
-	hp = int(clamp(hp, 0, max_hp))
 	if has_method("update_health"):
 		call("update_health")
 	
-	shot_damage += item.damage_increase
-	shot_pierces += item.pierce_increase
+	if has_item(item):
+		item._nonfirst(self)
 	
-	shot_speed += item.shot_speed_increase
-	shot_speed = clamp(shot_speed, 1, 30)
-	
-	max_speed += item.speed_increase
-	max_speed = clamp(max_speed, 50, 600)
-	
-	shot_cooldown += item.shot_cooldown_increase
-	shot_cooldown = clamp(shot_cooldown, 0.1, 5)
-	
-	if item.override_bullet:
-		bullet = item.override_bullet
+	items.append(item)
 
-func has_item(item):
-	if item is GDScript:
-		item = item.new()
-	
-	return items.has(item)
+func has_item(item) -> bool:
+	for held_item in items:
+		if held_item.id() == item.id():
+			return true
+	return false
 
-func parse_item_oddities(item):
-	if item is Items.HeatseekingMissiles:
-		pass
+func shoot():
+	var b_list = []
+	
+	for i in range(shot_amount):
+		var b_inst: Bullet = bullet.instance()
+		b_inst.position = position
+		b_list.append(b_inst)
+	
+	for item in items:
+		item._on_shot(b_list)
+	
+	return b_list
+

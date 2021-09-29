@@ -9,6 +9,9 @@ onready var player: KinematicBody2D = get_tree().get_nodes_in_group("Player")[0]
 
 onready var trails := $Trails.get_children()
 
+const HPDROP = preload("res://Scenes/HealthDrop.tscn")
+var hp_drop_rate = 10
+
 signal dead()
 
 func _ready():
@@ -35,6 +38,12 @@ func take_damage(damage: int) -> void:
 		die()
 
 func die():
+	
+	if randi() % hp_drop_rate==0 and get_tree().get_nodes_in_group("HealthDrop").size() <= 3:
+		var hp = HPDROP.instance()
+		hp.position = position
+		get_parent().call_deferred("add_child", hp)
+	
 	#Globals.remove_trail($Node/LongTrail)
 	$ExplosionParticles.emitting = true
 	$Sprite/SmokeTrail.emitting = false

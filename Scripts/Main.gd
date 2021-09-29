@@ -67,7 +67,6 @@ func _process(delta: float) -> void:
 	(player.position - ($BottomRight.position - $TopLeft.position) / 2) / 20
 
 func on_Enemy_dead():
-	print(enemies_left)
 	enemies_left -= 1
 	if enemies_left == 0:
 		wave += 1
@@ -101,9 +100,9 @@ func setup_item_selection():
 	
 	show_item_selection_UI()
 
-func setup_item(idx: int, item: Resource):
-	item = item.new()
+func setup_item(idx: int, item):
 	item_choices[idx] = item
+	item = item._metadata()
 	get_node("ItemSelection/Option" + str(idx+1) + "/TextureButton").texture_normal = item.texture
 	get_node("ItemSelection/Option" + str(idx+1) + "/Label").text = item.item_name
 
@@ -117,7 +116,7 @@ func show_item_selection_UI():
 
 func _on_TextureButton_pressed(choice: int):
 	
-	var item: Resource = item_choices[choice]
+	var item = item_choices[choice]
 	player.add_item(item)
 	has_player_picked_an_item = true
 	
