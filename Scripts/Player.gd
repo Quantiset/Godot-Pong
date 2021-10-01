@@ -25,9 +25,6 @@ var enemy_cursor_hovered
 
 func _ready():
 	
-	add_item(Items.MachineGun)
-	add_item(Items.Grenade)
-	
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
@@ -163,14 +160,15 @@ func create_pong_paddles(key: String):
 
 func take_damage(damage: int):
 	hp -= damage
+	hp = clamp(hp, 0, max_hp)
 	update_health()
 	if hp <= 0:
 		get_tree().reload_current_scene()
 
 func update_health():
-	print(max_hp)
 	hp_bar.value = (hp*100)/max_hp
 	hp_bar.rect_size.x = max_hp*2
+	get_node("/root/Main/HPLabel").text = str(hp) + "/" + str(max_hp)
 
 func _on_AimCursor_body_entered(body):
 	if enemy_cursor_hovered == null:

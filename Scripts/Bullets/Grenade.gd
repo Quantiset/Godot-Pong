@@ -11,13 +11,20 @@ var timeout := 2
 
 var overlapping := []
 
+onready var line := $Node/Line2D
+var line_length := 10
+
 func _ready():
 	velocity = Vector2(speed, 0).rotated(rot)
 	$TimeoutTimer.start(timeout)
 
 func _physics_process(delta: float) -> void:
 	position += velocity * delta * 60
-	velocity = velocity.linear_interpolate(Vector2(), 0.05)
+	velocity = velocity.linear_interpolate(Vector2(), 0.02)
+	
+	line.add_point(position)
+	if line.get_point_count() > line_length:
+		line.remove_point(0)
 
 func _on_Grenade_body_entered(body):
 	if body.has_method("take_damage"):
@@ -32,8 +39,6 @@ func explode():
 			body.take_damage(damage)
 		$ExplosionParticles.emitting = true
 		Globals.remove_particle($ExplosionParticles)
-		$SmokeTrail.emitting = false
-		Globals.remove_particle($SmokeTrail)
 		queue_free()
 
 

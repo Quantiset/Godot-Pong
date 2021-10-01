@@ -1,10 +1,9 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Assets/BG.png" type="Texture" id=3]
 [ext_resource path="res://Assets/VCR_OSD_MONO_1.001.ttf" type="DynamicFontData" id=4]
-[ext_resource path="res://Assets/Items/HeatseekingMissiles.png" type="Texture" id=5]
 [ext_resource path="res://Scenes/HPBar.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Scripts/Shaders/MoveUpAndDown.shader" type="Shader" id=7]
 
@@ -28,16 +27,6 @@ shader = ExtResource( 7 )
 [sub_resource type="DynamicFont" id=5]
 size = 24
 font_data = ExtResource( 4 )
-
-[sub_resource type="ShaderMaterial" id=6]
-shader = ExtResource( 7 )
-
-[sub_resource type="DynamicFont" id=7]
-size = 24
-font_data = ExtResource( 4 )
-
-[sub_resource type="ShaderMaterial" id=8]
-shader = ExtResource( 7 )
 
 [node name="Main" type="StaticBody2D" groups=[
 "Block",
@@ -170,6 +159,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="HPLabel" type="Label" parent="."]
+margin_left = 64.0
+margin_top = 34.0
+margin_right = 104.0
+margin_bottom = 49.0
+rect_scale = Vector2( 1.5, 1.5 )
+custom_fonts/font = SubResource( 3 )
+text = "100/100"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="ItemSelection" type="CanvasLayer" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="ItemSelection"]
@@ -196,90 +197,3 @@ text = "Pick an upgrade:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Option1" type="Node2D" parent="ItemSelection"]
-visible = false
-
-[node name="Label" type="RichTextLabel" parent="ItemSelection/Option1"]
-material = SubResource( 6 )
-margin_left = 150.0
-margin_top = 247.0
-margin_right = 331.0
-margin_bottom = 294.0
-custom_fonts/normal_font = SubResource( 7 )
-text = "Lead-Tipped Darts"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TextureButton" type="TextureButton" parent="ItemSelection/Option1"]
-material = SubResource( 8 )
-margin_left = 138.0
-margin_top = 306.0
-margin_right = 234.0
-margin_bottom = 402.0
-rect_scale = Vector2( 2, 2 )
-texture_normal = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Option2" type="Node2D" parent="ItemSelection"]
-visible = false
-position = Vector2( 275, 0 )
-
-[node name="Label" type="RichTextLabel" parent="ItemSelection/Option2"]
-material = SubResource( 6 )
-margin_left = 150.0
-margin_top = 247.0
-margin_right = 331.0
-margin_bottom = 294.0
-custom_fonts/normal_font = SubResource( 7 )
-text = "Lead-Tipped Darts"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TextureButton" type="TextureButton" parent="ItemSelection/Option2"]
-material = SubResource( 8 )
-margin_left = 138.0
-margin_top = 306.0
-margin_right = 234.0
-margin_bottom = 402.0
-rect_scale = Vector2( 2, 2 )
-texture_normal = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Option3" type="Node2D" parent="ItemSelection"]
-visible = false
-position = Vector2( 550, 0 )
-
-[node name="Label" type="RichTextLabel" parent="ItemSelection/Option3"]
-material = SubResource( 6 )
-margin_left = 150.0
-margin_top = 247.0
-margin_right = 331.0
-margin_bottom = 294.0
-custom_fonts/normal_font = SubResource( 7 )
-text = "Lead-Tipped Darts"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="TextureButton" type="TextureButton" parent="ItemSelection/Option3"]
-material = SubResource( 8 )
-margin_left = 138.0
-margin_top = 306.0
-margin_right = 234.0
-margin_bottom = 402.0
-rect_scale = Vector2( 2, 2 )
-texture_normal = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[connection signal="pressed" from="ItemSelection/Option1/TextureButton" to="." method="_on_TextureButton_pressed" binds= [ 0 ]]
-[connection signal="pressed" from="ItemSelection/Option2/TextureButton" to="." method="_on_TextureButton_pressed" binds= [ 1 ]]
-[connection signal="pressed" from="ItemSelection/Option3/TextureButton" to="." method="_on_TextureButton_pressed" binds= [ 2 ]]

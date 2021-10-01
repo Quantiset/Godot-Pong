@@ -11,32 +11,39 @@ const BIT_ENEMY = 2
 const ENEMY_POOL = {
 	1: {
 		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 5,
-		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 1,
+		preload("res://Scenes/Enemies/StandardTurret.tscn"): 1,
 	},
 	2: {
 		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 4,
 		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 3,
-		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 2,
+		preload("res://Scenes/Enemies/StandardTurret.tscn"): 2,
 	},
 	3: {
 		preload("res://Scenes/Enemies/StandardTurret.tscn"): 4,
 		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 4,
-		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 4,
+		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 2,
+		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 2,
 	},
 	4: {
 		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 6,
-		preload("res://Scenes/Enemies/StandardTurret.tscn"): 10,
+		preload("res://Scenes/Enemies/StandardTurret.tscn"): 8,
 		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 2,
 		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 4,
+	},
+	5: {
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 3,
+		preload("res://Scenes/Enemies/StandardTurret.tscn"): 5,
+		preload("res://Scenes/Enemies/ExplodingDreadnought.tscn"): 1,
+		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 7,
 	}
 }
 
-const ITEM_POOL = {
+var ITEM_POOL := {
 	Items.HeatseekingMissiles: 6,
 	Items.LeadTippedDarts: 10,
 	Items.RefinedPlating: 10,
 	Items.RubberBullets: 10,
-	Items.DoubledMuzzle: 8,
+	Items.DoubledMuzzle: 6,
 	Items.Grenade: 10,
 	Items.MachineGun: 4,
 }

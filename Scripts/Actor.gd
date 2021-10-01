@@ -16,14 +16,10 @@ export var shot_modulate  := Color("ffffff")
 export var trail_length := 100
 export var thrust_length := 6
 
-export var max_speed := 300 setget set_max_speed
+export var max_speed := 300 
 export var acceleration := 20
 
 var items := []
-
-func set_max_speed(val):
-	if is_in_group("Player"):
-		breakpoint
 
 func add_item(item):
 	
@@ -41,7 +37,7 @@ func add_item(item):
 
 func has_item(item) -> bool:
 	for held_item in items:
-		if held_item.id() == item.id():
+		if held_item._metadata().id == item._metadata().id:
 			return true
 	return false
 

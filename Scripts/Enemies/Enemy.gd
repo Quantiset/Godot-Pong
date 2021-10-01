@@ -10,7 +10,10 @@ onready var player: KinematicBody2D = get_tree().get_nodes_in_group("Player")[0]
 onready var trails := $Trails.get_children()
 
 const HPDROP = preload("res://Scenes/HealthDrop.tscn")
+const ITEM = preload("res://Scenes/Item.tscn")
+
 var hp_drop_rate = 10
+var item_drop_rate = 20
 
 signal dead()
 
@@ -43,6 +46,12 @@ func die():
 		var hp = HPDROP.instance()
 		hp.position = position
 		get_parent().call_deferred("add_child", hp)
+	elif randi() % item_drop_rate==0:
+		var i = ITEM.instance()
+		i.position = position
+		i.type = Globals.parse_pool(Globals.ITEM_POOL)
+		print("hi")
+		get_parent().call_deferred("add_child", i)
 	
 	#Globals.remove_trail($Node/LongTrail)
 	$ExplosionParticles.emitting = true

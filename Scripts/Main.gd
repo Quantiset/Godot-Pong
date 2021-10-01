@@ -2,7 +2,6 @@ extends StaticBody2D
 
 const ENEMY_SIGNALER = preload("res://Scenes/EnemySignaler.tscn")
 
-var has_player_picked_an_item := false
 var enemies_left := 0
 var wave := 1
 
@@ -73,11 +72,7 @@ func on_Enemy_dead():
 		emit_signal("wave_begun", wave)
 
 func on_wave_begun(_wave_idx: int):
-	if wave % 5 == 1 and not has_player_picked_an_item:
-		setup_item_selection()
-		return
 	
-	has_player_picked_an_item = false
 	$WaveLabel.text = str(wave)
 	
 	var randomized_extra_enemies := randi() % int(min(wave, 4))
@@ -91,37 +86,6 @@ func on_wave_begun(_wave_idx: int):
 		else:
 			gen_random_spawn(total_enemies/placeoffs, false)
 		yield(get_tree().create_timer(randi() % 3 + 2), "timeout") 
-
-func setup_item_selection():
-	
-	setup_item(0, Globals.parse_pool(Globals.ITEM_POOL))
-	setup_item(1, Globals.parse_pool(Globals.ITEM_POOL))
-	setup_item(2, Globals.parse_pool(Globals.ITEM_POOL))
-	
-	show_item_selection_UI()
-
-func setup_item(idx: int, item):
-	item_choices[idx] = item
-	item = item._metadata()
-	get_node("ItemSelection/Option" + str(idx+1) + "/TextureButton").texture_normal = item.texture
-	get_node("ItemSelection/Option" + str(idx+1) + "/Label").text = item.item_name
-
-func hide_item_selection_UI():
-	for child in $ItemSelection.get_children():
-		if child is CanvasItem: child.call_deferred("hide")
-func show_item_selection_UI():
-	for child in $ItemSelection.get_children():
-		if child is CanvasItem: child.show()
-
-
-func _on_TextureButton_pressed(choice: int):
-	
-	var item = item_choices[choice]
-	player.add_item(item)
-	has_player_picked_an_item = true
-	
-	hide_item_selection_UI()
-	emit_signal("wave_begun", wave)
 
 func set_stage(_val): pass
 func get_stage() -> int:

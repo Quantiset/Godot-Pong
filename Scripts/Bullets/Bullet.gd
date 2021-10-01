@@ -8,7 +8,10 @@ var velocity := Vector2()
 
 var rot: float
 var speed := 10.0
-var damage := 25
+
+var damage := 25 setget set_damage
+var damage_multiplier := 1.0 setget set_damage_multiplier
+
 var pierces := 0
 var bounces := 0
 
@@ -21,7 +24,7 @@ func _on_Bullet_body_entered(body):
 func collide(body):
 	
 	if body.has_method("take_damage"):
-		body.take_damage(damage)
+		body.take_damage(get_total_damage())
 		if pierces > 0:
 			pierces -= 1
 			return
@@ -51,7 +54,7 @@ func get_normal() -> Vector2:
 	var normal := Vector2()
 	
 	normal_detector.global_rotation = 0
-	normal_detector.cast_to = velocity * 2
+	normal_detector.cast_to = velocity * 4
 	normal_detector.force_raycast_update()
 	if normal_detector.is_colliding():
 		normal = normal_detector.get_collision_normal()
@@ -75,3 +78,15 @@ func delete():
 	Globals.remove_particle($ExplosionParticles2)
 	
 	queue_free()
+
+
+func set_damage_multiplier(val) -> void:
+	damage_multiplier = val
+	damage_multiplier = clamp(damage_multiplier, 0.1, 999)
+
+func set_damage(val) -> void:
+	damage = val
+	damage = clamp(damage, 5, 100)
+
+func get_total_damage() -> int:
+	return int(damage*damage_multiplier)
