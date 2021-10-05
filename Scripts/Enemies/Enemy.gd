@@ -42,15 +42,14 @@ func take_damage(damage: int) -> void:
 
 func die():
 	
-	if randi() % hp_drop_rate==0 and get_tree().get_nodes_in_group("HealthDrop").size() <= 3:
+	if randi() % hp_drop_rate == 0 and get_tree().get_nodes_in_group("HealthDrop").size() <= 3:
 		var hp = HPDROP.instance()
 		hp.position = position
 		get_parent().call_deferred("add_child", hp)
-	elif randi() % item_drop_rate==0:
+	elif randi() % item_drop_rate == 0:
 		var i = ITEM.instance()
 		i.position = position
 		i.type = Globals.parse_pool(Globals.ITEM_POOL)
-		print("hi")
 		get_parent().call_deferred("add_child", i)
 	
 	#Globals.remove_trail($Node/LongTrail)
@@ -68,6 +67,4 @@ func die():
 
 
 func _on_VisibilityNotifier2D_screen_exited():
-	# if an enemy somehow leaves the screen, this prevents it from blockading the game
-	if not is_queued_for_deletion():
-		die()
+	pass

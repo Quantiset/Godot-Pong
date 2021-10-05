@@ -18,13 +18,20 @@ onready var trails := $Node.get_children()
 
 onready var aim_cursor: Area2D = $Node2/AimCursor
 
-onready var hp_bar := get_node("/root/Main/HPBar")
+onready var hp_bar: TextureProgress = get_node("CanvasLayer/HPBar")
+onready var hp_label: Label = get_node("CanvasLayer/HPLabel")
 
-
-var enemy_cursor_hovered
+var aim_cursor_hovered
+enum aim_cursor_methods {
+	Mouse,
+	Keyboard
+}
+var aim_cursor_method: int = aim_cursor_methods.Keyboard setget set_aim_cursor
 
 func _ready():
 	
+	
+	#set_aim_cursor(aim_cursor_methods.Mouse)
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
@@ -32,8 +39,8 @@ func _ready():
 
 func _physics_process(delta: float) -> void:
 	
-	if is_instance_valid(enemy_cursor_hovered):
-		aim_cursor.position = enemy_cursor_hovered.position
+	if is_instance_valid(aim_cursor_hovered):
+		aim_cursor.position = aim_cursor_hovered.position
 	
 	update_trails()
 	
@@ -56,18 +63,28 @@ func _physics_process(delta: float) -> void:
 	else:
 		$Sprite/Particles2D3.emitting = true
 	
-	if Input.is_action_pressed("focus_up"):
-		aim_cursor.position.y -= aim_speed * delta
-		enemy_cursor_hovered = null
-	if Input.is_action_pressed("focus_down"):
-		aim_cursor.position.y += aim_speed * delta
-		enemy_cursor_hovered = null
-	if Input.is_action_pressed("focus_left"):
-		aim_cursor.position.x -= aim_speed * delta
-		enemy_cursor_hovered = null
-	if Input.is_action_pressed("focus_right"): 
-		aim_cursor.position.x += aim_speed * delta
-		enemy_cursor_hovered = null
+	if aim_cursor_method == aim_cursor_methods.Keyboard:
+		var aim_cursor_vel := Vector2()
+		if Input.is_action_pressed("focus_up"):
+			aim_cursor_vel.y -= aim_speed * delta
+			aim_cursor_hovered = null
+		if Input.is_action_pressed("focus_down"):
+			aim_cursor_vel.y += aim_speed * delta
+			aim_cursor_hovered = null
+		if Input.is_action_pressed("focus_left"):
+			aim_cursor_vel.x -= aim_speed * delta
+			aim_cursor_hovered = null
+		if Input.is_action_pressed("focus_right"): 
+			aim_cursor_vel.x += aim_speed * delta
+			aim_cursor_hovered = null
+		
+		var ref_rect: ReferenceRect = get_parent().get_node_or_null("ReferenceRect")
+		if ref_rect:
+			if ref_rect.get_global_rect().has_point(aim_cursor.position + aim_cursor_vel):
+				aim_cursor.position += aim_cursor_vel
+		
+	elif aim_cursor_method == aim_cursor_methods.Mouse:
+		aim_cursor.position = get_global_mouse_position()
 	
 	if Input.is_action_just_pressed("ui_shift"):
 		max_speed *= 1.5
@@ -168,13 +185,20 @@ func take_damage(damage: int):
 func update_health():
 	hp_bar.value = (hp*100)/max_hp
 	hp_bar.rect_size.x = max_hp*2
-	get_node("/root/Main/HPLabel").text = str(hp) + "/" + str(max_hp)
+	hp_label.text = str(hp) + "/" + str(max_hp)
 
 func _on_AimCursor_body_entered(body):
-	if enemy_cursor_hovered == null:
-		enemy_cursor_hovered = body
+	if aim_cursor_hovered == null:
+		aim_cursor_hovered = body
 
 func on_Enemy_dead(enemy: KinematicBody2D):
-	if enemy == enemy_cursor_hovered:
-		enemy_cursor_hovered = get_closest_enemy_from_aim_cursor(enemy)
+	if enemy == aim_cursor_hovered:
+		aim_cursor_hovered = get_closest_enemy_from_aim_cursor(enemy)
 
+func set_aim_cursor(val: int):
+	match val:
+		aim_cursor_methods.Mouse:
+			Input.set_custom_mouse_cursor(preload("res://Assets/Transparent.png"))
+		_:
+			Input.set_custom_mouse_cursor(null)
+	aim_cursor_method = val

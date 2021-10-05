@@ -19,11 +19,11 @@ func _ready():
 	
 	gen_random_spawn(randi()%3+2)
 
-onready var spawnable_space: Vector2 = $BottomRight.position - $TopLeft.position
+onready var spawnable_space: Vector2 = $ReferenceRect.rect_size
 func gen_random_spawn(enemies: int, automatically_add_to_enemies_left := true):
 	var xcoor: int = randi() % int(spawnable_space.x)
 	var ycoor: int = randi() % int(spawnable_space.y)
-	var randomized_spawn: Vector2 = $TopLeft.position + Vector2(xcoor, ycoor)
+	var randomized_spawn: Vector2 = $ReferenceRect.rect_position + Vector2(xcoor, ycoor)
 	
 	var s = ENEMY_SIGNALER.instance()
 	s.position = randomized_spawn
@@ -50,6 +50,7 @@ func gen_random_spawn(enemies: int, automatically_add_to_enemies_left := true):
 		yield(get_tree().create_timer(0.2), "timeout")
 
 func get_random_enemy_per_weights() -> PackedScene:
+	
 	var ENEMIES: Dictionary = Globals.ENEMY_POOL[get_stage()]
 	
 	if ENEMIES == null:
@@ -59,11 +60,9 @@ func get_random_enemy_per_weights() -> PackedScene:
 	return Globals.parse_pool(ENEMIES)
 
 func _process(delta: float) -> void:
-	$ParallaxBackground/ParallaxLayer.motion_offset += Vector2(22, 18) * delta
-	$ParallaxBackground/ParallaxLayer2.motion_offset += Vector2(15, 17) * delta
-	
-	$Camera2D.offset = Vector2(512, 300) + \
-	(player.position - ($BottomRight.position - $TopLeft.position) / 2) / 20
+	pass
+#	$Camera2D.offset = Vector2(512, 300) + \
+#	(player.position - ($BottomRight.position - $TopLeft.position) / 2) / 20
 
 func on_Enemy_dead():
 	enemies_left -= 1
@@ -73,7 +72,7 @@ func on_Enemy_dead():
 
 func on_wave_begun(_wave_idx: int):
 	
-	$WaveLabel.text = str(wave)
+	player.get_node("CanvasLayer/WaveLabel").text = str(wave)
 	
 	var randomized_extra_enemies := randi() % int(min(wave, 4))
 	var total_enemies := get_stage() * 2 + randomized_extra_enemies

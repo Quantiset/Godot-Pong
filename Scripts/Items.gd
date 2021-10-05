@@ -17,6 +17,7 @@ class ItemReference extends Resource:
 	func _on_shot(bullet):
 		pass
 
+
 class LeadTippedDarts extends ItemReference:
 	
 	static func _metadata():
@@ -40,7 +41,7 @@ class LeadTippedDarts extends ItemReference:
 
 class RubberBullets extends ItemReference:
 	
-	static func _metadata():
+	static func _metadata() -> Dictionary:
 		return {
 			"id": 2,
 			"item_name": "Rubber Tipped Bullets",
@@ -79,13 +80,13 @@ class HeatseekingMissiles extends ItemReference:
 		emitter.bullet = preload("res://Scenes/Bullets/HeatseekingBullet.tscn")
 	
 	func _nonfirst(emitter):
-		emitter.shot_cooldown -= 0.2
+		emitter.shot_cooldown -= 0.3
 		is_first = true
 	
 	func _on_shot(bullet_list: Array):
 		for bullet in bullet_list:
 			bullet.speed -= 6
-			bullet.damage += 15
+			bullet.damage += 5 * (1 if is_first else 3)
 
 class RefinedPlating extends ItemReference:
 	
@@ -102,7 +103,10 @@ class RefinedPlating extends ItemReference:
 	func _init(emitter):
 		emitter.max_hp += 50
 		emitter.hp += 50
-		emitter.max_speed += 100
+		emitter.max_speed += 50
+	
+	func _nonfirst(emitter):
+		emitter.max_speed -= 40
 
 class DoubledMuzzle extends ItemReference:
 	
@@ -177,3 +181,18 @@ class MachineGun extends ItemReference:
 				bullet.damage_multiplier /= 3
 			else:
 				bullet.damage -= 1
+
+class EnhancedTreads extends ItemReference:
+	
+	static func _metadata():
+		return {
+			"id": 8,
+			"item_name": "Enhanced Treads",
+			"texture": preload("res://Assets/Items/EnhancedTreads.png"),
+			"description": """
+			
+			"""
+		}
+	
+	func _init(emitter):
+		emitter.max_speed += 100

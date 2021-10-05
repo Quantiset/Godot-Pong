@@ -1,14 +1,7 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Assets/BG.png" type="Texture" id=3]
-[ext_resource path="res://Assets/VCR_OSD_MONO_1.001.ttf" type="DynamicFontData" id=4]
-[ext_resource path="res://Scenes/HPBar.tscn" type="PackedScene" id=6]
-[ext_resource path="res://Scripts/Shaders/MoveUpAndDown.shader" type="Shader" id=7]
-
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 17, 239 )
 
 [sub_resource type="Environment" id=2]
 background_mode = 4
@@ -18,182 +11,144 @@ glow_blend_mode = 0
 glow_hdr_threshold = 0.1
 glow_bicubic_upscale = true
 
-[sub_resource type="DynamicFont" id=3]
-font_data = ExtResource( 4 )
-
-[sub_resource type="ShaderMaterial" id=4]
-shader = ExtResource( 7 )
-
-[sub_resource type="DynamicFont" id=5]
-size = 24
-font_data = ExtResource( 4 )
-
-[node name="Main" type="StaticBody2D" groups=[
-"Block",
-]]
+[node name="Main" type="StaticBody2D"]
+position = Vector2( 0, 2 )
 script = ExtResource( 1 )
-__meta__ = {
-"_editor_description_": ""
-}
 
-[node name="CollisionShape2D" type="CollisionPolygon2D" parent="."]
-polygon = PoolVector2Array( 18, 96, 60, 75, 960, 75, 1002, 97, 1002, 549, 960, 570, 60, 570, 18, 550, 18, 96, -40, 96, -64, 624, 1048, 656, 1056, 32, -32, 24, 0, 95 )
+[node name="Player" parent="." instance=ExtResource( 2 )]
+position = Vector2( 248, 112 )
 
-[node name="MainOutline" type="Line2D" parent="."]
-points = PoolVector2Array( 60, 75, 60, 547.973, 60, 570, 960, 570, 960, 75, 57, 75 )
+[node name="Line2D" type="Line2D" parent="."]
+points = PoolVector2Array( 0, 0, 1750, 0, 1750, 1150, 0, 1150, 0, -3 )
 width = 6.0
 default_color = Color( 1, 1, 1, 1 )
 
-[node name="ColorRect" type="ColorRect" parent="."]
-margin_left = 62.9795
-margin_top = 77.9836
-margin_right = 956.98
-margin_bottom = 566.984
-mouse_filter = 2
-color = Color( 0.117647, 0.117647, 0.117647, 1 )
+[node name="Polygon2D" type="Polygon2D" parent="."]
+z_index = -1
+color = Color( 0.164706, 0.164706, 0.164706, 1 )
+polygon = PoolVector2Array( 0, 0, 1751, 0, 1750, 1148, 1, 1150, 0, 0, -1206, -37, -1245, 1948, 2684, 1911, 2730, -864, -1208, -822, -1206, -38 )
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="Parallax" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0.8, 0.8 )
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 283.0
+margin_top = 191.0
+margin_right = 404.0
+margin_bottom = 307.0
+color = Color( 0.745098, 0.235294, 0.0784314, 0.243137 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="CenterDivider" type="Line2D" parent="."]
-points = PoolVector2Array( 509, 75, 509, 570 )
-width = 6.0
-default_color = Color( 1, 1, 1, 1 )
-
-[node name="BlueArea" type="Area2D" parent="."]
+[node name="ColorRect2" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 534.0
+margin_top = 763.0
+margin_right = 655.0
+margin_bottom = 989.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
 __meta__ = {
-"_edit_group_": true
+"_edit_use_anchors_": false
 }
 
-[node name="Polygon2D" type="Polygon2D" parent="BlueArea"]
-position = Vector2( -3, 1 )
-color = Color( 0, 0.156863, 1, 1 )
-antialiased = true
-polygon = PoolVector2Array( 60, 78, 24, 97, 24, 547, 60, 566 )
-
-[node name="MainOutline2" type="Line2D" parent="BlueArea"]
-points = PoolVector2Array( 58, 570, 18, 550, 18, 96, 58, 75 )
-width = 6.0
-default_color = Color( 1, 1, 1, 1 )
-joint_mode = 2
-antialiased = true
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BlueArea"]
-position = Vector2( 40, 320 )
-shape = SubResource( 1 )
-
-[node name="RedArea" type="Area2D" parent="."]
-position = Vector2( 1020, 0 )
-rotation = -3.14159
-scale = Vector2( 1, -1 )
+[node name="ColorRect3" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 920.0
+margin_top = 456.0
+margin_right = 1158.0
+margin_bottom = 572.0
+color = Color( 0.745098, 0.141176, 0.0784314, 0.243137 )
 __meta__ = {
-"_edit_group_": true
+"_edit_use_anchors_": false
 }
 
-[node name="Polygon2D" type="Polygon2D" parent="RedArea"]
-position = Vector2( -3, 1 )
-color = Color( 1, 0, 0, 1 )
-antialiased = true
-polygon = PoolVector2Array( 60, 78, 24, 97, 24, 547, 60, 566 )
+[node name="ColorRect4" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 1418.0
+margin_top = 737.0
+margin_right = 1609.0
+margin_bottom = 871.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="MainOutline2" type="Line2D" parent="RedArea"]
-points = PoolVector2Array( 58, 570, 18, 550, 18, 96, 58, 75 )
-width = 6.0
-default_color = Color( 1, 1, 1, 1 )
-joint_mode = 2
-antialiased = true
+[node name="ColorRect5" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 1461.0
+margin_top = 77.0
+margin_right = 1582.0
+margin_bottom = 193.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RedArea"]
-position = Vector2( 40, 320 )
-shape = SubResource( 1 )
+[node name="Parallax2" type="ParallaxLayer" parent="ParallaxBackground"]
+modulate = Color( 1, 1, 1, 0.603922 )
+motion_scale = Vector2( 0.6, 0.6 )
 
-[node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 412, 305 )
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 153.0
+margin_top = 652.0
+margin_right = 274.0
+margin_bottom = 768.0
+color = Color( 0.745098, 0.141176, 0.0784314, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 440.0
+margin_top = 222.0
+margin_right = 561.0
+margin_bottom = 448.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect3" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 857.0
+margin_top = 856.0
+margin_right = 1095.0
+margin_bottom = 972.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect4" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 1021.0
+margin_top = 109.0
+margin_right = 1212.0
+margin_bottom = 243.0
+color = Color( 0.745098, 0.156863, 0.0784314, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect5" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 1189.0
+margin_top = 456.0
+margin_right = 1310.0
+margin_bottom = 572.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 1, 1, 1751, 1, 1748, 1147, 1, 1148, 1, 1, -46, 1, -61, 1222, 1820, 1226, 1803, -75, -48, -47, -46, 1 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 2 )
 
-[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
-
-[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2( 1920, 1080 )
-
-[node name="TextureRect" type="Sprite" parent="ParallaxBackground/ParallaxLayer"]
-modulate = Color( 1, 1, 1, 0.278431 )
-texture = ExtResource( 3 )
-
-[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2( 1920, 1080 )
-
-[node name="TextureRect" type="Sprite" parent="ParallaxBackground/ParallaxLayer2"]
-modulate = Color( 1, 1, 1, 0.278431 )
-texture = ExtResource( 3 )
-offset = Vector2( 100, 150 )
-
-[node name="HPBar" parent="." instance=ExtResource( 6 )]
-margin_left = 59.0
-margin_top = 33.0
-margin_right = 259.0
-margin_bottom = 61.0
-value = 100.0
-
-[node name="TopLeft" type="Position2D" parent="."]
-position = Vector2( 72, 86 )
-
-[node name="BottomRight" type="Position2D" parent="."]
-position = Vector2( 946, 558 )
-
-[node name="Camera2D" type="Camera2D" parent="."]
-offset = Vector2( 512, 300 )
-current = true
-
-[node name="WaveLabel" type="Label" parent="."]
-margin_left = 20.0
-margin_top = 30.0
-margin_right = 60.0
-margin_bottom = 45.0
-rect_scale = Vector2( 2, 2 )
-custom_fonts/font = SubResource( 3 )
-text = "1"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HPLabel" type="Label" parent="."]
-margin_left = 64.0
-margin_top = 34.0
-margin_right = 104.0
-margin_bottom = 49.0
-rect_scale = Vector2( 1.5, 1.5 )
-custom_fonts/font = SubResource( 3 )
-text = "100/100"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ItemSelection" type="CanvasLayer" parent="."]
-
-[node name="ColorRect" type="ColorRect" parent="ItemSelection"]
-visible = false
-margin_left = -108.0
-margin_top = -76.0
-margin_right = 1143.0
-margin_bottom = 693.0
-mouse_filter = 2
-color = Color( 0.121569, 0.121569, 0.121569, 0.65098 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="ItemSelection"]
-visible = false
-material = SubResource( 4 )
-margin_left = 402.0
-margin_top = 185.0
-margin_right = 626.0
-margin_bottom = 245.0
-custom_fonts/font = SubResource( 5 )
-text = "Pick an upgrade:"
+[node name="ReferenceRect" type="ReferenceRect" parent="."]
+margin_left = 38.0
+margin_top = 29.0
+margin_right = 1712.0
+margin_bottom = 1114.0
+border_width = 1.8
 __meta__ = {
 "_edit_use_anchors_": false
 }

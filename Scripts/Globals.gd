@@ -98,3 +98,9 @@ func parse_pool(POOL: Dictionary):
 		random_num -= POOL[pool_entry]
 		if random_num < 0:
 			return pool_entry
+
+func spawn_item_at(item: GDScript, pos: Vector2):
+	var i = preload("res://Scenes/Item.tscn").instance()
+	i.position = pos
+	i.type = item
+	get_parent().call_deferred("add_child", i)
