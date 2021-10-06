@@ -32,12 +32,17 @@ enum aim_cursor_methods {
 	Mouse,
 	Keyboard
 }
-var aim_cursor_method: int = aim_cursor_methods.Keyboard setget set_aim_cursor
+var aim_cursor_method: int = aim_cursor_methods.Mouse setget set_aim_cursor
+
+signal level_up(level)
+
+func _input(event):
+	for item in items:
+		item._input(event)
 
 func _ready():
 	
-	
-	Globals.spawn_item_at(Items.DoubledMuzzle, Vector2(100,100))
+	Globals.spawn_item_at(Items.Shank, Vector2(100,100))
 	
 	#set_aim_cursor(aim_cursor_methods.Mouse)
 	aim_cursor.position = position
@@ -45,6 +50,9 @@ func _ready():
 	$ShotCooldownTimer.wait_time = shot_cooldown
 	$ShotCooldownTimer.start()
 	update_xp()
+	set_aim_cursor(aim_cursor_method)
+	
+	connect("level_up", self, "on_level_up")
 
 func _physics_process(delta: float) -> void:
 	
@@ -53,9 +61,17 @@ func _physics_process(delta: float) -> void:
 	
 	update_trails()
 	
+	if Input.is_action_just_pressed("ui_accept"):
+		get_parent().wave += 1
+		get_parent().emit_signal("wave_begun", get_parent().wave)
+		
+		xp += (get_parent().enemies_left-1) * 6
+		update_xp()
+	
 	if Input.is_action_just_pressed("ui_cancel"):
 		OS.window_fullscreen = not OS.window_fullscreen
 	
+	# this is the code for moving the player
 	var has_moved := false
 	if Input.is_action_pressed("ui_up"):
 		velocity.y -= acceleration 
@@ -93,7 +109,8 @@ func _physics_process(delta: float) -> void:
 		
 		var ref_rect: ReferenceRect = get_parent().get_node_or_null("ReferenceRect")
 		if ref_rect:
-			if ref_rect.get_global_rect().has_point(aim_cursor.position + aim_cursor_vel):
+			var rect := ref_rect.get_global_rect().grow(20)
+			if rect.has_point(aim_cursor.position + aim_cursor_vel):
 				aim_cursor.position += aim_cursor_vel
 	
 	# else, use the mouse to move the aim cursor
@@ -179,15 +196,18 @@ func create_pong_paddles(key: String):
 		creating_line = false
 		paddle.set_collision_mask_bit(1, true)
 	
+	# if it is creating lines,
 	if creating_line:
 		line.remove_point(0)
 		line.remove_point(1)
 		
 		var to_center: Vector2 = (global_position-start_pos)/2
 		
+		# local coordinates are used. Sets lines at player and at init pos
 		line.add_point(-to_center)
 		line.add_point(to_center)
 		
+		# set the paddles position at all times to be at the center of the init spawn and player
 		paddle.position = global_position - to_center
 		paddle.get_node("CollisionShape2D").shape.extents.x = to_center.length()
 		paddle.get_node("CollisionShape2D").rotation = to_center.angle()
@@ -201,31 +221,40 @@ func take_damage(damage: int):
 	if hp <= 0:
 		get_tree().reload_current_scene()
 
-func update_health():
+func update_health(flash := true):
 	var tween: Tween = hp_bar.get_node("Tween")
 	tween.interpolate_property(hp_bar, "value", hp_bar.value, (hp*100)/max_hp, 0.3, Tween.TRANS_LINEAR)
 	tween.start()
 	
-	hp_bar.get_node("AnimationPlayer").play("Flash")
+	if flash:
+		hp_bar.get_node("AnimationPlayer").play("Flash")
 	
 	hp_bar.rect_size.x = max_hp*2
 	hp_label.text = str(hp) + "/" + str(max_hp)
 
-func update_xp():
+var level = 0
+func update_xp(flash := true):
 	
 	if xp > max_xp:
 		xp = 0
 		max_xp += 10
-		print("level up!")
+		level += 1
+		emit_signal("level_up", level)
 	
 	var tween: Tween = xp_bar.get_node("Tween")
 	tween.interpolate_property(xp_bar, "value", xp_bar.value, (xp*100)/max_xp, 0.3, Tween.TRANS_LINEAR)
 	tween.start()
 	
-	xp_bar.get_node("AnimationPlayer").play("Flash")
+	if flash:
+		xp_bar.get_node("AnimationPlayer").play("Flash")
 	
 	xp_bar.rect_size.x = max_xp * 1.7
 	xp_label.text = str(xp) + "/" + str(max_xp)
+
+func on_level_up(level):
+	max_hp += randi() % 6 + 3
+	update_health()
+
 
 func _on_AimCursor_body_entered(body):
 	if aim_cursor_hovered == null:
@@ -242,3 +271,10 @@ func set_aim_cursor(val: int):
 		_:
 			Input.set_custom_mouse_cursor(null)
 	aim_cursor_method = val
+
+func set_shot_cooldown(val):
+	shot_cooldown = val
+	$ShotCooldownTimer.wait_time = val * shot_cooldown_multiplier
+func set_shot_cooldown_multiplier(val):
+	shot_cooldown_multiplier = val
+	$ShotCooldownTimer.wait_time = val * shot_cooldown

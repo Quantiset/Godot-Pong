@@ -5,6 +5,7 @@ var type: GDScript
 const DESC_HEIGHT = 30
 const DESC_FADE_LENGTH = 4
 
+var has_picked_up := false
 
 func _ready():
 	var metadata = type._metadata()
@@ -15,9 +16,10 @@ func _ready():
 
 
 func _on_Item_body_entered(body):
-	if body.is_in_group("Player"):
+	if body.is_in_group("Player") and not has_picked_up:
 		body.add_item(type)
 		delete()
+		has_picked_up = true
 
 func delete():
 	

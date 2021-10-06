@@ -59,10 +59,6 @@ func get_random_enemy_per_weights() -> PackedScene:
 	
 	return Globals.parse_pool(ENEMIES)
 
-func _process(delta: float) -> void:
-	pass
-#	$Camera2D.offset = Vector2(512, 300) + \
-#	(player.position - ($BottomRight.position - $TopLeft.position) / 2) / 20
 
 func on_Enemy_dead():
 	

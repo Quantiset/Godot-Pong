@@ -6,6 +6,10 @@ https://github.com/henriquelalves/SimpleGodotCRTShader/blob/master/CRTShader.sha
 ^ CRT vignette shader
 
 
+https://kenney.nl
+^ For many particles effects including:
+	- Lightning effect from Tesla Coil
+
 Engine attributions:
 #####
     This game uses Godot Engine, available under the following license:

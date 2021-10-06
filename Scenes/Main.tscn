@@ -144,9 +144,8 @@ polygon = PoolVector2Array( 1, 1, 1751, 1, 1748, 1147, 1, 1148, 1, 1, -46, 1, -6
 environment = SubResource( 1 )
 
 [node name="ReferenceRect" type="ReferenceRect" parent="."]
-visible = false
-margin_left = 38.0
-margin_top = 29.0
+margin_left = 26.0
+margin_top = 28.0
 margin_right = 1712.0
 margin_bottom = 1114.0
 border_width = 1.8

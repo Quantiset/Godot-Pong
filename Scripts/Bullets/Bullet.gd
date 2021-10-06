@@ -17,6 +17,9 @@ var bounces := 0
 
 var is_visible := true
 
+signal hit_object(object)
+signal damaged_enemy(enemy)
+
 func _ready():
 	$NormalDetector.collision_mask = collision_mask
 
@@ -25,7 +28,9 @@ func _on_Bullet_body_entered(body):
 
 func collide(body):
 	
+	emit_signal("hit_object", body)
 	if body.has_method("take_damage"):
+		emit_signal("damaged_enemy", body)
 		body.take_damage(get_total_damage())
 		if pierces > 0:
 			pierces -= 1

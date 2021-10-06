@@ -10,7 +10,8 @@ var bullet = preload("res://Scenes/Bullets/StraightBullet.tscn")
 export var shot_amount    := 1
 export var shot_fan_range := PI/4
 export var aim_speed      := 300
-export var shot_cooldown  := 0.5
+export var shot_cooldown  := 0.5 setget set_shot_cooldown
+export var shot_cooldown_multiplier := 1.0 setget set_shot_cooldown_multiplier
 export var shot_modulate  := Color("ffffff")
 
 export var trail_length := 100
@@ -25,13 +26,14 @@ func add_item(item):
 	
 	if item is GDScript:
 		item = item.new(self)
+	if has_item(item):
+		item._init2(self)
 	
 	
 	if has_method("update_health"):
 		call("update_health")
-	
-	if has_item(item):
-		item._nonfirst(self)
+	if has_method("update_xp"):
+		call("update_xp")
 	
 	items.append(item)
 
@@ -54,3 +56,7 @@ func shoot():
 	
 	return b_list
 
+func set_shot_cooldown(val):
+	shot_amount = val
+func set_shot_cooldown_multiplier(val):
+	shot_cooldown_multiplier = val

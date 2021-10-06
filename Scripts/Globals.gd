@@ -46,6 +46,7 @@ var ITEM_POOL := {
 	Items.DoubledMuzzle: 6,
 	Items.Grenade: 10,
 	Items.MachineGun: 4,
+	Items.TeslaCoil: 6,
 }
 
 func _ready():
@@ -104,3 +105,19 @@ func spawn_item_at(item: GDScript, pos: Vector2):
 	i.position = pos
 	i.type = item
 	get_parent().call_deferred("add_child", i)
+
+func get_closest_enemy_from(position: Vector2, exceptions = []):
+	var enemies = get_tree().get_nodes_in_group("Enemy")
+	
+	for exception in exceptions:
+		if exception in enemies:
+			enemies.erase(exception)
+	if enemies.size() == 0:
+		return null
+	
+	var closest_enemy = enemies[0]
+	for enemy in enemies:
+		if (position - enemy.position).length() < (position - closest_enemy.position).length():
+			closest_enemy = enemy
+	
+	return closest_enemy
