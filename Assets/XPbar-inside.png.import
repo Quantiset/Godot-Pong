@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/StandardTurret.png-d6409d1c8d96e3e5305d086233fb3dc8.stex"
+path="res://.import/XPbar-inside.png-7a9e6e7e194dcd01916f6a9cee6450dc.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/StandardTurret.png"
-dest_files=[ "res://.import/StandardTurret.png-d6409d1c8d96e3e5305d086233fb3dc8.stex" ]
+source_file="res://Assets/XPbar-inside.png"
+dest_files=[ "res://.import/XPbar-inside.png-7a9e6e7e194dcd01916f6a9cee6450dc.stex" ]
 
 [params]
 

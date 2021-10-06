@@ -49,8 +49,10 @@ func collide(body):
 		delete()
 
 func bounce():
-	velocity = velocity.bounce(get_normal())
-	rot = velocity.angle()
+	var n := get_normal()
+	if n:
+		velocity = velocity.bounce(n)
+		rot = velocity.angle()
 
 func get_normal() -> Vector2:
 	var normal := Vector2()

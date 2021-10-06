@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/ShootAroundEnemy.png-3ab01b62cb00300b3d357eea78674daa.stex"
+path="res://.import/StandardTurret.png-ac2be39101c29695f2693eb077b713a0.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/ShootAroundEnemy.png"
-dest_files=[ "res://.import/ShootAroundEnemy.png-3ab01b62cb00300b3d357eea78674daa.stex" ]
+source_file="res://Assets/Enemies/StandardTurret.png"
+dest_files=[ "res://.import/StandardTurret.png-ac2be39101c29695f2693eb077b713a0.stex" ]
 
 [params]
 

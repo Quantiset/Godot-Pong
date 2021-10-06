@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Scenes/Enemies/Enemy.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scripts/Enemies/ExplodingEnemy.gd" type="Script" id=2]
-[ext_resource path="res://Assets/ShootAroundEnemy.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Enemies/ShootAroundEnemy.png" type="Texture" id=3]
 
 [sub_resource type="Gradient" id=1]
 colors = PoolColorArray( 0.0487671, 0.734375, 0.332652, 0.247059, 0.4814, 0.875, 0.123047, 1 )

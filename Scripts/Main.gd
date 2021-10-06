@@ -65,6 +65,10 @@ func _process(delta: float) -> void:
 #	(player.position - ($BottomRight.position - $TopLeft.position) / 2) / 20
 
 func on_Enemy_dead():
+	
+	player.xp += 10
+	player.update_xp()
+	
 	enemies_left -= 1
 	if enemies_left == 0:
 		wave += 1

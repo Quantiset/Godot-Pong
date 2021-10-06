@@ -5,6 +5,9 @@ var angle: float
 
 const LINE = preload("res://Scenes/Line.tscn")
 
+var max_xp := 100
+var xp := 0
+
 var creating_line := false
 var paddle: RigidBody2D
 var line: Line2D
@@ -19,7 +22,10 @@ onready var trails := $Node.get_children()
 onready var aim_cursor: Area2D = $Node2/AimCursor
 
 onready var hp_bar: TextureProgress = get_node("CanvasLayer/HPBar")
-onready var hp_label: Label = get_node("CanvasLayer/HPLabel")
+onready var hp_label: Label = get_node("CanvasLayer/HPBar/HPLabel")
+
+onready var xp_bar: TextureProgress = get_node("CanvasLayer/XPBar")
+onready var xp_label: Label = get_node("CanvasLayer/XPBar/XPLabel")
 
 var aim_cursor_hovered
 enum aim_cursor_methods {
@@ -31,11 +37,14 @@ var aim_cursor_method: int = aim_cursor_methods.Keyboard setget set_aim_cursor
 func _ready():
 	
 	
+	Globals.spawn_item_at(Items.DoubledMuzzle, Vector2(100,100))
+	
 	#set_aim_cursor(aim_cursor_methods.Mouse)
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
 	$ShotCooldownTimer.start()
+	update_xp()
 
 func _physics_process(delta: float) -> void:
 	
@@ -43,6 +52,9 @@ func _physics_process(delta: float) -> void:
 		aim_cursor.position = aim_cursor_hovered.position
 	
 	update_trails()
+	
+	if Input.is_action_just_pressed("ui_cancel"):
+		OS.window_fullscreen = not OS.window_fullscreen
 	
 	var has_moved := false
 	if Input.is_action_pressed("ui_up"):
@@ -63,6 +75,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		$Sprite/Particles2D3.emitting = true
 	
+	# this is for moving the aim cursor if keyboard is selected to move it
 	if aim_cursor_method == aim_cursor_methods.Keyboard:
 		var aim_cursor_vel := Vector2()
 		if Input.is_action_pressed("focus_up"):
@@ -82,7 +95,8 @@ func _physics_process(delta: float) -> void:
 		if ref_rect:
 			if ref_rect.get_global_rect().has_point(aim_cursor.position + aim_cursor_vel):
 				aim_cursor.position += aim_cursor_vel
-		
+	
+	# else, use the mouse to move the aim cursor
 	elif aim_cursor_method == aim_cursor_methods.Mouse:
 		aim_cursor.position = get_global_mouse_position()
 	
@@ -128,16 +142,21 @@ func get_closest_enemy_from_aim_cursor(exception = null):
 	return closest_enemy
 
 func shoot():
+	#shoot actuall returns an array of all shots done this frame (in case you have multiple shots)
 	var b_: Array = .shoot()
 	
 	var i := 0
 	
 	for b in b_:
+		
+		#this is the current offset from the leftmostpoint of shot_fan_range
 		var addon := i*shot_fan_range/b_.size() - shot_fan_range/4
 		if b_.size() == 1:
 			b.rot = to_local(aim_cursor.position).angle()
 		else:
 			b.rot = to_local(aim_cursor.position).angle() + addon
+		
+		# set it to hit enemies, not the player itself
 		b.set_collision_mask_bit(Globals.BIT_ENEMY, true)
 		get_parent().add_child(b)
 		i += 1
@@ -183,9 +202,30 @@ func take_damage(damage: int):
 		get_tree().reload_current_scene()
 
 func update_health():
-	hp_bar.value = (hp*100)/max_hp
+	var tween: Tween = hp_bar.get_node("Tween")
+	tween.interpolate_property(hp_bar, "value", hp_bar.value, (hp*100)/max_hp, 0.3, Tween.TRANS_LINEAR)
+	tween.start()
+	
+	hp_bar.get_node("AnimationPlayer").play("Flash")
+	
 	hp_bar.rect_size.x = max_hp*2
 	hp_label.text = str(hp) + "/" + str(max_hp)
+
+func update_xp():
+	
+	if xp > max_xp:
+		xp = 0
+		max_xp += 10
+		print("level up!")
+	
+	var tween: Tween = xp_bar.get_node("Tween")
+	tween.interpolate_property(xp_bar, "value", xp_bar.value, (xp*100)/max_xp, 0.3, Tween.TRANS_LINEAR)
+	tween.start()
+	
+	xp_bar.get_node("AnimationPlayer").play("Flash")
+	
+	xp_bar.rect_size.x = max_xp * 1.7
+	xp_label.text = str(xp) + "/" + str(max_xp)
 
 func _on_AimCursor_body_entered(body):
 	if aim_cursor_hovered == null:

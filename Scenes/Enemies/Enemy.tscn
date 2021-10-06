@@ -1,6 +1,6 @@
 [gd_scene load_steps=40 format=2]
 
-[ext_resource path="res://Assets/StandardEnemy.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Enemies/StandardEnemy.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/Trails.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scripts/Enemies/Enemy.gd" type="Script" id=3]
 

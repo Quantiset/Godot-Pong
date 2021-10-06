@@ -7,7 +7,7 @@ class ItemReference extends Resource:
 			"item_name": "NotImplemented",
 			"texture": preload("res://Assets/HealthIcon.png"),
 			"description": """
-			
+			...and his song was electric...
 			"""
 		}
 	
@@ -26,8 +26,7 @@ class LeadTippedDarts extends ItemReference:
 			"item_name": "Lead Tipped Bullets",
 			"texture": preload("res://Assets/Items/LeadTippedDarts.png"),
 			"description": """
-			+10 Damage \n
-			+1 Pierce
+			Heavier bullets penetrate ships
 			"""
 		}
 	
@@ -47,7 +46,7 @@ class RubberBullets extends ItemReference:
 			"item_name": "Rubber Tipped Bullets",
 			"texture": preload("res://Assets/Items/RubberTippedBullets.png"),
 			"description": """
-			
+			Elastisizes the bullets, granting bounce
 			"""
 		}
 	
@@ -70,7 +69,7 @@ class HeatseekingMissiles extends ItemReference:
 			"item_name": "Heatseeking Missiles",
 			"texture": preload("res://Assets/Items/HeatseekingMissiles.png"),
 			"description": """
-			
+			Grants Firefight
 			"""
 		}
 	
@@ -96,7 +95,7 @@ class RefinedPlating extends ItemReference:
 			"item_name": "Refined Plating",
 			"texture": preload("res://Assets/Items/RefinedPlating.png"),
 			"description": """
-			
+			Enhanced alloys of steel cause heightened structural integrity and speed
 			"""
 		}
 	
@@ -116,7 +115,7 @@ class DoubledMuzzle extends ItemReference:
 			"item_name": "Doubled Muzzle",
 			"texture": preload("res://Assets/Items/DoubledMuzzle.png"),
 			"description": """
-			
+			Double the holes, double the fun
 			"""
 		}
 	
@@ -133,7 +132,9 @@ class Grenade extends ItemReference:
 			"item_name": "Grenade",
 			"texture": preload("res://Assets/Items/Grenade.png"),
 			"description": """
-			
+			while (true) {
+				explode()
+			}
 			"""
 		}
 	

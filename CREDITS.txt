@@ -2,6 +2,9 @@
 VCR OSD Mono font by Riciery Leal
 ^ This font is used as the primary font throughout the game
 
+https://github.com/henriquelalves/SimpleGodotCRTShader/blob/master/CRTShader.shader
+^ CRT vignette shader
+
 
 Engine attributions:
 #####
