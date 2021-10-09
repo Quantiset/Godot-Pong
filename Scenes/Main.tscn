@@ -1,7 +1,35 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
+
+[sub_resource type="Gradient" id=2]
+offsets = PoolRealArray( 0, 0.556098, 1 )
+colors = PoolColorArray( 1, 1, 1, 0.631373, 1, 1, 1, 0.560784, 1, 1, 1, 0 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+
+[sub_resource type="Curve" id=4]
+_data = [ Vector2( 0, 0.454545 ), 0.0, 0.0, 0, 0, Vector2( 0.0964912, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.723684, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.454545 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=5]
+curve = SubResource( 4 )
+
+[sub_resource type="ParticlesMaterial" id=6]
+lifetime_randomness = 0.2
+emission_shape = 2
+emission_box_extents = Vector3( 900, 600, 1 )
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 30.0
+initial_velocity_random = 0.3
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 4.0
+scale_curve = SubResource( 5 )
+color_ramp = SubResource( 3 )
 
 [sub_resource type="Environment" id=1]
 background_mode = 4
@@ -32,6 +60,7 @@ polygon = PoolVector2Array( 0, 0, 1751, 0, 1750, 1148, 1, 1150, 0, 0, -1206, -37
 
 [node name="Parallax" type="ParallaxLayer" parent="ParallaxBackground"]
 motion_scale = Vector2( 0.8, 0.8 )
+motion_mirroring = Vector2( 1800, 1200 )
 
 [node name="ColorRect" type="ColorRect" parent="ParallaxBackground/Parallax"]
 margin_left = 283.0
@@ -83,9 +112,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Particles2D" type="Particles2D" parent="ParallaxBackground/Parallax"]
+position = Vector2( 800, 0 )
+amount = 20
+lifetime = 10.0
+visibility_rect = Rect2( -987.55, -754.852, 1783.93, 1439.1 )
+process_material = SubResource( 6 )
+
 [node name="Parallax2" type="ParallaxLayer" parent="ParallaxBackground"]
 modulate = Color( 1, 1, 1, 0.603922 )
 motion_scale = Vector2( 0.6, 0.6 )
+motion_mirroring = Vector2( 1800, 1200 )
 
 [node name="ColorRect" type="ColorRect" parent="ParallaxBackground/Parallax2"]
 margin_left = 153.0
@@ -136,6 +173,13 @@ color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Particles2D2" type="Particles2D" parent="ParallaxBackground/Parallax2"]
+position = Vector2( 800, 0 )
+amount = 20
+lifetime = 10.0
+visibility_rect = Rect2( -859.365, -680.398, 1845.35, 1382.94 )
+process_material = SubResource( 6 )
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PoolVector2Array( 1, 1, 1751, 1, 1748, 1147, 1, 1148, 1, 1, -46, 1, -61, 1222, 1820, 1226, 1803, -75, -48, -47, -46, 1 )

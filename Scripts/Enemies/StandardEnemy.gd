@@ -3,7 +3,10 @@ class_name StandardEnemy
 
 var angle := -PI/2
 
+
+
 func _physics_process(delta: float) -> void:
+	
 	var to_player := to_local(player.position)
 	
 	if to_player.length() > 100:
@@ -27,4 +30,3 @@ func _physics_process(delta: float) -> void:
 		b_inst.set_collision_mask_bit(Globals.BIT_PLAYER, true)
 		get_parent().add_child(b_inst)
 	
-	move_and_slide(velocity, Vector2())

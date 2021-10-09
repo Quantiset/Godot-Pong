@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scenes/Enemies/Enemy.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Enemies/BufferEnemy.gd" type="Script" id=2]
+[ext_resource path="res://Assets/Enemies/BufferEnemy.png" type="Texture" id=3]
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 156.115
+
+[node name="BufferEnemy" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="Sprite" parent="." index="0"]
+modulate = Color( 0.2, 0.74, 2, 1 )
+texture = ExtResource( 3 )
+
+[node name="Influence" type="Area2D" parent="." index="9"]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Influence" index="0"]
+shape = SubResource( 1 )
+
+[editable path="Trails"]

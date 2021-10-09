@@ -50,8 +50,7 @@ func collide(body):
 		set_collision_mask_bit(Globals.BIT_ENEMY, true)
 		return
 	
-	if not is_queued_for_deletion():
-		delete()
+	delete()
 
 func bounce():
 	var n := get_normal()
@@ -77,6 +76,8 @@ func get_normal() -> Vector2:
 
 func delete():
 	
+	if is_queued_for_deletion():
+		return
 	
 	$Particles2D.emitting = false
 	Globals.remove_particle($Particles2D)

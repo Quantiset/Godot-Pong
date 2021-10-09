@@ -38,7 +38,7 @@ func gen_random_spawn(enemies: int, automatically_add_to_enemies_left := true):
 		if automatically_add_to_enemies_left:
 			enemies_left += 1
 		var e := get_random_enemy_per_weights().instance()
-		e.position = randomized_spawn + Vector2((randi()%20*i)-10, (randi()%20)*i-10)
+		e.position = randomized_spawn + Vector2(randi()%20-10, randi()%20-10)
 		e.get_node("InitParticles/SpawnParticles").position = randomized_spawn
 		e.get_node("InitParticles/SpawnParticles").emitting = true
 		e.get_node("InitParticles/SpawnParticles2").position = randomized_spawn
@@ -74,9 +74,9 @@ func on_wave_begun(_wave_idx: int):
 	
 	player.get_node("CanvasLayer/WaveLabel").text = str(wave)
 	
-	var randomized_extra_enemies := randi() % int(min(wave, 4))
-	var total_enemies := get_stage() * 2 + randomized_extra_enemies
-	var placeoffs: int = clamp(randomized_extra_enemies, 1, 3) + wave / 4
+	var randomized_extra_enemies := randi() % int(min(wave*2+2, 7))
+	var total_enemies := get_stage() * 2 + 5 + randomized_extra_enemies
+	var placeoffs: int = randi()%2+1
 	
 	enemies_left += total_enemies
 	for i in range(placeoffs):

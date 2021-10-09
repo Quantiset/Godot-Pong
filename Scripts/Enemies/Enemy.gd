@@ -15,7 +15,12 @@ const ITEM = preload("res://Scenes/Item.tscn")
 var hp_drop_rate = 10
 var item_drop_rate = 20
 
+var speed_core_multiplier := 1.0
+
+var is_visible := false
+
 signal dead()
+signal boosted()
 
 func _ready():
 	max_speed = 150
@@ -32,7 +37,8 @@ func _physics_process(delta: float) -> void:
 		
 		if trail.get_point_count() > max_points:
 			trail.remove_point(0)
-
+	
+	move_and_slide(velocity*speed_core_multiplier, Vector2())
 
 func take_damage(damage: int) -> void:
 	hp -= damage
@@ -65,6 +71,14 @@ func die():
 	queue_free()
 	emit_signal("dead")
 
+func boost():
+	emit_signal("boosted")
+	$BoostTween.interpolate_property(self, "speed_core_multiplier", 2.0, 1.0, 2.5, Tween.TRANS_LINEAR)
+	$BoostTween.start()
+
+
+func _on_VisibilityNotifier2D_screen_entered():
+	is_visible = true
 
 func _on_VisibilityNotifier2D_screen_exited():
-	pass
+	is_visible = false

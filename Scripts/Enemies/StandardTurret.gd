@@ -11,7 +11,7 @@ func _physics_process(delta: float) -> void:
 	
 	var angle = velocity.angle()
 	
-	if randi() % shoot_rate == 1:
+	if randi() % shoot_rate == 1 and is_visible:
 		var b_inst = bullet.instance()
 		b_inst.position = position
 		b_inst.rot = velocity.angle()

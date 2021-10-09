@@ -6,7 +6,7 @@ var velocity := Vector2()
 export var max_hp := 100 
 var hp := max_hp
 
-var bullet = preload("res://Scenes/Bullets/StraightBullet.tscn")
+export var bullet = preload("res://Scenes/Bullets/StraightBullet.tscn")
 export var shot_amount    := 1
 export var shot_fan_range := PI/4
 export var aim_speed      := 300

@@ -3,6 +3,7 @@ extends Node
 enum RARITIES {
 	Common, #white
 	Rare, #blue
+	Ultra, #red
 	Legendary, #Yellow
 }
 
@@ -10,6 +11,8 @@ class ItemReference extends Resource:
 	
 	static func _metadata() -> Dictionary:
 		return {
+			"id": -1,
+			"charge": -1,
 			"rarity": Items.RARITIES.Common,
 			"item_name": "NotImplemented",
 			"texture": preload("res://Assets/HealthIcon.png"),
@@ -29,6 +32,9 @@ class ItemReference extends Resource:
 	
 	func _process(delta: float):
 		pass
+	
+	func _activated(emitter):
+		pass
 
 
 class LeadTippedDarts extends ItemReference:
@@ -36,6 +42,7 @@ class LeadTippedDarts extends ItemReference:
 	static func _metadata():
 		return {
 			"id": 1,
+			"charge": -1,
 			"rarity": Items.RARITIES.Common,
 			"item_name": "Lead Tipped Bullets",
 			"texture": preload("res://Assets/Items/LeadTippedDarts.png"),
@@ -44,7 +51,7 @@ class LeadTippedDarts extends ItemReference:
 			"""
 		}
 	
-	func _init(emitter):
+	func _init(emitter: Actor):
 		pass
 	
 	func _on_shot(bullet_list: Array):
@@ -57,6 +64,7 @@ class RubberBullets extends ItemReference:
 	static func _metadata() -> Dictionary:
 		return {
 			"id": 2,
+			"charge": -1,
 			"rarity": Items.RARITIES.Common,
 			"item_name": "Rubber Tipped Bullets",
 			"texture": preload("res://Assets/Items/RubberTippedBullets.png"),
@@ -70,7 +78,8 @@ class RubberBullets extends ItemReference:
 	
 	func _on_shot(bullet_list: Array):
 		for bullet in bullet_list:
-			bullet.modulate = Color(0.605469, 0.833557, 1)
+			bullet.modulate = Color(0.605469, 0.833557, 1, 0.75)
+			bullet.scale *= 0.75
 			bullet.damage -= 10
 			bullet.bounces += 1
 
@@ -81,6 +90,7 @@ class HeatseekingMissiles extends ItemReference:
 	static func _metadata():
 		return {
 			"id": 3,
+			"charge": -1,
 			"rarity": Items.RARITIES.Ultra,
 			"item_name": "Heatseeking Missiles",
 			"texture": preload("res://Assets/Items/HeatseekingMissiles.png"),
@@ -108,6 +118,7 @@ class RefinedPlating extends ItemReference:
 	static func _metadata():
 		return {
 			"id": 4,
+			"charge": -1,
 			"rarity": Items.RARITIES.Common,
 			"item_name": "Refined Plating",
 			"texture": preload("res://Assets/Items/RefinedPlating.png"),
@@ -129,6 +140,7 @@ class DoubledMuzzle extends ItemReference:
 	static func _metadata():
 		return {
 			"id": 5,
+			"charge": -1,
 			"rarity": Items.RARITIES.Rare,
 			"item_name": "Doubled Muzzle",
 			"texture": preload("res://Assets/Items/DoubledMuzzle.png"),
@@ -147,6 +159,7 @@ class Grenade extends ItemReference:
 	static func _metadata():
 		return {
 			"id": 6,
+			"charge": -1,
 			"rarity": Items.RARITIES.Common,
 			"item_name": "Grenade",
 			"texture": preload("res://Assets/Items/Grenade.png"),
@@ -180,6 +193,7 @@ class MachineGun extends ItemReference:
 	static func _metadata():
 		return {
 			"id": 7,
+			"charge": -1,
 			"rarity": Items.RARITIES.Legendary,
 			"item_name": "Machine Gun",
 			"texture": preload("res://Assets/Items/MachineGun.png"),
@@ -208,6 +222,7 @@ class EnhancedTreads extends ItemReference:
 	static func _metadata():
 		return {
 			"id": 8,
+			"charge": -1,
 			"rarity": Items.RARITIES.Common,
 			"item_name": "Enhanced Treads",
 			"texture": preload("res://Assets/Items/EnhancedTreads.png"),
@@ -224,6 +239,7 @@ class TeslaCoil extends ItemReference:
 	static func _metadata():
 		return {
 			"id": 9,
+			"charge": -1,
 			"rarity": Items.RARITIES.Rare,
 			"item_name": "Tesla Coil",
 			"texture": preload("res://Assets/Items/TeslaCoil.tres"),
@@ -301,6 +317,7 @@ class Shank extends ItemReference:
 	static func _metadata():
 		return {
 			"id": 9,
+			"charge": 1,
 			"rarity": Items.RARITIES.Common,
 			"item_name": "Shank",
 			"texture": preload("res://Assets/Items/Shank.png"),
@@ -309,10 +326,60 @@ class Shank extends ItemReference:
 			"""
 		}
 	
-	func _init(_emitter):
+	func _init(_emitter: Player):
 		emitter = _emitter
 		emitter.max_speed += 50
 	
-	func _input(_event):
-		if Input.is_action_just_pressed("ui_click_right"):
-			print('hi')
+	func _activated(emitter: Player):
+		var s := Sprite.new()
+		s.texture = preload("res://Assets/Triangle.png")
+		s.offset = Vector2(0, -32)
+		s.rotation = emitter.get_local_mouse_position().angle() + PI/2
+		emitter.add_child(s)
+		
+		var t := Tween.new()
+		s.add_child(t)
+		t.interpolate_property(s, "scale", Vector2(0,0), Vector2(1,1), 0.1, Tween.TRANS_LINEAR)
+		t.start()
+		
+		yield(t, "tween_completed")
+		
+		yield(Items.get_tree().create_timer(0.5), "timeout")
+		
+		t.interpolate_property(s, "scale", Vector2(1,1), Vector2(0,0), 0.1, Tween.TRANS_LINEAR)
+		t.start()
+		
+		yield(t, "tween_completed")
+		
+		s.queue_free()
+
+class Overdrive extends ItemReference:
+	
+	var mult = 3
+	
+	static func _metadata():
+		return {
+			"id": 10,
+			"charge": 15,
+			"rarity": Items.RARITIES.Common,
+			"item_name": "Overdrive",
+			"texture": preload("res://Assets/Items/Overdrive.png"),
+			"description": """
+			Briefly increase attack rate by 300%
+			"""
+		}
+	
+	func _init(emitter: Actor):
+		pass
+	
+	func _init2(emitter: Actor):
+		mult -= 1.5
+	
+	func _activated(emitter: Player):
+		emitter.shot_cooldown_multiplier /= mult
+		
+		yield(Items.get_tree().create_timer(4.0), "timeout")
+		
+		if is_instance_valid(emitter):
+			emitter.shot_cooldown_multiplier *= mult
+	

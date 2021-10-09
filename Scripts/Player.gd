@@ -8,6 +8,10 @@ const LINE = preload("res://Scenes/Line.tscn")
 var max_xp := 100
 var xp := 0
 
+var active_item
+var charge := 0
+var charge_timer := 0.1
+
 var creating_line := false
 var paddle: RigidBody2D
 var line: Line2D
@@ -42,15 +46,20 @@ func _input(event):
 
 func _ready():
 	
-	Globals.spawn_item_at(Items.Shank, Vector2(100,100))
 	
-	#set_aim_cursor(aim_cursor_methods.Mouse)
+	Globals.spawn_item_at(Items.Overdrive, Vector2(100, 100))
+	
+	add_item(Items.Overdrive)
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
 	$ShotCooldownTimer.start()
+	max_hp = 200; hp = 200
 	update_xp()
+	update_health()
 	set_aim_cursor(aim_cursor_method)
+	$CanvasLayer/ActiveItemRecharge/ActiveItemCharge.wait_time = charge_timer
+	$CanvasLayer/ActiveItemRecharge/ActiveItemCharge.start()
 	
 	connect("level_up", self, "on_level_up")
 
@@ -61,11 +70,17 @@ func _physics_process(delta: float) -> void:
 	
 	update_trails()
 	
+	
+	if Input.is_action_just_pressed("ui_click_right"):
+		if charge == 100 and active_item:
+			active_item._activated(self)
+			charge = 0
+	
 	if Input.is_action_just_pressed("ui_accept"):
 		get_parent().wave += 1
 		get_parent().emit_signal("wave_begun", get_parent().wave)
 		
-		xp += (get_parent().enemies_left-1) * 6
+		xp += max((get_parent().enemies_left-1) * 20, 0)
 		update_xp()
 	
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -229,7 +244,7 @@ func update_health(flash := true):
 	if flash:
 		hp_bar.get_node("AnimationPlayer").play("Flash")
 	
-	hp_bar.rect_size.x = max_hp*2
+	hp_bar.rect_size.x = max_hp
 	hp_label.text = str(hp) + "/" + str(max_hp)
 
 var level = 0
@@ -278,3 +293,24 @@ func set_shot_cooldown(val):
 func set_shot_cooldown_multiplier(val):
 	shot_cooldown_multiplier = val
 	$ShotCooldownTimer.wait_time = val * shot_cooldown
+
+
+func _on_ActiveItemCharge_timeout():
+	charge += 1
+	$CanvasLayer/ActiveItemRecharge.value = charge
+	if charge > 100:
+		charge = 100
+
+func add_item(item):
+	.add_item(item)
+	
+	var metadata: Dictionary = item._metadata()
+	var charge: int = metadata.charge
+	if charge != -1:
+		$CanvasLayer/ActiveItemRecharge/Sprite.texture = metadata.texture
+		active_item = item.new(self)
+		charge_timer = charge/60.0
+		$CanvasLayer/ActiveItemRecharge/ActiveItemCharge.wait_time = charge_timer
+		$CanvasLayer/ActiveItemRecharge/ActiveItemCharge.start()
+	elif charge == -1:
+		$CanvasLayer/ItemList.add_item("", metadata.texture, false)

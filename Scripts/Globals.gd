@@ -11,30 +11,41 @@ const BIT_ENEMY = 2
 const ENEMY_POOL = {
 	1: {
 		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 5,
-		preload("res://Scenes/Enemies/StandardTurret.tscn"): 1,
+		preload("res://Scenes/Enemies/BufferEnemy.tscn"): 1,
 	},
 	2: {
 		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 4,
-		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 3,
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 1,
 		preload("res://Scenes/Enemies/StandardTurret.tscn"): 2,
+		preload("res://Scenes/Enemies/BufferEnemy.tscn"): 1,
 	},
 	3: {
-		preload("res://Scenes/Enemies/StandardTurret.tscn"): 4,
-		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 4,
+		preload("res://Scenes/Enemies/StandardTurret.tscn"): 3,
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 2,
 		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 2,
-		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 2,
+		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 4,
+		preload("res://Scenes/Enemies/BufferEnemy.tscn"): 1,
+		preload("res://Scenes/Enemies/RocketTurret.tscn"): 1,
 	},
 	4: {
-		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 6,
-		preload("res://Scenes/Enemies/StandardTurret.tscn"): 8,
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 3,
+		preload("res://Scenes/Enemies/StandardTurret.tscn"): 2,
 		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 2,
-		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 4,
+		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 5,
+		preload("res://Scenes/Enemies/BufferEnemy.tscn"): 1,
 	},
 	5: {
-		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 3,
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 1,
 		preload("res://Scenes/Enemies/StandardTurret.tscn"): 5,
 		preload("res://Scenes/Enemies/ExplodingDreadnought.tscn"): 1,
 		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 7,
+		preload("res://Scenes/Enemies/BufferEnemy.tscn"): 1,
+	},
+	6: {
+		preload("res://Scenes/Enemies/RocketTurret.tscn"): 2,
+		preload("res://Scenes/Enemies/ExplodingDreadnought.tscn"): 2,
+		preload("res://Scenes/Enemies/StandardDreadnought.tscn"): 9,
+		preload("res://Scenes/Enemies/BufferEnemy.tscn"): 2,
 	}
 }
 
