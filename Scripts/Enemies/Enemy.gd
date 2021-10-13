@@ -23,7 +23,7 @@ signal dead()
 signal boosted()
 
 func _ready():
-	max_speed = 150
+	max_speed /= 2
 	
 	$Sprite/SmokeTrail.amount = fog_amount
 	$Sprite/SmokeTrail.emitting = true
@@ -45,6 +45,8 @@ func take_damage(damage: int) -> void:
 	$AnimationPlayer.play("Flash")
 	if hp <= 0 and not is_queued_for_deletion():
 		die()
+	if damage > 0:
+		stun()
 
 func die():
 	
@@ -76,9 +78,20 @@ func boost():
 	$BoostTween.interpolate_property(self, "speed_core_multiplier", 2.0, 1.0, 2.5, Tween.TRANS_LINEAR)
 	$BoostTween.start()
 
+var cached_speed: int
+func stun():
+	cached_speed = max_speed
+	max_speed = 0
+	$StunTimer.start(stun_duration)
+
+func _on_StunTimer_timeout():
+	cached_speed += max_speed
+	max_speed = cached_speed
 
 func _on_VisibilityNotifier2D_screen_entered():
 	is_visible = true
 
 func _on_VisibilityNotifier2D_screen_exited():
 	is_visible = false
+
+

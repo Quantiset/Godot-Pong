@@ -3,6 +3,10 @@ extends Node
 var rng_seed := 1000
 var randomize_seed := true
 
+enum STATUS_EFFECTS {
+	PoisionAcid
+}
+
 const BIT_WORLD = 0
 const BIT_PLAYER = 1
 const BIT_ENEMY = 2

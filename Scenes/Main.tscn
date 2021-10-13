@@ -3,20 +3,20 @@
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
 
-[sub_resource type="Gradient" id=2]
+[sub_resource type="Gradient" id=1]
 offsets = PoolRealArray( 0, 0.556098, 1 )
 colors = PoolColorArray( 1, 1, 1, 0.631373, 1, 1, 1, 0.560784, 1, 1, 1, 0 )
 
-[sub_resource type="GradientTexture" id=3]
-gradient = SubResource( 2 )
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
 
-[sub_resource type="Curve" id=4]
+[sub_resource type="Curve" id=3]
 _data = [ Vector2( 0, 0.454545 ), 0.0, 0.0, 0, 0, Vector2( 0.0964912, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.723684, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.454545 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=5]
-curve = SubResource( 4 )
+[sub_resource type="CurveTexture" id=4]
+curve = SubResource( 3 )
 
-[sub_resource type="ParticlesMaterial" id=6]
+[sub_resource type="ParticlesMaterial" id=5]
 lifetime_randomness = 0.2
 emission_shape = 2
 emission_box_extents = Vector3( 900, 600, 1 )
@@ -28,10 +28,10 @@ initial_velocity_random = 0.3
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 scale = 4.0
-scale_curve = SubResource( 5 )
-color_ramp = SubResource( 3 )
+scale_curve = SubResource( 4 )
+color_ramp = SubResource( 2 )
 
-[sub_resource type="Environment" id=1]
+[sub_resource type="Environment" id=6]
 background_mode = 4
 glow_enabled = true
 glow_strength = 0.8
@@ -117,7 +117,7 @@ position = Vector2( 800, 0 )
 amount = 20
 lifetime = 10.0
 visibility_rect = Rect2( -987.55, -754.852, 1783.93, 1439.1 )
-process_material = SubResource( 6 )
+process_material = SubResource( 5 )
 
 [node name="Parallax2" type="ParallaxLayer" parent="ParallaxBackground"]
 modulate = Color( 1, 1, 1, 0.603922 )
@@ -179,13 +179,13 @@ position = Vector2( 800, 0 )
 amount = 20
 lifetime = 10.0
 visibility_rect = Rect2( -859.365, -680.398, 1845.35, 1382.94 )
-process_material = SubResource( 6 )
+process_material = SubResource( 5 )
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PoolVector2Array( 1, 1, 1751, 1, 1748, 1147, 1, 1148, 1, 1, -46, 1, -61, 1222, 1820, 1226, 1803, -75, -48, -47, -46, 1 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 1 )
+environment = SubResource( 6 )
 
 [node name="ReferenceRect" type="ReferenceRect" parent="."]
 margin_left = 26.0

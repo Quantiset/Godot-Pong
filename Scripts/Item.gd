@@ -31,7 +31,8 @@ func delete():
 		Color(1,1,1), 
 		Color(1,1,1,0), 
 		DESC_FADE_LENGTH, 
-		Tween.TRANS_LINEAR
+		Tween.TRANS_QUAD,
+		Tween.EASE_IN
 	)
 	$Tween.interpolate_property(
 		$DescriptionPopup, 

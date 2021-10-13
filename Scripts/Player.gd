@@ -31,6 +31,8 @@ onready var hp_label: Label = get_node("CanvasLayer/HPBar/HPLabel")
 onready var xp_bar: TextureProgress = get_node("CanvasLayer/XPBar")
 onready var xp_label: Label = get_node("CanvasLayer/XPBar/XPLabel")
 
+onready var ref_rect: ReferenceRect = get_parent().get_node_or_null("ReferenceRect")
+
 var aim_cursor_hovered
 enum aim_cursor_methods {
 	Mouse,
@@ -46,15 +48,14 @@ func _input(event):
 
 func _ready():
 	
-	
-	Globals.spawn_item_at(Items.Overdrive, Vector2(100, 100))
-	
+	Globals.spawn_item_at(Items.PoisionMixture, Vector2(100, 100))
 	add_item(Items.Overdrive)
+	
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
 	$ShotCooldownTimer.start()
-	max_hp = 200; hp = 200
+	max_hp = 200; hp = max_hp
 	update_xp()
 	update_health()
 	set_aim_cursor(aim_cursor_method)
@@ -65,11 +66,7 @@ func _ready():
 
 func _physics_process(delta: float) -> void:
 	
-	if is_instance_valid(aim_cursor_hovered):
-		aim_cursor.position = aim_cursor_hovered.position
-	
 	update_trails()
-	
 	
 	if Input.is_action_just_pressed("ui_click_right"):
 		if charge == 100 and active_item:
@@ -80,7 +77,7 @@ func _physics_process(delta: float) -> void:
 		get_parent().wave += 1
 		get_parent().emit_signal("wave_begun", get_parent().wave)
 		
-		xp += max((get_parent().enemies_left-1) * 20, 0)
+		xp += max((get_parent().enemies_left-2) * 25, 0)
 		update_xp()
 	
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -106,6 +103,29 @@ func _physics_process(delta: float) -> void:
 	else:
 		$Sprite/Particles2D3.emitting = true
 	
+	$Camera2D.offset = $Camera2D.offset.linear_interpolate(to_local(aim_cursor.position)/4,0.02)
+	
+	if Input.is_action_just_pressed("ui_shift"):
+		max_speed *= 1.5
+		acceleration *= 1.1
+	elif Input.is_action_just_released("ui_shift"):
+		max_speed /= 1.5
+		acceleration /= 1.1
+	
+	
+	velocity = velocity.clamped(max_speed)
+	
+	angle = lerp_angle(angle, velocity.angle(), 0.2)
+	
+	$Sprite.rotation = angle + PI/2
+	$CollisionShape2D.rotation = angle + PI/2
+	
+	move_and_slide(velocity)
+
+func _process(delta: float) -> void:
+	if is_instance_valid(aim_cursor_hovered):
+		aim_cursor.position = aim_cursor_hovered.position
+	
 	# this is for moving the aim cursor if keyboard is selected to move it
 	if aim_cursor_method == aim_cursor_methods.Keyboard:
 		var aim_cursor_vel := Vector2()
@@ -122,7 +142,6 @@ func _physics_process(delta: float) -> void:
 			aim_cursor_vel.x += aim_speed * delta
 			aim_cursor_hovered = null
 		
-		var ref_rect: ReferenceRect = get_parent().get_node_or_null("ReferenceRect")
 		if ref_rect:
 			var rect := ref_rect.get_global_rect().grow(20)
 			if rect.has_point(aim_cursor.position + aim_cursor_vel):
@@ -131,23 +150,6 @@ func _physics_process(delta: float) -> void:
 	# else, use the mouse to move the aim cursor
 	elif aim_cursor_method == aim_cursor_methods.Mouse:
 		aim_cursor.position = get_global_mouse_position()
-	
-	if Input.is_action_just_pressed("ui_shift"):
-		max_speed *= 1.5
-		acceleration *= 1.1
-	elif Input.is_action_just_released("ui_shift"):
-		max_speed /= 1.5
-		acceleration /= 1.1
-	
-	
-	velocity = velocity.clamped(max_speed)
-	
-	angle = lerp_angle(angle, velocity.angle(), 0.2)
-	
-	$Sprite.rotation = angle + PI/2
-	$CollisionShape2D.rotation = angle+ PI/2
-	
-	move_and_slide(velocity)
 
 func update_trails():
 	for trail in trails:
@@ -250,8 +252,8 @@ func update_health(flash := true):
 var level = 0
 func update_xp(flash := true):
 	
-	if xp > max_xp:
-		xp = 0
+	while xp > max_xp:
+		xp -= max_hp
 		max_xp += 10
 		level += 1
 		emit_signal("level_up", level)

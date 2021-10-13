@@ -382,4 +382,73 @@ class Overdrive extends ItemReference:
 		
 		if is_instance_valid(emitter):
 			emitter.shot_cooldown_multiplier *= mult
+
+class Shellshock extends ItemReference:
 	
+	static func _metadata():
+		return {
+			"id": 11,
+			"charge": -1,
+			"rarity": Items.RARITIES.Common,
+			"item_name": "Shellshock",
+			"texture": preload("res://Assets/Items/Shellshock.png"),
+			"description": """
+			Increases stun duration on enemy hits
+			"""
+		}
+	
+	func _init(emitter: Actor):
+		pass
+	
+	func _on_shot(bullet_list: Array):
+		for bullet in bullet_list:
+			bullet.connect("damaged_enemy", self, "_on_bullet_damaged_enemy")
+	
+	func _on_bullet_damaged_enemy(enemy: Enemy):
+		enemy.stun_duration += 0.1
+
+class Clock extends ItemReference:
+	
+	static func _metadata():
+		return {
+			"id": 12,
+			"charge": -1,
+			"rarity": Items.RARITIES.Ultra,
+			"item_name": "The Stopwatch",
+			"texture": preload("res://Assets/Items/Clock.png"),
+			"description": """
+			Slows time and grants extra shot rate
+			"""
+		}
+	
+	func _init(emitter: Actor):
+		Engine.time_scale -= 0.1
+		Engine.time_scale = clamp(Engine.time_scale, 0.2, 1.0)
+		emitter.max_speed *= 1.1
+		emitter.shot_cooldown_multiplier -= 0.1
+
+
+class PoisionMixture extends ItemReference:
+	static func _metadata():
+		return {
+			"id": 13,
+			"charge": -1,
+			"rarity": Items.RARITIES.Common,
+			"item_name": "Poision Mixture",
+			"texture": preload("res://Assets/Items/PoisionMixture.png"),
+			"description": """
+			Bullets ooze a toxic, metal-eating acid
+			"""
+		}
+	
+	func _init(emitter: Actor):
+		pass
+	
+	func _on_shot(bullet_list: Array):
+		for bullet in bullet_list:
+			bullet.get_node("Line2D/EmissionParticles").visible = true
+			bullet.get_node("Line2D/EmissionParticles").modulate = Color(0.304413, 0.820312, 0.230713)
+			bullet.connect("damaged_enemy", self, "_on_bullet_damaged_enemy")
+	
+	func _on_bullet_damaged_enemy(enemy: Enemy):
+		enemy.apply_status_effect(Globals.STATUS_EFFECTS.PoisionAcid, 5)
