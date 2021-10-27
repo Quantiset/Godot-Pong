@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Enemies/NormalBoss.tscn" type="PackedScene" id=3]
 
 [sub_resource type="Gradient" id=1]
 offsets = PoolRealArray( 0, 0.556098, 1 )
@@ -188,11 +189,14 @@ polygon = PoolVector2Array( 1, 1, 1751, 1, 1748, 1147, 1, 1148, 1, 1, -46, 1, -6
 environment = SubResource( 6 )
 
 [node name="ReferenceRect" type="ReferenceRect" parent="."]
-margin_left = 26.0
-margin_top = 28.0
-margin_right = 1712.0
-margin_bottom = 1114.0
+margin_left = 27.0
+margin_top = 29.0
+margin_right = 1713.0
+margin_bottom = 1115.0
 border_width = 1.8
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="NormalBoss" parent="." instance=ExtResource( 3 )]
+position = Vector2( 739, 376 )

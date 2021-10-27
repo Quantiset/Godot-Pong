@@ -452,3 +452,36 @@ class PoisionMixture extends ItemReference:
 	
 	func _on_bullet_damaged_enemy(enemy: Enemy):
 		enemy.apply_status_effect(Globals.STATUS_EFFECTS.PoisionAcid, 5)
+
+class PanicButton extends ItemReference:
+	
+	static func _metadata():
+		return {
+			"id": 14,
+			"charge": 3,
+			"rarity": Items.RARITIES.Common,
+			"item_name": "Overdrive",
+			"texture": preload("res://Assets/Items/PanicButton.png"),
+			"description": """
+			In case of an emergency...
+			"""
+		}
+	
+	func _init(emitter: Actor):
+		pass
+	
+	func _activated(emitter: Player):
+		var ang = 2*PI/9
+		var b_list := []
+		b_list.resize(9)
+		for i in range(9):
+			var b: Bullet = emitter.bullet.instance()
+			b.damage_multiplier *= 2
+			b.rot = ang*i
+			b.speed /= 2
+			b.position = emitter.position
+			b.set_collision_mask_bit(Globals.BIT_ENEMY, true)
+			Items.add_child(b)
+			b_list[i] = b
+		for item in emitter.items:
+			item._on_shot(b_list)

@@ -28,6 +28,8 @@ var status_effects_to_time := {}
 
 var items := []
 
+signal shot(bullet)
+
 func add_item(item):
 	
 	if item is GDScript:
@@ -54,6 +56,7 @@ func shoot():
 		var b_inst: Bullet = bullet.instance()
 		b_inst.position = position
 		b_list.append(b_inst)
+		emit_signal("shot", b_inst)
 	
 	for item in items:
 		item._on_shot(b_list)
@@ -72,7 +75,6 @@ func apply_status_effect(effect, duration: float):
 	t.start(status_effect_callback_time)
 
 func on_Effects_update(effect, timer):
-	print(effect)
 	var duration: float = status_effects_to_time[effect]
 	duration -= status_effect_callback_time
 	
@@ -88,9 +90,9 @@ func on_Effects_update(effect, timer):
 
 func update_health():pass
 func update_xp():pass
-func take_damage(val):pass
+func take_damage(_val):pass
 
 func set_shot_cooldown(val):
-	shot_amount = val
+	shot_cooldown = val
 func set_shot_cooldown_multiplier(val):
 	shot_cooldown_multiplier = val

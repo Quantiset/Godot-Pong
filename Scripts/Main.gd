@@ -17,7 +17,7 @@ signal wave_begun(wave_idx)
 func _ready():
 	connect("wave_begun", self, "on_wave_begun")
 	
-	gen_random_spawn(randi()%3+2)
+	#gen_random_spawn(randi()%3+2)
 
 onready var spawnable_space: Vector2 = $ReferenceRect.rect_size
 func gen_random_spawn(enemies: int, automatically_add_to_enemies_left := true):

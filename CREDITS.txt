@@ -3,12 +3,21 @@ VCR OSD Mono font by Riciery Leal
 ^ This font is used as the primary font throughout the game
 
 https://github.com/henriquelalves/SimpleGodotCRTShader/blob/master/CRTShader.shader
+Submitted to github.com
 ^ CRT vignette shader
-
 
 https://kenney.nl
 ^ For many particles effects including:
 	- Lightning effect from Tesla Coil
+
+https://opengameart.org/content/laser-fire
+Submitted to opengameart.org
+
+https://opengameart.org/content/3-melee-sounds
+Edited by remaxim 
+Submitted to opengameart.org
+^ Laser Sound
+
 
 Engine attributions:
 #####

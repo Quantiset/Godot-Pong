@@ -17,6 +17,11 @@ var paddle: RigidBody2D
 var line: Line2D
 var start_pos: Vector2
 
+var shake_amount := 0.0
+
+onready var movement_joystick: TouchScreenButton = $CanvasLayer/MovementJoystick/Ball
+onready var aim_joystick: TouchScreenButton = $CanvasLayer/AimJoystick/Ball
+
 onready var long_trail: Line2D = $Node/LongTrail
 onready var burst_inner_trail: Line2D = $Node/InnerThrust
 onready var burst_outer_trail: Line2D = $Node/OuterThrust
@@ -36,9 +41,10 @@ onready var ref_rect: ReferenceRect = get_parent().get_node_or_null("ReferenceRe
 var aim_cursor_hovered
 enum aim_cursor_methods {
 	Mouse,
-	Keyboard
+	Keyboard,
+	Joystick
 }
-var aim_cursor_method: int = aim_cursor_methods.Mouse setget set_aim_cursor
+var aim_cursor_method: int = aim_cursor_methods.Joystick setget set_aim_cursor
 
 signal level_up(level)
 
@@ -47,9 +53,8 @@ func _input(event):
 		item._input(event)
 
 func _ready():
-	
-	Globals.spawn_item_at(Items.PoisionMixture, Vector2(100, 100))
-	add_item(Items.Overdrive)
+	Globals.spawn_item_at(Items.HeatseekingMissiles, Vector2(100, 100))
+	add_item(Items.PanicButton)
 	
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
@@ -64,14 +69,13 @@ func _ready():
 	
 	connect("level_up", self, "on_level_up")
 
+var camera_shift := Vector2()
 func _physics_process(delta: float) -> void:
 	
 	update_trails()
 	
 	if Input.is_action_just_pressed("ui_click_right"):
-		if charge == 100 and active_item:
-			active_item._activated(self)
-			charge = 0
+		_on_Active_Button_pressed()
 	
 	if Input.is_action_just_pressed("ui_accept"):
 		get_parent().wave += 1
@@ -85,25 +89,45 @@ func _physics_process(delta: float) -> void:
 	
 	# this is the code for moving the player
 	var has_moved := false
-	if Input.is_action_pressed("ui_up"):
-		velocity.y -= acceleration 
-		has_moved = true
-	if Input.is_action_pressed("ui_down"):
-		velocity.y += acceleration
-		has_moved = true
+	
+	velocity = velocity.linear_interpolate(
+		velocity + movement_joystick.ball_offset * acceleration / 20.0,
+		0.9
+	)
+	has_moved = movement_joystick.ball_offset != Vector2()
+	
 	if Input.is_action_pressed("ui_left"):
-		velocity.x -= acceleration 
+		velocity.x -= acceleration
 		has_moved = true
 	if Input.is_action_pressed("ui_right"):
 		velocity.x += acceleration
 		has_moved = true
+	if Input.is_action_pressed("ui_down"):
+		velocity.y += acceleration
+		has_moved = true
+	if Input.is_action_pressed("ui_up"):
+		velocity.y -= acceleration
+		has_moved = true
+		
+	
 	if not has_moved:
 		$Sprite/Particles2D3.emitting = false
 		velocity = velocity.linear_interpolate(Vector2(), 0.05)
 	else:
 		$Sprite/Particles2D3.emitting = true
 	
-	$Camera2D.offset = $Camera2D.offset.linear_interpolate(to_local(aim_cursor.position)/4,0.02)
+	camera_shift = camera_shift.linear_interpolate(to_local(aim_cursor.position)/4,0.02)
+	$Camera2D.offset = camera_shift
+	
+	if not is_zero_approx(shake_amount):
+		
+		var randc := Vector2(randf() - 0.5, randf() - 0.5).normalized()
+		$Camera2D.offset += randc * clamp(shake_amount * 3, 0.5, 2)
+		
+		shake_amount -= delta
+		
+		if is_zero_approx(shake_amount):
+			$Camera2D.offset = camera_shift
 	
 	if Input.is_action_just_pressed("ui_shift"):
 		max_speed *= 1.5
@@ -123,6 +147,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide(velocity)
 
 func _process(delta: float) -> void:
+	
 	if is_instance_valid(aim_cursor_hovered):
 		aim_cursor.position = aim_cursor_hovered.position
 	
@@ -150,6 +175,14 @@ func _process(delta: float) -> void:
 	# else, use the mouse to move the aim cursor
 	elif aim_cursor_method == aim_cursor_methods.Mouse:
 		aim_cursor.position = get_global_mouse_position()
+	
+	elif aim_cursor_method == aim_cursor_methods.Joystick:
+		var aim_cursor_vel: Vector2 = aim_joystick.ball_offset 
+		
+		if ref_rect:
+			var rect := ref_rect.get_global_rect().grow(20)
+			if rect.has_point(aim_cursor.position + aim_cursor_vel):
+				aim_cursor.position += aim_cursor_vel * delta * 7
 
 func update_trails():
 	for trail in trails:
@@ -175,24 +208,28 @@ func get_closest_enemy_from_aim_cursor(exception = null):
 	
 	return closest_enemy
 
+# called automatically by a timer
 func shoot():
+	
+	$ShootSFX.play()
+	
 	#shoot actuall returns an array of all shots done this frame (in case you have multiple shots)
-	var b_: Array = .shoot()
+	var b_list: Array = .shoot()
 	
 	var i := 0
 	
-	for b in b_:
+	for bullet in b_list:
 		
 		#this is the current offset from the leftmostpoint of shot_fan_range
-		var addon := i*shot_fan_range/b_.size() - shot_fan_range/4
-		if b_.size() == 1:
-			b.rot = to_local(aim_cursor.position).angle()
+		var addon := i*shot_fan_range/b_list.size() - shot_fan_range/4
+		if b_list.size() == 1:
+			bullet.rot = to_local(aim_cursor.position).angle()
 		else:
-			b.rot = to_local(aim_cursor.position).angle() + addon
+			bullet.rot = to_local(aim_cursor.position).angle() + addon
 		
 		# set it to hit enemies, not the player itself
-		b.set_collision_mask_bit(Globals.BIT_ENEMY, true)
-		get_parent().add_child(b)
+		bullet.set_collision_mask_bit(Globals.BIT_ENEMY, true)
+		get_parent().add_child(bullet)
 		i += 1
 
 func create_pong_paddles(key: String):
@@ -235,8 +272,12 @@ func take_damage(damage: int):
 	hp -= damage
 	hp = clamp(hp, 0, max_hp)
 	update_health()
+	
+	shake_amount += 1
+	$AnimationPlayer.play("RGBOffset")
+	
 	if hp <= 0:
-		get_tree().reload_current_scene()
+		die()
 
 func update_health(flash := true):
 	var tween: Tween = hp_bar.get_node("Tween")
@@ -248,6 +289,47 @@ func update_health(flash := true):
 	
 	hp_bar.rect_size.x = max_hp
 	hp_label.text = str(hp) + "/" + str(max_hp)
+
+const SAVE_FILE = "user://leaderboards.save"
+func die():
+	get_tree().paused = true
+	
+	show_leaderboard()
+	Input.set_custom_mouse_cursor(null)
+
+func show_leaderboard():
+	$CanvasLayer/Leaderboard.visible = true
+	
+	var f: File = File.new()
+	if f.file_exists(SAVE_FILE):
+		f.open(SAVE_FILE, File.READ_WRITE)
+		var waves := [get_parent().wave]
+		
+		var wave = f.get_var()
+		while wave != null:
+			waves.append(wave)
+			wave = f.get_var()
+		
+		waves.sort()
+		waves.invert()
+		
+		# only says "<-- CURRENT" once
+		var has_currented := false
+		for f_wave in waves:
+			var print_str: String = "Wave " + str(f_wave)
+			
+			if get_parent().wave == f_wave and not has_currented:
+				print_str += " <-- CURRENT"
+				has_currented = true
+			
+			$CanvasLayer/Leaderboard/ItemList.add_item(print_str)
+		
+		f.store_var(get_parent().wave)
+	else:
+		f.open(SAVE_FILE, File.WRITE_READ)
+		$CanvasLayer/Leaderboard/ItemList.add_item("Wave "+str(get_parent().wave))
+		f.store_var(get_parent().wave)
+	f.close()
 
 var level = 0
 func update_xp(flash := true):
@@ -298,10 +380,20 @@ func set_shot_cooldown_multiplier(val):
 
 
 func _on_ActiveItemCharge_timeout():
+	if charge == 101: return
 	charge += 1
 	$CanvasLayer/ActiveItemRecharge.value = charge
-	if charge > 100:
-		charge = 100
+	if charge == 100:
+		charge = 101
+		$CanvasLayer/ActiveItemButton/AnimationPlayer.play("FlashActive")
+		$CanvasLayer/ActiveItemButton.texture = preload("res://Assets/TheButton.png")
+
+func _on_Active_Button_pressed():
+	if charge == 101 and active_item:
+		active_item._activated(self)
+		charge = 0
+		$CanvasLayer/ActiveItemButton.texture = preload("res://Assets/TheButton-Darkened.png")
+
 
 func add_item(item):
 	.add_item(item)
@@ -316,3 +408,10 @@ func add_item(item):
 		$CanvasLayer/ActiveItemRecharge/ActiveItemCharge.start()
 	elif charge == -1:
 		$CanvasLayer/ItemList.add_item("", metadata.texture, false)
+
+
+func _on_Restart_button_pressed():
+	get_tree().paused = false
+	aim_cursor_method = aim_cursor_method
+	get_tree().reload_current_scene()
+

@@ -14,7 +14,7 @@ const BIT_ENEMY = 2
 # each pool for each stage. Initial key is the weight
 const ENEMY_POOL = {
 	1: {
-		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 5,
+		preload("res://Scenes/Enemies/ElectrifiedEnemy.tscn"): 5,
 		preload("res://Scenes/Enemies/BufferEnemy.tscn"): 1,
 	},
 	2: {
@@ -62,6 +62,9 @@ var ITEM_POOL := {
 	Items.Grenade: 10,
 	Items.MachineGun: 4,
 	Items.TeslaCoil: 6,
+	Items.Shellshock: 10,
+	Items.PoisionMixture: 10,
+	Items.PanicButton: 5,
 }
 
 func _ready():

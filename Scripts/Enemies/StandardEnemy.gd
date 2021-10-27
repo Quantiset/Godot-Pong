@@ -9,7 +9,7 @@ func _physics_process(delta: float) -> void:
 	
 	var to_player := to_local(player.position)
 	
-	if to_player.length() > 100:
+	if to_player.length_squared() > 10000:
 		velocity += to_local(player.position).normalized() * acceleration
 		velocity = velocity.clamped(max_speed)
 		$Sprite/SmokeTrail.emitting = true
@@ -23,10 +23,11 @@ func _physics_process(delta: float) -> void:
 	$CollisionShape2D.rotation = angle+ PI/2
 	
 	if randi() % shoot_rate == 1:
-		var b_inst = bullet.instance()
-		b_inst.position = position
-		b_inst.rot = velocity.angle()
-		b_inst.speed = 10
-		b_inst.set_collision_mask_bit(Globals.BIT_PLAYER, true)
-		get_parent().add_child(b_inst)
+		for b_inst in shoot():
+			b_inst.rot = velocity.angle()
+			b_inst.speed = 10
+			b_inst.set_collision_mask_bit(Globals.BIT_PLAYER, true)
+			if not b_inst.is_inside_tree():
+				get_parent().add_child(b_inst)
+		$AudioStreamPlayer2D.play()
 	

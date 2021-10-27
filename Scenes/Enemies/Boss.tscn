@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Assets/Enemies/StandardEnemy.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/Enemies/Boss.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/Trails.tscn" type="PackedScene" id=3]
+
+[node name="Boss" type="KinematicBody2D"]
+collision_layer = 4
+script = ExtResource( 2 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 1, -55, -53, 55, 48, 55, 36, 17 )
+
+[node name="Sprite" type="Sprite" parent="."]
+scale = Vector2( 4, 4 )
+z_index = 2
+texture = ExtResource( 1 )
+offset = Vector2( -0.5, 0 )
+
+[node name="Raycasts" type="Node2D" parent="."]
+
+[node name="RayCast2D" type="RayCast2D" parent="Raycasts"]
+enabled = true
+cast_to = Vector2( 0, -70 )
+
+[node name="RayCast2D2" type="RayCast2D" parent="Raycasts"]
+enabled = true
+cast_to = Vector2( -30, -70 )
+
+[node name="RayCast2D3" type="RayCast2D" parent="Raycasts"]
+enabled = true
+cast_to = Vector2( 30, -70 )
+
+[node name="Trails" parent="." instance=ExtResource( 3 )]
+
+[node name="LongTrail" parent="Trails" index="0"]
+position = Vector2( 0, 50 )
+z_index = -1
+
+[node name="InnerThrust" parent="Trails" index="1"]
+position = Vector2( 0, 50 )
+z_index = -1
+
+[node name="OuterThrust" parent="Trails" index="2"]
+position = Vector2( 0, 50 )
+z_index = -1
+
+[editable path="Trails"]

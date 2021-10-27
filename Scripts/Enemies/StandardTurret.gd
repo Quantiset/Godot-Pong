@@ -2,6 +2,7 @@ extends Enemy
 class_name Turret
 
 func _ready():
+	max_speed = 0
 	max_hp *= 2
 	shoot_rate = 200
 

@@ -21,7 +21,8 @@ signal hit_object(object)
 signal damaged_enemy(enemy)
 
 func _ready():
-	$NormalDetector.collision_mask = collision_mask
+	if get_node_or_null("NormalDetector"):
+		$NormalDetector.collision_mask = collision_mask
 
 func _on_Bullet_body_entered(body):
 	collide(body)
@@ -61,8 +62,12 @@ func bounce():
 func get_normal() -> Vector2:
 	var normal := Vector2()
 	
+	if not normal_detector:
+		delete()
+		return Vector2() 
+	
 	normal_detector.global_rotation = 0
-
+	
 	normal_detector.cast_to = velocity * 4
 	normal_detector.force_raycast_update()
 	if normal_detector.is_colliding():
