@@ -56,7 +56,6 @@ class LeadTippedDarts extends ItemReference:
 	
 	func _on_shot(bullet_list: Array):
 		for bullet in bullet_list:
-			bullet.damage += 15
 			bullet.pierces += 1
 
 class RubberBullets extends ItemReference:
@@ -80,7 +79,6 @@ class RubberBullets extends ItemReference:
 		for bullet in bullet_list:
 			bullet.modulate = Color(0.605469, 0.833557, 1, 0.75)
 			bullet.scale *= 0.75
-			bullet.damage -= 10
 			bullet.bounces += 1
 
 class HeatseekingMissiles extends ItemReference:
@@ -404,7 +402,7 @@ class Shellshock extends ItemReference:
 		for bullet in bullet_list:
 			bullet.connect("damaged_enemy", self, "_on_bullet_damaged_enemy")
 	
-	func _on_bullet_damaged_enemy(enemy: Enemy):
+	func _on_bullet_damaged_enemy(enemy):
 		enemy.stun_duration += 0.1
 
 class Clock extends ItemReference:
@@ -446,11 +444,12 @@ class PoisionMixture extends ItemReference:
 	
 	func _on_shot(bullet_list: Array):
 		for bullet in bullet_list:
+			bullet.damage += 5
 			bullet.get_node("Line2D/EmissionParticles").visible = true
 			bullet.get_node("Line2D/EmissionParticles").modulate = Color(0.304413, 0.820312, 0.230713)
 			bullet.connect("damaged_enemy", self, "_on_bullet_damaged_enemy")
 	
-	func _on_bullet_damaged_enemy(enemy: Enemy):
+	func _on_bullet_damaged_enemy(enemy):
 		enemy.apply_status_effect(Globals.STATUS_EFFECTS.PoisionAcid, 5)
 
 class PanicButton extends ItemReference:

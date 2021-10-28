@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Thrust Sequence.mp3-358452c49c8d6311d103e4fb2ffe7d11.mp3str"
+
+[deps]
+
+source_file="res://Assets/SoundEffects/Thrust Sequence.mp3"
+dest_files=[ "res://.import/Thrust Sequence.mp3-358452c49c8d6311d103e4fb2ffe7d11.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

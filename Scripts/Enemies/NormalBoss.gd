@@ -6,7 +6,7 @@ var is_charging := false
 enum States {
 	ShootForward,
 	ChargeAtPlayer
-}
+} 
 
 # init is for direct variable changes
 func _ready():
@@ -47,6 +47,18 @@ func _physics_process(delta: float) -> void:
 			if time_until_last_charge > 3:
 				is_charging = true
 				player.shake_amount += 2
+				
+				var explosion_amount: int = 8 + (-5.0*hp/max_hp + 5)
+				for i in range(explosion_amount):
+					var b = preload("res://Scenes/Bullets/StraightBullet.tscn")
+					var b_inst = b.instance()
+					b_inst.position = position
+					b_inst.rot = i*2*PI/explosion_amount
+					b_inst.modulate = Color(0.996094, 0.594562, 0.564194)
+					b_inst.speed = 5
+					b_inst.set_collision_mask_bit(Globals.BIT_PLAYER, true)
+					get_parent().call_deferred("add_child", b_inst)
+				
 				velocity = Vector2(max_speed*3,0).rotated((player.position - position).angle())
 				time_until_last_charge = 0.0
 			
@@ -84,13 +96,18 @@ func shoot():
 
 func _on_BuffRadius_body_entered(body):
 	if body is StandardEnemy:
-		body.modulate.a *= 1.2
+		body.modulate.a *= 2
 		body.connect("shot", self, "on_Buffed_enemy_shot")
 
 func _on_BuffRadius_body_exited(body):
 	if body is StandardEnemy:
-		body.modulate.a /= 1.2
+		body.modulate.a /= 2
 		body.disconnect("shot", self, "on_Buffed_enemy_shot")
 
 func on_Buffed_enemy_shot(bullet: Bullet):
 	bullet.damage_multiplier *= 1.5
+
+
+func _on_Area2D_body_entered(body):
+	if body.has_method("take_damage") and is_charging:
+		body.take_damage(15)

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Orbital Colossus.mp3-1a10153b49023a16868bcd95accde6e6.mp3str"
+
+[deps]
+
+source_file="res://Assets/SoundEffects/Orbital Colossus.mp3"
+dest_files=[ "res://.import/Orbital Colossus.mp3-1a10153b49023a16868bcd95accde6e6.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

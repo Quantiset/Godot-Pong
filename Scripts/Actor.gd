@@ -29,6 +29,7 @@ var status_effects_to_time := {}
 var items := []
 
 signal shot(bullet)
+signal taken_damage(damage)
 
 func add_item(item):
 	
@@ -64,8 +65,14 @@ func shoot():
 	return b_list
 
 func apply_status_effect(effect, duration: float):
+	
 	if not effect in Globals.STATUS_EFFECTS.values():
 		printerr("Effect "+str(effect)+" does not exist in Globals.STATUS_EFFECTS")
+		return
+	
+	match effect:
+		Globals.STATUS_EFFECTS.PoisionAcid:
+			modulate.g *= 1.3
 	
 	status_effects_to_time[effect] = duration
 	
@@ -84,13 +91,19 @@ func on_Effects_update(effect, timer):
 			update_health()
 	
 	if duration < 0:
+		
+		match effect:
+			Globals.STATUS_EFFECTS.PoisionAcid:
+				modulate.g /= 1.3
+		
 		status_effects_to_time.erase(effect)
 		timer.queue_free()
 
+func take_damage(damage):
+	emit_signal("taken_damage", damage)
 
 func update_health():pass
 func update_xp():pass
-func take_damage(_val):pass
 
 func set_shot_cooldown(val):
 	shot_cooldown = val

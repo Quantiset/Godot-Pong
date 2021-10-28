@@ -14,13 +14,14 @@ const BIT_ENEMY = 2
 # each pool for each stage. Initial key is the weight
 const ENEMY_POOL = {
 	1: {
-		preload("res://Scenes/Enemies/ElectrifiedEnemy.tscn"): 5,
+		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 5,
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 1,
 		preload("res://Scenes/Enemies/BufferEnemy.tscn"): 1,
 	},
 	2: {
 		preload("res://Scenes/Enemies/StandardEnemy.tscn"): 4,
-		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 1,
-		preload("res://Scenes/Enemies/StandardTurret.tscn"): 2,
+		preload("res://Scenes/Enemies/ExplodingEnemy.tscn"): 2,
+		preload("res://Scenes/Enemies/StandardTurret.tscn"): 1,
 		preload("res://Scenes/Enemies/BufferEnemy.tscn"): 1,
 	},
 	3: {

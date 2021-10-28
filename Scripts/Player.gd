@@ -53,7 +53,11 @@ func _input(event):
 		item._input(event)
 
 func _ready():
-	Globals.spawn_item_at(Items.HeatseekingMissiles, Vector2(100, 100))
+	
+	add_item(Items.LeadTippedDarts)
+	add_item(Items.TeslaCoil)
+	add_item(Items.TeslaCoil)
+	add_item(Items.TeslaCoil)
 	add_item(Items.PanicButton)
 	
 	aim_cursor.position = position
@@ -182,7 +186,9 @@ func _process(delta: float) -> void:
 		if ref_rect:
 			var rect := ref_rect.get_global_rect().grow(20)
 			if rect.has_point(aim_cursor.position + aim_cursor_vel):
-				aim_cursor.position += aim_cursor_vel * delta * 7
+				if not aim_cursor_vel.is_equal_approx(Vector2.ZERO):
+					aim_cursor.position += aim_cursor_vel * delta * 7
+					aim_cursor_hovered = null
 
 func update_trails():
 	for trail in trails:
@@ -269,6 +275,7 @@ func create_pong_paddles(key: String):
 		paddle.get_node("Area2D/CollisionShape2D").rotation = to_center.angle()
 
 func take_damage(damage: int):
+	.take_damage(damage)
 	hp -= damage
 	hp = clamp(hp, 0, max_hp)
 	update_health()

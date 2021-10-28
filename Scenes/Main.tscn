@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Scenes/Enemies/NormalBoss.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Assets/SoundEffects/Thrust Sequence.mp3" type="AudioStream" id=3]
 
 [sub_resource type="Gradient" id=1]
 offsets = PoolRealArray( 0, 0.556098, 1 )
@@ -198,5 +198,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NormalBoss" parent="." instance=ExtResource( 3 )]
-position = Vector2( 739, 376 )
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+volume_db = -17.0
+pitch_scale = 0.5
+autoplay = true
+
+[node name="Tween" type="Tween" parent="AudioStreamPlayer"]
+
+[connection signal="taken_damage" from="Player" to="." method="_on_Player_taken_damage"]

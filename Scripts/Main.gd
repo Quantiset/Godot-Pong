@@ -2,6 +2,7 @@ extends StaticBody2D
 
 const ENEMY_SIGNALER = preload("res://Scenes/EnemySignaler.tscn")
 
+var is_boss_alive := false
 var enemies_left := 0
 var wave := 1
 
@@ -17,7 +18,7 @@ signal wave_begun(wave_idx)
 func _ready():
 	connect("wave_begun", self, "on_wave_begun")
 	
-	#gen_random_spawn(randi()%3+2)
+	gen_random_spawn(randi()%3+2)
 
 onready var spawnable_space: Vector2 = $ReferenceRect.rect_size
 func gen_random_spawn(enemies: int, automatically_add_to_enemies_left := true):
@@ -67,7 +68,11 @@ func on_Enemy_dead():
 	
 	enemies_left -= 1
 	if enemies_left == 0:
-		wave += 1
+		
+		# does not increment the wave counter while boss is alive; continues spawning enemies
+		if not is_boss_alive:
+			wave += 1
+		
 		emit_signal("wave_begun", wave)
 
 func on_wave_begun(_wave_idx: int):
@@ -77,6 +82,16 @@ func on_wave_begun(_wave_idx: int):
 	var randomized_extra_enemies := randi() % int(min(wave*2+2, 7))
 	var total_enemies := get_stage() * 2 + 5 + randomized_extra_enemies
 	var placeoffs: int = randi()%2+1
+	
+	# spawns boss
+	if wave % 5 == 0:
+		is_boss_alive = true
+		var boss: Boss = preload("res://Scenes/Enemies/NormalBoss.tscn").instance()
+		add_child(boss)
+		boss.position = $ReferenceRect.rect_position + $ReferenceRect.rect_size/2
+		boss.connect("dead", self, "on_Boss_dead")
+		$AudioStreamPlayer.stream = preload("res://Assets/SoundEffects/Orbital Colossus.mp3")
+		$AudioStreamPlayer.play()
 	
 	enemies_left += total_enemies
 	for i in range(placeoffs):
@@ -89,3 +104,15 @@ func on_wave_begun(_wave_idx: int):
 func set_stage(_val): pass
 func get_stage() -> int:
 	return 1 + (wave-1)/5
+
+
+func on_Boss_dead():
+	is_boss_alive = false
+	$AudioStreamPlayer.stream = preload("res://Assets/SoundEffects/Thrust Sequence.mp3")
+
+onready var audio_tween: Tween = $AudioStreamPlayer/Tween
+func _on_Player_taken_damage(damage):
+	if damage > 0:
+		audio_tween.interpolate_property($AudioStreamPlayer, "pitch_scale", 0.5, 1, 1.5, Tween.TRANS_LINEAR)
+		audio_tween.interpolate_property($AudioStreamPlayer, "volume_db", -25, -17, 1.5, Tween.TRANS_LINEAR)
+		audio_tween.start()

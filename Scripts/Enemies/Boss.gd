@@ -7,6 +7,8 @@ var current_state := -1
 var time_in_this_state := 0.0
 var damage_in_this_state := 0
 
+signal dead()
+
 func _ready():
 	update_health()
 	
@@ -26,11 +28,12 @@ func _physics_process(delta: float) -> void:
 	move_and_slide(velocity)
 
 
-func take_damage(damage):
+func take_damage(damage: int):
 	hp -= damage
 	hp = clamp(hp, -1, max_hp)
 	damage_in_this_state += damage
 	if hp <= 0:
+		emit_signal("dead")
 		delete()
 	update_health()
 
@@ -45,6 +48,10 @@ func update_health():
 	boss_progress.get_node("AnimationPlayer").play("Flash")
 
 func delete():
+	var item = preload("res://Scenes/BossDrop.tscn").instance()
+	get_parent().call_deferred("add_child", item)
+	item.position = position
+	player.shake_amount += 5
 	player.get_node("CanvasLayer/BossBar").visible = false
 	queue_free()
 

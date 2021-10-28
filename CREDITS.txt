@@ -2,22 +2,23 @@
 VCR OSD Mono font by Riciery Leal
 ^ This font is used as the primary font throughout the game
 
-https://github.com/henriquelalves/SimpleGodotCRTShader/blob/master/CRTShader.shader
+https://github.com/henriquelalves/SimpleGodotCRTShader/blob/master/CRTShader.shader (CRT Shader)
 Submitted to github.com
-^ CRT vignette shader
 
-https://kenney.nl
-^ For many particles effects including:
-	- Lightning effect from Tesla Coil
+https://kenney.nl (Particle Effects)
 
-https://opengameart.org/content/laser-fire
+https://opengameart.org/content/laser-fire (Laser SFX)
 Submitted to opengameart.org
 
-https://opengameart.org/content/3-melee-sounds
+https://opengameart.org/content/3-melee-sounds (Wind SFX)
 Edited by remaxim 
 Submitted to opengameart.org
-^ Laser Sound
 
+https://opengameart.org/content/space-sprinkles "Space Sprinkles" (Menu Theme)
+https://opengameart.org/content/thrust-sequence "Orbital Colossus" (Standard Theme)
+https://opengameart.org/content/space-boss-battle-theme "Space Boss Battle Theme" (Boss Theme)
+Edited by Matthew Pablo
+Submitted to opengameart.org
 
 Engine attributions:
 #####

@@ -41,6 +41,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide(velocity*speed_core_multiplier, Vector2())
 
 func take_damage(damage: int) -> void:
+	.take_damage(damage)
 	hp -= damage
 	$AnimationPlayer.play("Flash")
 	if hp <= 0 and not is_queued_for_deletion():

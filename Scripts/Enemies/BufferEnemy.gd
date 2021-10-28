@@ -5,7 +5,10 @@ class_name BufferEnemy
 func die():
 	
 	for enemy in $Influence.get_overlapping_bodies():
-		enemy.get_node("AnimationPlayer").play("Buffed")
-		enemy.boost()
+		if enemy.has_node("AnimationPlayer"):
+			enemy.get_node("AnimationPlayer").play("Buffed")
+		
+		if enemy.has_method("boost"):
+			enemy.boost()
 	
 	.die()

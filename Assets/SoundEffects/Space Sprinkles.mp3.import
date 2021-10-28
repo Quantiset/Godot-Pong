@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Space Sprinkles.mp3-257af065197c22f118900498b89781eb.mp3str"
+
+[deps]
+
+source_file="res://Assets/SoundEffects/Space Sprinkles.mp3"
+dest_files=[ "res://.import/Space Sprinkles.mp3-257af065197c22f118900498b89781eb.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
