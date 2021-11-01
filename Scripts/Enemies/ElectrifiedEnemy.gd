@@ -20,9 +20,8 @@ func shoot():
 		bul.get_node("AnimationPlayer").connect("animation_finished", self, "on_laser_warning_finished", [bul])
 	return bullets
 
-func on_laser_warning_finished(laser, timer):
+func on_laser_warning_finished(_str, laser):
 	laser.delete()
-	timer.queue_free()
 
 func on_animation_finished(bullet):
 	lasers.erase(bullet)

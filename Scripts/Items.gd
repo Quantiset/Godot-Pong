@@ -277,7 +277,7 @@ class TeslaCoil extends ItemReference:
 			l.end_cap_mode = Line2D.LINE_CAP_ROUND
 			l.width = 40
 			
-			Globals.get_node("/root").add_child(l)
+			Globals.add_child(l)
 			
 			var t := Tween.new()
 			l.add_child(t)

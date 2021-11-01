@@ -15,7 +15,7 @@ func _ready():
 	max_speed = 100
 	update_health()
 	
-	current_state = States.ChargeAtPlayer
+	set_state(States.ChargeAtPlayer)
 
 func _physics_process(delta: float) -> void:
 	

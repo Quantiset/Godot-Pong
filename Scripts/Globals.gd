@@ -54,6 +54,13 @@ const ENEMY_POOL = {
 	}
 }
 
+const BOSS_STAGE := {
+	null: preload("res://Scenes/Enemies/NormalBoss.tscn"),
+	1: preload("res://Scenes/Enemies/NormalBoss.tscn"),
+	2: preload("res://Scenes/Enemies/ShootAroundBoss.tscn"),
+	3: preload("res://Scenes/Enemies/LaserBoss.tscn")
+}
+
 var ITEM_POOL := {
 	Items.HeatseekingMissiles: 6,
 	Items.LeadTippedDarts: 10,
@@ -84,8 +91,8 @@ func remove_particle(p: Particles2D):
 	var pp = p.global_position
 	var t = Timer.new()
 	p.get_parent().remove_child(p)
-	get_node("/root").add_child(p)
-	get_node("/root").add_child(t)
+	add_child(p)
+	add_child(t)
 	p.position = pp
 	t.start(p.lifetime*(1+p.process_material.lifetime_randomness))
 	t.connect("timeout", self, "queue_free_all", [[t, p]])
@@ -93,7 +100,7 @@ func remove_particle(p: Particles2D):
 func remove_trail(t: Line2D, fade_duration := 1.0):
 	var tw := Tween.new()
 	t.get_parent().remove_child(t)
-	get_node("/root").add_child(t)
+	add_child(t)
 	t.add_child(tw)
 	var ta := t.modulate
 	ta.a = 0

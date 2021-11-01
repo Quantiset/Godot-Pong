@@ -10,12 +10,11 @@ var stage: int setget set_stage, get_stage
 
 onready var player: KinematicBody2D = $Player
 
-var item_choices = [Items.ItemReference, Items.ItemReference, Items.ItemReference]
-
 signal spawned_enemy(enemy)
 signal wave_begun(wave_idx)
 
 func _ready():
+	
 	connect("wave_begun", self, "on_wave_begun")
 	
 	gen_random_spawn(randi()%3+2)
@@ -84,10 +83,17 @@ func on_wave_begun(_wave_idx: int):
 	var placeoffs: int = randi()%2+1
 	
 	# spawns boss
-	if wave % 5 == 0:
+	if wave % 5 == 0 and not is_boss_alive:
 		is_boss_alive = true
+		
+		var boss_inst: Boss
+		if Globals.BOSS_STAGE.has(get_stage()):
+			boss_inst = Globals.BOSS_STAGE[get_stage()]
+		else:
+			boss_inst = Globals.BOSS_STAGE[null] 
+		
 		var boss: Boss = preload("res://Scenes/Enemies/NormalBoss.tscn").instance()
-		add_child(boss)
+		call_deferred("add_child", boss)
 		boss.position = $ReferenceRect.rect_position + $ReferenceRect.rect_size/2
 		boss.connect("dead", self, "on_Boss_dead")
 		$AudioStreamPlayer.stream = preload("res://Assets/SoundEffects/Orbital Colossus.mp3")
@@ -109,6 +115,7 @@ func get_stage() -> int:
 func on_Boss_dead():
 	is_boss_alive = false
 	$AudioStreamPlayer.stream = preload("res://Assets/SoundEffects/Thrust Sequence.mp3")
+	$AudioStreamPlayer.play()
 
 onready var audio_tween: Tween = $AudioStreamPlayer/Tween
 func _on_Player_taken_damage(damage):

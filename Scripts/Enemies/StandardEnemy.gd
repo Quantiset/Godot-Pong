@@ -10,7 +10,7 @@ func _physics_process(delta: float) -> void:
 	var to_player := to_local(player.position)
 	
 	if to_player.length_squared() > 10000:
-		velocity += to_local(player.position).normalized() * acceleration
+		velocity += to_local(player.global_position).normalized() * acceleration
 		velocity = velocity.clamped(max_speed)
 		$Sprite/SmokeTrail.emitting = true
 	else:

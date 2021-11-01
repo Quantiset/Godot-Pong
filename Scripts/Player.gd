@@ -54,12 +54,6 @@ func _input(event):
 
 func _ready():
 	
-	add_item(Items.LeadTippedDarts)
-	add_item(Items.TeslaCoil)
-	add_item(Items.TeslaCoil)
-	add_item(Items.TeslaCoil)
-	add_item(Items.PanicButton)
-	
 	aim_cursor.position = position
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
@@ -249,7 +243,7 @@ func create_pong_paddles(key: String):
 		line.add_point(Vector2())
 		line.add_point(Vector2())
 		start_pos = global_position
-		get_node("/root").add_child(paddle)
+		get_parent().add_child(paddle)
 	
 	# should be the on released
 	if Input.is_action_just_released(key):
@@ -330,12 +324,11 @@ func show_leaderboard():
 				has_currented = true
 			
 			$CanvasLayer/Leaderboard/ItemList.add_item(print_str)
-		
-		f.store_var(get_parent().wave)
+		f.store_16(get_parent().wave)
 	else:
 		f.open(SAVE_FILE, File.WRITE_READ)
 		$CanvasLayer/Leaderboard/ItemList.add_item("Wave "+str(get_parent().wave))
-		f.store_var(get_parent().wave)
+		f.store_16(get_parent().wave)
 	f.close()
 
 var level = 0
@@ -418,7 +411,17 @@ func add_item(item):
 
 
 func _on_Restart_button_pressed():
-	get_tree().paused = false
-	aim_cursor_method = aim_cursor_method
-	get_tree().reload_current_scene()
+	get_tree().change_scene("res://Scenes/MainMenu.tscn")
 
+
+func _on_Resume_button_pressed():
+	get_tree().paused = false
+	$CanvasLayer/PauseMenu.hide()
+
+func _on_MenuButton_pressed():
+	get_tree().change_scene("res://Scenes/MainMenu.tscn")
+
+
+func _on_PauseButton_released():
+	get_tree().paused = not get_tree().paused
+	$CanvasLayer/PauseMenu.visible = not $CanvasLayer/PauseMenu.visible

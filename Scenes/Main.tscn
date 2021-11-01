@@ -182,6 +182,32 @@ lifetime = 10.0
 visibility_rect = Rect2( -859.365, -680.398, 1845.35, 1382.94 )
 process_material = SubResource( 5 )
 
+[node name="ParallaxBackground2" type="ParallaxBackground" parent="."]
+layer = 2
+
+[node name="Parallax" type="ParallaxLayer" parent="ParallaxBackground2"]
+motion_scale = Vector2( 1.2, 1.2 )
+motion_mirroring = Vector2( 1800, 1200 )
+
+[node name="Particles2D" type="Particles2D" parent="ParallaxBackground2/Parallax"]
+position = Vector2( 800, 0 )
+amount = 20
+lifetime = 10.0
+visibility_rect = Rect2( -987.55, -754.852, 1783.93, 1439.1 )
+process_material = SubResource( 5 )
+
+[node name="Parallax2" type="ParallaxLayer" parent="ParallaxBackground2"]
+modulate = Color( 1, 1, 1, 0.603922 )
+motion_scale = Vector2( 1.4, 1.4 )
+motion_mirroring = Vector2( 1800, 1200 )
+
+[node name="Particles2D2" type="Particles2D" parent="ParallaxBackground2/Parallax2"]
+position = Vector2( 800, 0 )
+amount = 20
+lifetime = 10.0
+visibility_rect = Rect2( -859.365, -680.398, 1845.35, 1382.94 )
+process_material = SubResource( 5 )
+
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PoolVector2Array( 1, 1, 1751, 1, 1748, 1147, 1, 1148, 1, 1, -46, 1, -61, 1222, 1820, 1226, 1803, -75, -48, -47, -46, 1 )
 

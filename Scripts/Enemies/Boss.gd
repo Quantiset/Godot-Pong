@@ -72,7 +72,7 @@ func laser_wall():
 		l.position = Vector2(15, step * i)
 	
 	var t := Timer.new()
-	get_node("/root").add_child(t)
+	get_parent().add_child(t)
 	t.start(1.6)
 	t.connect("timeout", self, "on_LaserWall_complete", [lasers, t])
 

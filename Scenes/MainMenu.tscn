@@ -1,0 +1,261 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://Assets/VCR_OSD_MONO_1.001.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Assets/TheButton.png" type="Texture" id=2]
+[ext_resource path="res://Scripts/UIScreen.gd" type="Script" id=3]
+[ext_resource path="res://Assets/SoundEffects/Space Sprinkles.mp3" type="AudioStream" id=4]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 95, 35 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 22
+font_data = ExtResource( 1 )
+
+[sub_resource type="Gradient" id=5]
+offsets = PoolRealArray( 0, 0.556098, 1 )
+colors = PoolColorArray( 1, 1, 1, 0.631373, 1, 1, 1, 0.560784, 1, 1, 1, 0 )
+
+[sub_resource type="GradientTexture" id=6]
+gradient = SubResource( 5 )
+
+[sub_resource type="Curve" id=7]
+_data = [ Vector2( 0, 0.454545 ), 0.0, 0.0, 0, 0, Vector2( 0.0964912, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.723684, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.454545 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=4]
+curve = SubResource( 7 )
+
+[sub_resource type="ParticlesMaterial" id=8]
+lifetime_randomness = 0.2
+emission_shape = 2
+emission_box_extents = Vector3( 900, 600, 1 )
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 30.0
+initial_velocity_random = 0.3
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+scale = 4.0
+scale_curve = SubResource( 4 )
+color_ramp = SubResource( 6 )
+
+[sub_resource type="Environment" id=9]
+background_mode = 4
+glow_enabled = true
+glow_strength = 0.8
+glow_blend_mode = 0
+glow_hdr_threshold = 0.1
+glow_bicubic_upscale = true
+
+[node name="UIScreen" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="StartButton" type="NinePatchRect" parent="."]
+margin_left = 406.0
+margin_top = 79.0
+margin_right = 597.0
+margin_bottom = 162.0
+mouse_filter = 1
+texture = ExtResource( 2 )
+patch_margin_left = 11
+patch_margin_top = 18
+patch_margin_right = 13
+patch_margin_bottom = 29
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="StartButton"]
+shape = SubResource( 1 )
+
+[node name="Label" type="Label" parent="StartButton"]
+margin_left = 28.0
+margin_top = 24.0
+margin_right = 171.0
+margin_bottom = 48.0
+custom_fonts/font = SubResource( 2 )
+text = "Start Game"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="QuitButton" type="NinePatchRect" parent="."]
+margin_left = 401.0
+margin_top = 403.0
+margin_right = 592.0
+margin_bottom = 486.0
+mouse_filter = 1
+texture = ExtResource( 2 )
+patch_margin_left = 11
+patch_margin_top = 18
+patch_margin_right = 13
+patch_margin_bottom = 29
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="QuitButton"]
+shape = SubResource( 1 )
+
+[node name="Label" type="Label" parent="QuitButton"]
+margin_left = 28.0
+margin_top = 24.0
+margin_right = 171.0
+margin_bottom = 48.0
+rect_scale = Vector2( 1.1, 1 )
+custom_fonts/font = SubResource( 2 )
+text = "Quit Game"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="Parallax" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2( 0.8, 0.8 )
+motion_mirroring = Vector2( 1800, 1200 )
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 283.0
+margin_top = 191.0
+margin_right = 404.0
+margin_bottom = 307.0
+color = Color( 0.745098, 0.235294, 0.0784314, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 534.0
+margin_top = 763.0
+margin_right = 655.0
+margin_bottom = 989.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect3" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 920.0
+margin_top = 456.0
+margin_right = 1158.0
+margin_bottom = 572.0
+color = Color( 0.745098, 0.141176, 0.0784314, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect4" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 1418.0
+margin_top = 737.0
+margin_right = 1609.0
+margin_bottom = 871.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect5" type="ColorRect" parent="ParallaxBackground/Parallax"]
+margin_left = 1461.0
+margin_top = 77.0
+margin_right = 1582.0
+margin_bottom = 193.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Particles2D" type="Particles2D" parent="ParallaxBackground/Parallax"]
+position = Vector2( 800, 0 )
+amount = 20
+lifetime = 10.0
+visibility_rect = Rect2( -987.55, -754.852, 1783.93, 1439.1 )
+process_material = SubResource( 8 )
+
+[node name="Parallax2" type="ParallaxLayer" parent="ParallaxBackground"]
+modulate = Color( 1, 1, 1, 0.603922 )
+motion_scale = Vector2( 0.6, 0.6 )
+motion_mirroring = Vector2( 1800, 1200 )
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 153.0
+margin_top = 652.0
+margin_right = 274.0
+margin_bottom = 768.0
+color = Color( 0.745098, 0.141176, 0.0784314, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 440.0
+margin_top = 222.0
+margin_right = 561.0
+margin_bottom = 448.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect3" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 857.0
+margin_top = 856.0
+margin_right = 1095.0
+margin_bottom = 972.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect4" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 1021.0
+margin_top = 109.0
+margin_right = 1212.0
+margin_bottom = 243.0
+color = Color( 0.745098, 0.156863, 0.0784314, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect5" type="ColorRect" parent="ParallaxBackground/Parallax2"]
+margin_left = 1189.0
+margin_top = 456.0
+margin_right = 1310.0
+margin_bottom = 572.0
+color = Color( 0.0784314, 0.168627, 0.745098, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Particles2D2" type="Particles2D" parent="ParallaxBackground/Parallax2"]
+position = Vector2( 800, 0 )
+amount = 20
+lifetime = 10.0
+visibility_rect = Rect2( -859.365, -680.398, 1845.35, 1382.94 )
+process_material = SubResource( 8 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 9 )
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+z_index = -1
+color = Color( 0.164706, 0.164706, 0.164706, 1 )
+polygon = PoolVector2Array( 31, 31, 980, 31, 980, 537, 31, 537, 31, 31, -1206, -37, -1245, 1948, 2684, 1911, 2730, -864, -1208, -822, -1206, -38 )
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PoolVector2Array( 28, 28, 982, 28, 983, 539, 28, 539, 28, 25 )
+width = 6.0
+default_color = Color( 1, 1, 1, 1 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+volume_db = -10.0
+autoplay = true
+
+[connection signal="mouse_entered" from="StartButton" to="." method="_on_TheButton_mouse_entered" binds= [ "Start" ]]
+[connection signal="mouse_exited" from="StartButton" to="." method="_on_TheButton_mouse_exited" binds= [ "Start" ]]
+[connection signal="pressed" from="StartButton/TouchScreenButton" to="." method="_on_TouchScreenButton_pressed"]
+[connection signal="mouse_entered" from="QuitButton" to="." method="_on_TheButton_mouse_entered" binds= [ "Quit" ]]
+[connection signal="mouse_exited" from="QuitButton" to="." method="_on_TheButton_mouse_exited" binds= [ "Quit" ]]
+[connection signal="pressed" from="QuitButton/TouchScreenButton" to="." method="_on_TouchScreenButton_pressed"]
