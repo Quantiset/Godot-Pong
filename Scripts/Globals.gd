@@ -10,6 +10,7 @@ enum STATUS_EFFECTS {
 const BIT_WORLD = 0
 const BIT_PLAYER = 1
 const BIT_ENEMY = 2
+const BIT_SCRAP = 3
 
 # each pool for each stage. Initial key is the weight
 const ENEMY_POOL = {
@@ -61,6 +62,14 @@ const BOSS_STAGE := {
 	3: preload("res://Scenes/Enemies/LaserBoss.tscn")
 }
 
+
+const RARITIES_PRICE := {
+	Items.RARITIES.Common: 100,
+	Items.RARITIES.Rare: 200,
+	Items.RARITIES.Ultra: 400,
+	Items.RARITIES.Legendary: 800,
+}
+
 var ITEM_POOL := {
 	Items.HeatseekingMissiles: 6,
 	Items.LeadTippedDarts: 10,
@@ -68,11 +77,14 @@ var ITEM_POOL := {
 	Items.RubberBullets: 10,
 	Items.DoubledMuzzle: 6,
 	Items.Grenade: 10,
-	Items.MachineGun: 4,
+	Items.MachineGun: 3,
 	Items.TeslaCoil: 6,
 	Items.Shellshock: 10,
 	Items.PoisionMixture: 10,
 	Items.PanicButton: 5,
+	Items.XPAbsorber: 10,
+	Items.Scalar: 10,
+	Items.Dicannon: 8,
 }
 
 func _ready():

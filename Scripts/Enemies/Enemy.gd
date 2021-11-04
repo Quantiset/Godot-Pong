@@ -55,18 +55,20 @@ func die():
 		var hp = HPDROP.instance()
 		hp.position = position
 		get_parent().call_deferred("add_child", hp)
-	elif randi() % item_drop_rate == 0:
-		var i = ITEM.instance()
-		i.position = position
-		i.type = Globals.parse_pool(Globals.ITEM_POOL)
-		get_parent().call_deferred("add_child", i)
+	#elif randi() % item_drop_rate == 0:
+	elif true:
+		for i in range(randi()%3+2):
+			var it = ITEM.instance()
+			it.position = position + Vector2(randf()-0.5, randf()-0.5)*30
+			it.scale /= 1.5
+			it.type = Items.BlueScrap if randi() % 4 == 0 else Items.Scrap
+			#it.type = Globals.parse_pool(Globals.ITEM_POOL)
+			get_parent().call_deferred("add_child", it)
 	
 	#Globals.remove_trail($Node/LongTrail)
-	$ExplosionParticles.emitting = true
 	$Sprite/SmokeTrail.emitting = false
 	$ExplosionParticlesFire.emitting = true
 	$ExplosionParticlesRed.emitting = true
-	Globals.remove_particle($ExplosionParticles)
 	Globals.remove_particle($Sprite/SmokeTrail)
 	Globals.remove_particle($ExplosionParticlesFire)
 	Globals.remove_particle($ExplosionParticlesRed)

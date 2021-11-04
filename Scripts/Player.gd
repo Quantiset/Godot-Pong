@@ -8,6 +8,8 @@ const LINE = preload("res://Scenes/Line.tscn")
 var max_xp := 100
 var xp := 0
 
+var scrap := 100 setget set_scrap
+
 var active_item
 var charge := 0
 var charge_timer := 0.1
@@ -35,6 +37,8 @@ onready var hp_label: Label = get_node("CanvasLayer/HPBar/HPLabel")
 
 onready var xp_bar: TextureProgress = get_node("CanvasLayer/XPBar")
 onready var xp_label: Label = get_node("CanvasLayer/XPBar/XPLabel")
+
+onready var scrap_label: Label = get_node("CanvasLayer/Scrap/ScrapLabel")
 
 onready var ref_rect: ReferenceRect = get_parent().get_node_or_null("ReferenceRect")
 
@@ -69,6 +73,12 @@ func _ready():
 
 var camera_shift := Vector2()
 func _physics_process(delta: float) -> void:
+	
+	for scrap in $ScrapPull.get_overlapping_areas():
+		scrap.velocity += scrap.to_local(position).normalized()
+	
+	for item in items:
+		item._process(delta)
 	
 	update_trails()
 	
@@ -223,9 +233,9 @@ func shoot():
 		#this is the current offset from the leftmostpoint of shot_fan_range
 		var addon := i*shot_fan_range/b_list.size() - shot_fan_range/4
 		if b_list.size() == 1:
-			bullet.rot = to_local(aim_cursor.position).angle()
+			bullet.rot = get_aim_angle()
 		else:
-			bullet.rot = to_local(aim_cursor.position).angle() + addon
+			bullet.rot = get_aim_angle() + addon
 		
 		# set it to hit enemies, not the player itself
 		bullet.set_collision_mask_bit(Globals.BIT_ENEMY, true)
@@ -267,6 +277,11 @@ func create_pong_paddles(key: String):
 		paddle.get_node("CollisionShape2D").rotation = to_center.angle()
 		paddle.get_node("Area2D/CollisionShape2D").shape.extents.x = to_center.length() + 0.5
 		paddle.get_node("Area2D/CollisionShape2D").rotation = to_center.angle()
+
+
+func get_aim_angle() -> float:
+	return to_local(aim_cursor.position).angle()
+
 
 func take_damage(damage: int):
 	.take_damage(damage)
@@ -335,6 +350,7 @@ var level = 0
 func update_xp(flash := true):
 	
 	while xp > max_xp:
+		print(xp)
 		xp -= max_hp
 		max_xp += 10
 		level += 1
@@ -355,6 +371,10 @@ func on_level_up(level):
 	update_health()
 
 
+func set_scrap(val: int):
+	scrap = val
+	scrap_label.text = str(scrap)
+
 func _on_AimCursor_body_entered(body):
 	if aim_cursor_hovered == null:
 		aim_cursor_hovered = body
@@ -373,10 +393,10 @@ func set_aim_cursor(val: int):
 
 func set_shot_cooldown(val):
 	shot_cooldown = val
-	$ShotCooldownTimer.wait_time = val * shot_cooldown_multiplier
+	$ShotCooldownTimer.wait_time = clamp(val * shot_cooldown_multiplier, 0.05, 3)
 func set_shot_cooldown_multiplier(val):
 	shot_cooldown_multiplier = val
-	$ShotCooldownTimer.wait_time = val * shot_cooldown
+	$ShotCooldownTimer.wait_time = clamp(val * shot_cooldown, 0.05, 3)
 
 
 func _on_ActiveItemCharge_timeout():
@@ -425,3 +445,4 @@ func _on_MenuButton_pressed():
 func _on_PauseButton_released():
 	get_tree().paused = not get_tree().paused
 	$CanvasLayer/PauseMenu.visible = not $CanvasLayer/PauseMenu.visible
+

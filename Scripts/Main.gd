@@ -3,6 +3,7 @@ extends StaticBody2D
 const ENEMY_SIGNALER = preload("res://Scenes/EnemySignaler.tscn")
 
 var is_boss_alive := false
+var is_shop_active := false
 var enemies_left := 0
 var wave := 1
 
@@ -17,6 +18,7 @@ func _ready():
 	
 	connect("wave_begun", self, "on_wave_begun")
 	
+	spawn_shop()
 	gen_random_spawn(randi()%3+2)
 
 onready var spawnable_space: Vector2 = $ReferenceRect.rect_size
@@ -68,7 +70,8 @@ func on_Enemy_dead():
 	enemies_left -= 1
 	if enemies_left == 0:
 		
-		# does not increment the wave counter while boss is alive; continues spawning enemies
+		# does not increment the wave counter while boss is alive; 
+		# continues spawning enemies but is a standstill at the current wave
 		if not is_boss_alive:
 			wave += 1
 		
@@ -88,9 +91,9 @@ func on_wave_begun(_wave_idx: int):
 		
 		var boss_inst: Boss
 		if Globals.BOSS_STAGE.has(get_stage()):
-			boss_inst = Globals.BOSS_STAGE[get_stage()]
+			boss_inst = Globals.BOSS_STAGE[get_stage()].instance()
 		else:
-			boss_inst = Globals.BOSS_STAGE[null] 
+			boss_inst = Globals.BOSS_STAGE[null].instance()
 		
 		var boss: Boss = preload("res://Scenes/Enemies/NormalBoss.tscn").instance()
 		call_deferred("add_child", boss)
@@ -111,11 +114,42 @@ func set_stage(_val): pass
 func get_stage() -> int:
 	return 1 + (wave-1)/5
 
-
 func on_Boss_dead():
 	is_boss_alive = false
 	$AudioStreamPlayer.stream = preload("res://Assets/SoundEffects/Thrust Sequence.mp3")
 	$AudioStreamPlayer.play()
+
+func spawn_shop():
+	var cut := 500.0
+	var amount := 5
+	var length: float = $ReferenceRect.get_global_rect().size.x - cut * 2
+	var start_pos_x: float = $ReferenceRect.get_global_rect().position.x + cut
+	var start_pos_y: float = (
+		$ReferenceRect.get_global_rect().size.y/2 + 
+		$ReferenceRect.get_global_rect().position.y
+	)
+	var step := length / amount
+	
+	for i in range(amount):
+		var item = preload("res://Scenes/Item.tscn").instance()
+		item.type = Globals.parse_pool(Globals.ITEM_POOL)
+		item.paid = true
+		add_child(item)
+		item.position = Vector2(
+			start_pos_x + step * i,
+			start_pos_y
+		)
+	
+	length = $ReferenceRect.get_global_rect().size.x - cut * 3
+	amount = randi() % 3 + 1
+	step = length / amount
+	for i in range(amount):
+		var wrench = preload("res://Scenes/Wrench.tscn").instance()
+		add_child(wrench)
+		wrench.position = Vector2(
+			start_pos_x + cut / 2 + step * i,
+			start_pos_y + 100
+		)
 
 onready var audio_tween: Tween = $AudioStreamPlayer/Tween
 func _on_Player_taken_damage(damage):

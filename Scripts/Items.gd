@@ -14,6 +14,7 @@ class ItemReference extends Resource:
 			"id": -1,
 			"charge": -1,
 			"rarity": Items.RARITIES.Common,
+			"price": 100,
 			"item_name": "NotImplemented",
 			"texture": preload("res://Assets/HealthIcon.png"),
 			"description": """
@@ -27,15 +28,44 @@ class ItemReference extends Resource:
 	func _on_shot(bullet: Array):
 		pass
 	
-	func _input(inputevent):
+	func _damage_taken(damage: int):
+		pass
+	
+	func _input(event):
 		pass
 	
 	func _process(delta: float):
 		pass
 	
-	func _activated(emitter):
+	func _activated(emitter: Player):
 		pass
 
+class Scrap extends ItemReference:
+	static func _metadata():
+		return {
+			"id": -1,
+			"charge": -1,
+			"rarity": Items.RARITIES.Common,
+			"price": 1,
+			"item_name": "",
+			"texture": preload("res://Assets/Scrap.png"),
+			"description": """
+			+10
+			"""
+		}
+class BlueScrap extends ItemReference:
+	static func _metadata():
+		return {
+			"id": -2,
+			"charge": -1,
+			"rarity": Items.RARITIES.Common,
+			"price": 1,
+			"item_name": "+20",
+			"texture": preload("res://Assets/BlueScrap.png"),
+			"description": """
+			
+			"""
+		}
 
 class LeadTippedDarts extends ItemReference:
 	
@@ -201,17 +231,17 @@ class MachineGun extends ItemReference:
 		}
 	
 	func _init(emitter):
-		emitter.shot_cooldown /= 4
+		emitter.shot_cooldown /= 2.5
 	
 	func _init2(emitter):
-		emitter.shot_cooldown *= 4
+		emitter.shot_cooldown *= 2.5
 		emitter.shot_cooldown -= 0.1
 		is_first = false
 	
 	func _on_shot(bullet_list: Array):
 		for bullet in bullet_list:
 			if is_first:
-				bullet.damage_multiplier /= 3
+				bullet.damage_multiplier /= 2
 			else:
 				bullet.damage -= 1
 
@@ -445,8 +475,9 @@ class PoisionMixture extends ItemReference:
 	func _on_shot(bullet_list: Array):
 		for bullet in bullet_list:
 			bullet.damage += 5
-			bullet.get_node("Line2D/EmissionParticles").visible = true
-			bullet.get_node("Line2D/EmissionParticles").modulate = Color(0.304413, 0.820312, 0.230713)
+			if bullet.get_node_or_null("Line2D/EmissionParticles"):
+				bullet.get_node("Line2D/EmissionParticles").visible = true
+				bullet.get_node("Line2D/EmissionParticles").modulate = Color(0.304413, 0.820312, 0.230713)
 			bullet.connect("damaged_enemy", self, "_on_bullet_damaged_enemy")
 	
 	func _on_bullet_damaged_enemy(enemy):
@@ -484,3 +515,163 @@ class PanicButton extends ItemReference:
 			b_list[i] = b
 		for item in emitter.items:
 			item._on_shot(b_list)
+
+class DecelleratingBullets extends ItemReference:
+	static func _metadata():
+		return {
+			"id": 14,
+			"charge": -1,
+			"rarity": Items.RARITIES.Common,
+			"item_name": "Decellerating Bullets",
+			"texture": preload("res://Assets/Items/LeadTippedDarts.png"),
+			"description": """
+			
+			"""
+		}
+	
+	func _init(emitter: Actor):
+		emitter.shot_cooldown *= 0.8
+	
+	
+	var bullets = []
+	func _on_shot(bullet_list: Array):
+		
+		for bullet in bullet_list:
+			bullets.append(bullet)
+		
+	
+	func _process(delta: float) -> void:
+		
+		for bullet in bullets:
+			if is_instance_valid(bullet):
+				bullet.speed -= delta * 5
+
+class LaserBullet extends ItemReference:
+	var emitter
+	
+	static func _metadata():
+		return {
+			"id": 15,
+			"charge": -1,
+			"rarity": Items.RARITIES.Legendary,
+			"item_name": "Laser Coil",
+			"texture": preload("res://Assets/Items/LeadTippedDarts.png"),
+			"description": """
+			
+			"""
+		}
+	
+	func _init(_emitter: Actor):
+		emitter = _emitter
+		emitter.bullet = preload("res://Scenes/Bullets/Laser.tscn")
+	
+	func _on_shot(bullet_list: Array):
+		for laser in bullet_list:
+			laser.is_fading_in = false
+			laser.get_child(0).set_collision_mask_bit(1, false)
+			laser.get_child(0).set_collision_mask_bit(2, true)
+		yield(Items.get_tree(), "idle_frame")
+		for laser in bullet_list:
+			laser.rotation = emitter.get_aim_angle()
+			var t := Timer.new()
+			laser.add_child(t)
+			t.start(0.1)
+			t.connect("timeout", self, "on_Laser_timeout", [laser, t])
+	
+	func on_Laser_timeout(laser, timer):
+		laser.delete()
+		timer.queue_free()
+
+class Scalar extends ItemReference:
+	
+	static func _metadata():
+		return {
+			"id": 16,
+			"charge": -1,
+			"rarity": Items.RARITIES.Rare,
+			"item_name": "Scalar",
+			"texture": preload("res://Assets/Items/LeadTippedDarts.png"),
+			"description": """
+			Bullets deal more damage the more enemies that are on-screen
+			"""
+		}
+	
+	func _init(emitter: Actor):
+		pass
+	
+	func _on_shot(bullet_list: Array):
+		for bullet in bullet_list:
+			var damage_mul: float = clamp(log10(Items.get_tree().get_nodes_in_group("Enemy").size())/2.0 + 1, 1, 2)
+			bullet.damage_multiplier *= damage_mul
+			bullet.modulate.a += damage_mul - 1
+	
+	func log10(val: float) -> float:
+		return log(val) / log(10)
+
+class Dicannon extends ItemReference:
+	var emitter
+	var offset := 0.0
+	
+	static func _metadata():
+		return {
+			"id": 17,
+			"charge": -1,
+			"rarity": Items.RARITIES.Rare,
+			"item_name": "Scalar",
+			"texture": preload("res://Assets/Items/LeadTippedDarts.png"),
+			"description": """
+			Shoot behind you
+			"""
+		}
+	
+	func _init(_emitter: Actor):
+		emitter = _emitter
+	
+	func _init2(_emitter):
+		update_offset()
+	
+	func _on_shot(bullet_list: Array):
+		var list = []
+		for bullet in bullet_list:
+			var bullet2 = bullet.duplicate()
+			bullet2.rot = emitter.get_node("Sprite").rotation - PI/2 + offset
+			bullet2.set_collision_mask_bit(Globals.BIT_ENEMY, true)
+			if not is_zero_approx(offset):
+				update_offset()
+			Items.add_child(bullet2)
+			list.append(bullet2)
+		
+		for item in emitter.items:
+			if item is Dicannon:
+				continue
+			item._on_shot(list)
+	
+	func update_offset():
+		offset = (randf() - 0.5) * 1.5
+
+
+class XPAbsorber extends ItemReference:
+	var emitter
+	
+	static func _metadata():
+		return {
+			"id": 18,
+			"charge": -1,
+			"rarity": Items.RARITIES.Common,
+			"item_name": "XP Absorber",
+			"texture": preload("res://Assets/Items/ManaIncrement.png"),
+			"description": """
+			Gain a slight amount of XP for each hit
+			"""
+		}
+	
+	func _init(_emitter: Actor):
+		emitter = _emitter
+	
+	func _on_shot(bullet_list: Array):
+		for bullet in bullet_list:
+			bullet.connect("damaged_enemy", self, "_on_bullet_damaged_enemy")
+	
+	func _on_bullet_damaged_enemy(_enemy):
+		emitter.xp += 2
+		emitter.update_xp()

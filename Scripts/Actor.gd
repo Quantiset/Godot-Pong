@@ -38,6 +38,7 @@ func add_item(item):
 	if has_item(item):
 		item._init2(self)
 	
+	connect("taken_damage", item, "_damage_taken")
 	
 	update_health()
 	update_xp()

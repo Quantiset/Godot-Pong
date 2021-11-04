@@ -8,3 +8,7 @@ func _physics_process(delta: float) -> void:
 	position += velocity * delta * 60
 	$Line2D.rotation = rot
 	$CollisionShape2D.rotation = rot - PI/2
+
+func set_speed(speed):
+	velocity = Vector2(speed,0).rotated(rot)
+	.set_speed(speed)

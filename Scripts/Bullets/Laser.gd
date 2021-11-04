@@ -12,8 +12,9 @@ var immune_time := 0.5
 var is_fading_in := true
 
 func _ready():
-	$AnimationPlayer.play("FadeIn")
-	yield($AnimationPlayer, "animation_finished")
+	if is_fading_in:
+		$AnimationPlayer.play("FadeIn")
+		yield($AnimationPlayer, "animation_finished")
 	$Line2D.modulate = Color("ffffff")
 	$Line2D2.modulate = Color("ffffff")
 	is_fading_in = false
@@ -33,19 +34,26 @@ func _physics_process(delta: float) -> void:
 		local_collision = collision_point - global_position
 		
 		if collider.has_method("take_damage"):
+			
 			if is_fading_in:
 				return
 			
 			if not collider in exceptions:
-				collider.take_damage(get_total_damage())
-				emit_signal("damaged_enemy", collider)
+				
+				damage_actor(collider)
 				exceptions.append(collider)
 				
-				# adds to the exception array to create immunity for this node
-				var t := Timer.new()
-				add_child(t)
-				t.start(immune_time)
-				t.connect("timeout", self, "on_exception_timeout", [collider, t])
+				if pierces > -4:
+					pierces -= 1
+					$RayCast2D.add_exception(collider)
+					$RayCast2D.force_raycast_update()
+				else:
+					
+					# adds to the exception array to create immunity for this node
+					var t := Timer.new()
+					add_child(t)
+					t.start(immune_time)
+					t.connect("timeout", self, "on_exception_timeout", [collider, t])
 	
 	var length_to_collision := local_collision.length()
 	var angle_to_collision := local_collision.angle()
@@ -79,3 +87,7 @@ func delete():
 func on_exception_timeout(exception, timer):
 	exceptions.erase(exception)
 	timer.queue_free()
+
+func damage_actor(actor):
+	actor.take_damage(get_total_damage())
+	emit_signal("damaged_enemy", actor)

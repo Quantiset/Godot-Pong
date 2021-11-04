@@ -8,6 +8,7 @@ var velocity := Vector2()
 
 var rot: float
 var speed := 10.0 setget set_speed
+var home_strength := 0.0
 
 var damage := 25 setget set_damage
 var damage_multiplier := 1.0 setget set_damage_multiplier

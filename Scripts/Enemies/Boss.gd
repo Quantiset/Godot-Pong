@@ -55,7 +55,7 @@ func delete():
 	player.get_node("CanvasLayer/BossBar").visible = false
 	queue_free()
 
-
+# standard boss functions. Any inherited class can call these standard functions
 func laser_wall():
 	var amount := 10
 	var size : float = player.get_node("../ReferenceRect").get_global_rect().size.y

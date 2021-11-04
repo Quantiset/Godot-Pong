@@ -12,20 +12,20 @@ extents = Vector2( 95, 35 )
 size = 22
 font_data = ExtResource( 1 )
 
-[sub_resource type="Gradient" id=5]
+[sub_resource type="Gradient" id=3]
 offsets = PoolRealArray( 0, 0.556098, 1 )
 colors = PoolColorArray( 1, 1, 1, 0.631373, 1, 1, 1, 0.560784, 1, 1, 1, 0 )
 
-[sub_resource type="GradientTexture" id=6]
-gradient = SubResource( 5 )
+[sub_resource type="GradientTexture" id=4]
+gradient = SubResource( 3 )
 
-[sub_resource type="Curve" id=7]
+[sub_resource type="Curve" id=5]
 _data = [ Vector2( 0, 0.454545 ), 0.0, 0.0, 0, 0, Vector2( 0.0964912, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.723684, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.454545 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=4]
-curve = SubResource( 7 )
+[sub_resource type="CurveTexture" id=6]
+curve = SubResource( 5 )
 
-[sub_resource type="ParticlesMaterial" id=8]
+[sub_resource type="ParticlesMaterial" id=7]
 lifetime_randomness = 0.2
 emission_shape = 2
 emission_box_extents = Vector3( 900, 600, 1 )
@@ -37,10 +37,10 @@ initial_velocity_random = 0.3
 orbit_velocity = 0.0
 orbit_velocity_random = 0.0
 scale = 4.0
-scale_curve = SubResource( 4 )
-color_ramp = SubResource( 6 )
+scale_curve = SubResource( 6 )
+color_ramp = SubResource( 4 )
 
-[sub_resource type="Environment" id=9]
+[sub_resource type="Environment" id=8]
 background_mode = 4
 glow_enabled = true
 glow_strength = 0.8
@@ -171,7 +171,7 @@ position = Vector2( 800, 0 )
 amount = 20
 lifetime = 10.0
 visibility_rect = Rect2( -987.55, -754.852, 1783.93, 1439.1 )
-process_material = SubResource( 8 )
+process_material = SubResource( 7 )
 
 [node name="Parallax2" type="ParallaxLayer" parent="ParallaxBackground"]
 modulate = Color( 1, 1, 1, 0.603922 )
@@ -233,10 +233,10 @@ position = Vector2( 800, 0 )
 amount = 20
 lifetime = 10.0
 visibility_rect = Rect2( -859.365, -680.398, 1845.35, 1382.94 )
-process_material = SubResource( 8 )
+process_material = SubResource( 7 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 9 )
+environment = SubResource( 8 )
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 z_index = -1
