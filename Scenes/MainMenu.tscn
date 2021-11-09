@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Assets/VCR_OSD_MONO_1.001.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Assets/TheButton.png" type="Texture" id=2]
@@ -42,11 +42,93 @@ color_ramp = SubResource( 4 )
 
 [sub_resource type="Environment" id=8]
 background_mode = 4
+tonemap_mode = 3
 glow_enabled = true
 glow_strength = 0.8
 glow_blend_mode = 0
 glow_hdr_threshold = 0.1
 glow_bicubic_upscale = true
+
+[sub_resource type="Shader" id=9]
+code = "shader_type canvas_item;
+
+// rendering params
+uniform float sphsize=.7; // planet size
+uniform float dist=.27; // distance for glow and distortion
+uniform float perturb=.3; // distortion amount of the flow around the planet
+uniform float displacement=.015; // hot air effect
+uniform float windspeed=.4; // speed of wind flow
+uniform float steps=110.; // number of steps for the volumetric rendering
+uniform float stepsize=.025; 
+uniform float brightness=.43;
+uniform vec3 planetcolor=vec3(0.55,0.4,0.3);
+uniform float fade=.005; //fade by distance
+uniform float glow=3.5; // glow amount, mainly on hit side
+
+
+// fractal params
+uniform int iterations=13; 
+uniform float fractparam=.7;
+uniform vec3 offset=vec3(1.5,2.,-1.5);
+
+
+float wind(vec3 p) {
+	float d=max(0.,dist-max(0.,length(p)-sphsize)/sphsize)/dist; // for distortion and glow area
+	float x=max(0.2,p.x*2.); // to increase glow on left side
+	p.y*=1.+max(0.,-p.x-sphsize*.25)*1.5; // left side distortion (cheesy)
+	p-=d*normalize(p)*perturb; // spheric distortion of flow
+	p+=vec3(TIME*windspeed,0.,0.); // flow movement
+	p=abs(fract((p+offset)*.1)-.5); // tile folding 
+	for (int i=0; i<iterations; i++) {  
+		p=abs(p)/dot(p,p)-fractparam; // the magic formula for the hot flow
+	}
+	return length(p)*(1.+d*glow*x)+d*glow*x; // return the result with glow applied
+}
+
+void fragment ()
+{
+	// get ray dir
+	vec2 uv = UV - vec2(.5);
+	vec3 dir=vec3(uv,1.);
+	dir.x*=SCREEN_PIXEL_SIZE.x/SCREEN_PIXEL_SIZE.y;
+	vec3 from=vec3(0.,0.,-2.+texture(TEXTURE,uv*.5+TIME).x*stepsize); //from+dither
+
+	// volumetric rendering
+	float v=0., l=-0.0001, t=TIME*windspeed*.2;
+	for (float r=10.;r<steps;r++) {
+		vec3 p=from+r*dir*stepsize;
+		float tx=texture(TEXTURE,uv*.2+vec2(t,0.)).x*displacement; // hot air effect
+		if (length(p)-sphsize-tx>0.)
+		// outside planet, accumulate values as ray goes, applying distance fading
+			v+=min(50.,wind(p))*max(0.,1.-r*fade); 
+		else if (l<0.) 
+		//inside planet, get planet shading if not already 
+		//loop continues because of previous problems with breaks and not always optimizes much
+			l=pow(max(.53,dot(normalize(p),normalize(vec3(-1.,.5,-0.3)))),4.)
+			*(.5+texture(TEXTURE,uv*vec2(2.,1.)*(1.+p.z*.5)+vec2(tx+t*.5,0.)).x*2.);
+		}
+	v/=steps; v*=brightness; // average values and apply bright factor
+	vec3 col=vec3(v*1.25,v*v,v*v*v)+l*planetcolor; // set color
+	col*=1.-length(pow(abs(uv),vec2(5.)))*14.; // vignette (kind of)
+	COLOR = vec4(col,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = SubResource( 9 )
+shader_param/sphsize = 0.7
+shader_param/dist = 0.27
+shader_param/perturb = 0.3
+shader_param/displacement = 0.015
+shader_param/windspeed = 0.4
+shader_param/steps = 110.0
+shader_param/stepsize = 0.025
+shader_param/brightness = 0.43
+shader_param/planetcolor = Vector3( 0.55, 0.4, 0.3 )
+shader_param/fade = 0.005
+shader_param/glow = 3.5
+shader_param/iterations = 13
+shader_param/fractparam = 0.7
+shader_param/offset = Vector3( 1.5, 2, -1.5 )
 
 [node name="UIScreen" type="Node2D"]
 script = ExtResource( 3 )
@@ -252,6 +334,9 @@ default_color = Color( 1, 1, 1, 1 )
 stream = ExtResource( 4 )
 volume_db = -10.0
 autoplay = true
+
+[node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 10 )
 
 [connection signal="mouse_entered" from="StartButton" to="." method="_on_TheButton_mouse_entered" binds= [ "Start" ]]
 [connection signal="mouse_exited" from="StartButton" to="." method="_on_TheButton_mouse_exited" binds= [ "Start" ]]

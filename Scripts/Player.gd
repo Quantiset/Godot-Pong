@@ -1,5 +1,5 @@
 extends Actor
-class_name Player
+class_name Player, "res://Assets/Player.png"
 
 var angle: float
 
@@ -8,7 +8,7 @@ const LINE = preload("res://Scenes/Line.tscn")
 var max_xp := 100
 var xp := 0
 
-var scrap := 100 setget set_scrap
+var scrap := 0 setget set_scrap
 
 var active_item
 var charge := 0
@@ -24,11 +24,11 @@ var shake_amount := 0.0
 onready var movement_joystick: TouchScreenButton = $CanvasLayer/MovementJoystick/Ball
 onready var aim_joystick: TouchScreenButton = $CanvasLayer/AimJoystick/Ball
 
-onready var long_trail: Line2D = $Node/LongTrail
-onready var burst_inner_trail: Line2D = $Node/InnerThrust
-onready var burst_outer_trail: Line2D = $Node/OuterThrust
+onready var long_trail: Line2D = $Trails/LongTrail
+onready var burst_inner_trail: Line2D = $Trails/InnerThrust
+onready var burst_outer_trail: Line2D = $Trails/OuterThrust
 
-onready var trails := $Node.get_children()
+onready var trails := $Trails.get_children()
 
 onready var aim_cursor: Area2D = $Node2/AimCursor
 
@@ -51,6 +51,7 @@ enum aim_cursor_methods {
 var aim_cursor_method: int = aim_cursor_methods.Joystick setget set_aim_cursor
 
 signal level_up(level)
+signal picked_scrap(amount)
 
 func _input(event):
 	for item in items:
@@ -62,14 +63,18 @@ func _ready():
 	$Node2/AimCursor/AnimationPlayer.play("dilate")
 	$ShotCooldownTimer.wait_time = shot_cooldown
 	$ShotCooldownTimer.start()
+	
 	max_hp = 200; hp = max_hp
+	
 	update_xp()
 	update_health()
 	set_aim_cursor(aim_cursor_method)
+	
+	add_item(Items.Aries)
+	
 	$CanvasLayer/ActiveItemRecharge/ActiveItemCharge.wait_time = charge_timer
 	$CanvasLayer/ActiveItemRecharge/ActiveItemCharge.start()
 	
-	connect("level_up", self, "on_level_up")
 
 var camera_shift := Vector2()
 func _physics_process(delta: float) -> void:
@@ -98,11 +103,11 @@ func _physics_process(delta: float) -> void:
 	# this is the code for moving the player
 	var has_moved := false
 	
-	velocity = velocity.linear_interpolate(
-		velocity + movement_joystick.ball_offset * acceleration / 20.0,
-		0.9
-	)
-	has_moved = movement_joystick.ball_offset != Vector2()
+	velocity += movement_joystick.ball_offset * acceleration / 50
+	
+	if movement_joystick.ball_offset != Vector2():
+		has_moved = false
+		velocity = velocity.clamped(max_speed)
 	
 	if Input.is_action_pressed("ui_left"):
 		velocity.x -= acceleration
@@ -124,7 +129,7 @@ func _physics_process(delta: float) -> void:
 	else:
 		$Sprite/Particles2D3.emitting = true
 	
-	camera_shift = camera_shift.linear_interpolate(to_local(aim_cursor.position)/4,0.02)
+	camera_shift = camera_shift.linear_interpolate((aim_cursor.position - position)/4,0.02)
 	$Camera2D.offset = camera_shift
 	
 	if not is_zero_approx(shake_amount):
@@ -149,7 +154,7 @@ func _physics_process(delta: float) -> void:
 	
 	angle = lerp_angle(angle, velocity.angle(), 0.2)
 	
-	$Sprite.rotation = angle + PI/2
+	rotation = angle + PI/2
 	$CollisionShape2D.rotation = angle + PI/2
 	
 	move_and_slide(velocity)
@@ -196,7 +201,7 @@ func _process(delta: float) -> void:
 
 func update_trails():
 	for trail in trails:
-		trail.add_point(position+Vector2(0, 10).rotated($Sprite.rotation))
+		trail.add_point(position+Vector2(0, 5).rotated(rotation))
 		
 		var max_points = trail_length if trail == long_trail else thrust_length
 		
@@ -280,16 +285,21 @@ func create_pong_paddles(key: String):
 
 
 func get_aim_angle() -> float:
-	return to_local(aim_cursor.position).angle()
+	return (aim_cursor.position - position).angle()
 
 
 func take_damage(damage: int):
+	
+	if immune_time > 0.0:
+		return
+	
 	.take_damage(damage)
 	hp -= damage
 	hp = clamp(hp, 0, max_hp)
 	update_health()
 	
-	shake_amount += 1
+	if damage > 0:
+		shake_amount += 1
 	$AnimationPlayer.play("RGBOffset")
 	
 	if hp <= 0:
@@ -350,8 +360,7 @@ var level = 0
 func update_xp(flash := true):
 	
 	while xp > max_xp:
-		print(xp)
-		xp -= max_hp
+		xp -= max_xp
 		max_xp += 10
 		level += 1
 		emit_signal("level_up", level)
@@ -380,6 +389,7 @@ func _on_AimCursor_body_entered(body):
 		aim_cursor_hovered = body
 
 func on_Enemy_dead(enemy: KinematicBody2D):
+	shake_amount += 0.5
 	if enemy == aim_cursor_hovered:
 		aim_cursor_hovered = get_closest_enemy_from_aim_cursor(enemy)
 
@@ -431,6 +441,7 @@ func add_item(item):
 
 
 func _on_Restart_button_pressed():
+	get_tree().paused = false
 	get_tree().change_scene("res://Scenes/MainMenu.tscn")
 
 
@@ -438,11 +449,6 @@ func _on_Resume_button_pressed():
 	get_tree().paused = false
 	$CanvasLayer/PauseMenu.hide()
 
-func _on_MenuButton_pressed():
-	get_tree().change_scene("res://Scenes/MainMenu.tscn")
-
-
-func _on_PauseButton_released():
+func _on_Pause_button_released():
 	get_tree().paused = not get_tree().paused
 	$CanvasLayer/PauseMenu.visible = not $CanvasLayer/PauseMenu.visible
-

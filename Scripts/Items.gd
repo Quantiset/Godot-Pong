@@ -22,22 +22,22 @@ class ItemReference extends Resource:
 			"""
 		}
 	
-	func _init2(emitter: Actor):
+	func _init2(_emitter: Actor):
 		pass
 	
-	func _on_shot(bullet: Array):
+	func _on_shot(_bullet: Array):
 		pass
 	
-	func _damage_taken(damage: int):
+	func _damage_taken(_damage: int):
 		pass
 	
-	func _input(event):
+	func _input(_event):
 		pass
 	
-	func _process(delta: float):
+	func _process(_delta: float):
 		pass
 	
-	func _activated(emitter: Player):
+	func _activated(_emitter: Player):
 		pass
 
 class Scrap extends ItemReference:
@@ -50,7 +50,7 @@ class Scrap extends ItemReference:
 			"item_name": "",
 			"texture": preload("res://Assets/Scrap.png"),
 			"description": """
-			+10
+			+5
 			"""
 		}
 class BlueScrap extends ItemReference:
@@ -60,7 +60,7 @@ class BlueScrap extends ItemReference:
 			"charge": -1,
 			"rarity": Items.RARITIES.Common,
 			"price": 1,
-			"item_name": "+20",
+			"item_name": "+10",
 			"texture": preload("res://Assets/BlueScrap.png"),
 			"description": """
 			
@@ -675,3 +675,55 @@ class XPAbsorber extends ItemReference:
 	func _on_bullet_damaged_enemy(_enemy):
 		emitter.xp += 2
 		emitter.update_xp()
+
+class ScrapWrench extends ItemReference:
+	
+	static func _metadata():
+		return {
+			"id": 18,
+			"charge": -1,
+			"rarity": Items.RARITIES.Common,
+			"item_name": "XP Absorber",
+			"texture": preload("res://Assets/Items/Wrench.png"),
+			"description": """
+			Reduces scrap recieved by a small amount, but heals you for scrap gained
+			"""
+		}
+	
+	func _init(emitter: Actor):
+		emitter.connect("picked_scrap", self, "on_scrap_picked_up", [emitter])
+	
+	func on_scrap_picked_up(amount, emitter):
+		emitter.scrap -= 1
+		emitter.hp += 3
+
+class Aries extends ItemReference:
+	
+	static func _metadata():
+		return {
+			"id": 19,
+			"charge": -1,
+			"rarity": Items.RARITIES.Common,
+			"item_name": "Aries",
+			"texture": preload("res://Assets/Items/Wrench.png"),
+			"description": """
+			Use speed
+			"""
+		}
+	
+	func _init(emitter: Actor):
+		emitter.max_speed += 75
+		emitter.connect("collided_with", self, "on_collision", [emitter])
+	
+	func on_collision(collision: KinematicCollision2D, emitter):
+		var collider = collision.collider
+		if collider.has_method("take_damage"):
+			var magnitude: float = emitter.velocity.length()
+			if magnitude > 450:
+				var damage: int = (magnitude - 450) / 10
+				
+				collider.take_damage(damage)
+				emitter.take_damage(10)
+				emitter.immune_time += 0.2
+	
+

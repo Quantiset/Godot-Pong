@@ -1,7 +1,10 @@
 extends Boss
+class_name LaserBoss
 
 onready var ref_rect: ReferenceRect = get_node("../ReferenceRect")
 onready var centerofroom: Vector2 = ref_rect.rect_position + ref_rect.rect_size/2
+
+const LASER_COLOR = Color(1, 1.2, 0.5)
 
 enum States {
 	FollowPlayerAndShoot
@@ -42,7 +45,7 @@ func _physics_process(delta: float) -> void:
 						var b_inst = b.instance()
 						b_inst.position = position
 						b_inst.rotation = i*2*PI/explosion_amount + randfl
-						b_inst.modulate = Color(0.952229, 0.996094, 0.564194)
+						b_inst.modulate = LASER_COLOR
 						b_inst.get_node("AnimationPlayer").connect("animation_finished", self, "on_laser_warning_finished", [b_inst, true, 5])
 						get_parent().call_deferred("add_child", b_inst)
 				
@@ -60,7 +63,7 @@ func _physics_process(delta: float) -> void:
 				var b_inst = b.instance()
 				b_inst.position = position
 				b_inst.rotation = (player.position - position).angle()
-				b_inst.modulate = Color(0.952229, 0.996094, 0.564194)
+				b_inst.modulate = LASER_COLOR
 				b_inst.get_node("AnimationPlayer").connect("animation_finished", self, "on_laser_warning_finished", [b_inst, false, 0.05])
 				get_parent().call_deferred("add_child", b_inst)
 			

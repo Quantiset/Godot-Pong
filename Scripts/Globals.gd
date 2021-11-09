@@ -55,6 +55,7 @@ const ENEMY_POOL = {
 	}
 }
 
+
 const BOSS_STAGE := {
 	null: preload("res://Scenes/Enemies/NormalBoss.tscn"),
 	1: preload("res://Scenes/Enemies/NormalBoss.tscn"),
@@ -63,7 +64,7 @@ const BOSS_STAGE := {
 }
 
 
-const RARITIES_PRICE := {
+var RARITIES_PRICE := {
 	Items.RARITIES.Common: 100,
 	Items.RARITIES.Rare: 200,
 	Items.RARITIES.Ultra: 400,
@@ -99,13 +100,18 @@ func _ready():
 
 
 func remove_particle(p: Particles2D):
+	
 	if not is_instance_valid(p): return
+	
 	var pp = p.global_position
+	var pc = p.modulate
 	var t = Timer.new()
+	
 	p.get_parent().remove_child(p)
 	add_child(p)
 	add_child(t)
 	p.position = pp
+	p.modulate = pc
 	t.start(p.lifetime*(1+p.process_material.lifetime_randomness))
 	t.connect("timeout", self, "queue_free_all", [[t, p]])
 
@@ -120,11 +126,15 @@ func remove_trail(t: Line2D, fade_duration := 1.0):
 	tw.connect("tween_all_completed", self, "queue_free_all", [[t]])
 	tw.start()
 
+
 func queue_free_all(arr: Array):
 	for obj in arr:
 		if is_instance_valid(obj):
 			obj.queue_free()
 
+# returns an item in the pool with a
+# {key: weight} dictionary
+# is slower the more keys and weights that are present
 func parse_pool(POOL: Dictionary):
 	var num_sum := 0
 	
@@ -138,12 +148,15 @@ func parse_pool(POOL: Dictionary):
 		if random_num < 0:
 			return pool_entry
 
+# mod shorthand
 func spawn_item_at(item: GDScript, pos: Vector2):
 	var i = preload("res://Scenes/Item.tscn").instance()
 	i.position = pos
 	i.type = item
 	get_parent().call_deferred("add_child", i)
 
+# gets closest enemy from a point in space.
+# used for relocating a cursor to the nearest enemy
 func get_closest_enemy_from(position: Vector2, exceptions = []):
 	var enemies = get_tree().get_nodes_in_group("Enemy")
 	

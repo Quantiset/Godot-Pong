@@ -32,7 +32,7 @@ tracks/0/keys = {
 "values": [ 0.0, 2.1, 2.1 ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=4]
 resource_name = "Vibrate"
 length = 4.0
 loop = true
@@ -73,10 +73,10 @@ tracks/2/keys = {
 "values": [ 0.0, 360.0 ]
 }
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="DynamicFont" id=5]
 font_data = ExtResource( 4 )
 
-[sub_resource type="DynamicFont" id=5]
+[sub_resource type="DynamicFont" id=6]
 size = 10
 font_data = ExtResource( 4 )
 
@@ -102,7 +102,7 @@ shape = SubResource( 2 )
 anims/Shine = SubResource( 3 )
 
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="."]
-anims/Vibrate = SubResource( 6 )
+anims/Vibrate = SubResource( 4 )
 
 [node name="DescriptionPopup" type="Control" parent="."]
 visible = false
@@ -119,7 +119,7 @@ margin_left = -252.0
 margin_top = -7.0
 margin_right = 326.0
 margin_bottom = 8.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 5 )
 text = "Machine Turretssasdfasfasf"
 align = 1
 valign = 1
@@ -132,7 +132,7 @@ margin_left = -26.0
 margin_top = 17.0
 margin_right = 100.0
 margin_bottom = 26.0
-custom_fonts/font = SubResource( 5 )
+custom_fonts/font = SubResource( 6 )
 text = "a"
 align = 1
 valign = 1
@@ -158,4 +158,9 @@ __meta__ = {
 
 [node name="Tween" type="Tween" parent="."]
 
+[node name="Tween2" type="Tween" parent="."]
+
+[node name="TimeoutTimer" type="Timer" parent="."]
+
 [connection signal="body_entered" from="." to="." method="_on_Item_body_entered"]
+[connection signal="timeout" from="TimeoutTimer" to="." method="_on_Timer_timeout"]

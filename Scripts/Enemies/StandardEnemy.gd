@@ -7,10 +7,10 @@ var angle := -PI/2
 
 func _physics_process(delta: float) -> void:
 	
-	var to_player := to_local(player.position)
+	var to_player := player.position - position
 	
 	if to_player.length_squared() > 10000:
-		velocity += to_local(player.global_position).normalized() * acceleration
+		velocity += to_player.normalized() * acceleration
 		velocity = velocity.clamped(max_speed)
 		$Sprite/SmokeTrail.emitting = true
 	else:
@@ -19,8 +19,7 @@ func _physics_process(delta: float) -> void:
 	
 	angle = lerp_angle(angle, velocity.angle(), 0.1)
 	
-	$Sprite.rotation = angle + PI/2
-	$CollisionShape2D.rotation = angle+ PI/2
+	rotation = angle + PI/2
 	
 	if randi() % shoot_rate == 1:
 		for b_inst in shoot():

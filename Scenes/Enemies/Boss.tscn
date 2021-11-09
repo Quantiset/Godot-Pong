@@ -1,10 +1,100 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Assets/Enemies/StandardEnemy.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Enemies/Boss.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/Trails.tscn" type="PackedScene" id=3]
 
-[node name="Boss" type="KinematicBody2D"]
+[sub_resource type="Animation" id=27]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( -0.5, 0 ) ]
+}
+
+[sub_resource type="Animation" id=28]
+resource_name = "shake"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -0.5, 0 ), Vector2( 3, 3 ), Vector2( -3, -4 ), Vector2( 3, -1 ), Vector2( -3, 6 ), Vector2( 3, 2 ), Vector2( 3, 3 ), Vector2( 3, -1 ), Vector2( -3, 6 ), Vector2( 3, 3 ), Vector2( -3, 6 ) ]
+}
+
+[sub_resource type="CanvasItemMaterial" id=29]
+blend_mode = 1
+
+[sub_resource type="Gradient" id=30]
+offsets = PoolRealArray( 0, 0.186047, 0.403101, 0.728682, 1 )
+colors = PoolColorArray( 0.933594, 0.744562, 0.134933, 0.741176, 0.90625, 0.736328, 0.226562, 1, 0.921875, 0.408722, 0.230469, 1, 0.925781, 0.288177, 0.141037, 0.807843, 1, 0, 0, 0.52549 )
+
+[sub_resource type="GradientTexture" id=24]
+gradient = SubResource( 30 )
+
+[sub_resource type="Curve" id=31]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.0159091 ), -1.96643, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=26]
+curve = SubResource( 31 )
+
+[sub_resource type="ParticlesMaterial" id=32]
+lifetime_randomness = 0.7
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 98, 0 )
+initial_velocity = 200.0
+initial_velocity_random = 0.5
+angular_velocity = 180.0
+angular_velocity_random = 1.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+damping = 500.0
+damping_random = 1.0
+angle = 180.0
+angle_random = 1.0
+scale = 7.0
+scale_random = 0.5
+scale_curve = SubResource( 26 )
+color_ramp = SubResource( 24 )
+
+[sub_resource type="CanvasItemMaterial" id=33]
+blend_mode = 1
+
+[sub_resource type="Curve" id=34]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.225 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=20]
+curve = SubResource( 34 )
+
+[sub_resource type="ParticlesMaterial" id=35]
+flag_disable_z = true
+spread = 180.0
+gravity = Vector3( 0, 20, 0 )
+initial_velocity = 200.0
+initial_velocity_random = 0.3
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+damping = 100.0
+angle = 90.0
+angle_random = 1.0
+scale = 40.0
+scale_random = 0.3
+scale_curve = SubResource( 20 )
+
+[node name="Boss" type="KinematicBody2D" groups=["Boss", "Enemy"]]
 collision_layer = 4
 script = ExtResource( 2 )
 
@@ -16,6 +106,10 @@ scale = Vector2( 4, 4 )
 z_index = 2
 texture = ExtResource( 1 )
 offset = Vector2( -0.5, 0 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite"]
+anims/RESET = SubResource( 27 )
+anims/shake = SubResource( 28 )
 
 [node name="Raycasts" type="Node2D" parent="."]
 
@@ -44,5 +138,25 @@ z_index = -1
 [node name="OuterThrust" parent="Trails" index="2"]
 position = Vector2( 0, 50 )
 z_index = -1
+
+[node name="ExplosionParticlesFire" type="Particles2D" parent="."]
+material = SubResource( 29 )
+emitting = false
+amount = 500
+lifetime = 2.5
+one_shot = true
+explosiveness = 0.9
+visibility_rect = Rect2( -451.707, -194.345, 911.634, 923.341 )
+process_material = SubResource( 32 )
+
+[node name="ExplosionParticlesRed" type="Particles2D" parent="."]
+modulate = Color( 1, 0.0196078, 0.0196078, 0.0823529 )
+material = SubResource( 33 )
+emitting = false
+amount = 200
+lifetime = 2.0
+one_shot = true
+explosiveness = 0.4
+process_material = SubResource( 35 )
 
 [editable path="Trails"]

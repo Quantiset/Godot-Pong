@@ -43,7 +43,7 @@ func _physics_process(delta: float) -> void:
 				damage_actor(collider)
 				exceptions.append(collider)
 				
-				if pierces > -4:
+				if pierces > 0:
 					pierces -= 1
 					$RayCast2D.add_exception(collider)
 					$RayCast2D.force_raycast_update()

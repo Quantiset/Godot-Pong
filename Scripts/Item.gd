@@ -3,9 +3,11 @@ class_name Item
 
 var velocity := Vector2()
 
-export var type: GDScript = Items.DoubledMuzzle setget set_type
+var type: GDScript = Items.DoubledMuzzle setget set_type
 var metadata: Dictionary
 var id: int
+
+export var time: float = -1
 
 export var paid := false
 var price: int
@@ -36,6 +38,7 @@ func update_type():
 	if id < 0:
 		set_collision_layer_bit(Globals.BIT_SCRAP, true)
 		$AnimationPlayer2.play("Vibrate")
+		time = 10
 	else:
 		set_collision_layer_bit(Globals.BIT_SCRAP, false)
 		$AnimationPlayer2.stop(true)
@@ -46,6 +49,9 @@ func update_type():
 		$PriceLabel.text = str(price)
 	else:
 		$PriceLabel.hide()
+	
+	if time != -1:
+		$TimeoutTimer.call_deferred("start", time * 3.0 / 4)
 
 func set_type(_type):
 	type = _type
@@ -54,8 +60,11 @@ func set_type(_type):
 func _on_Item_body_entered(body):
 	if body.is_in_group("Player") and not has_picked_up:
 		if id < 0:
+			var value: int = abs(id) * 5
+			
 			# better scrap items have increased scrap values
-			body.scrap += abs(id) * 10
+			body.scrap += value
+			body.emit_signal("picked_scrap", value)
 		else:
 			
 			# if paid is set to true, meaning the player has to pay for it
@@ -116,3 +125,12 @@ func delete():
 	queue_free()
 
 
+var is_second := false
+func _on_Timer_timeout():
+	
+	if not is_second:
+		$AnimationPlayer2.playback_speed = 2.0
+		$TimeoutTimer.start(time / 4)
+		is_second = true
+	else:
+		queue_free()

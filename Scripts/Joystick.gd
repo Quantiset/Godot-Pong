@@ -1,6 +1,6 @@
 extends TouchScreenButton
 
-
+#read this vector to see how offset the ball is compared to origin. 
 var ball_offset := Vector2()
 
 

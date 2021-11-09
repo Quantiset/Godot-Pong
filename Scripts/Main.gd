@@ -18,7 +18,6 @@ func _ready():
 	
 	connect("wave_begun", self, "on_wave_begun")
 	
-	spawn_shop()
 	gen_random_spawn(randi()%3+2)
 
 onready var spawnable_space: Vector2 = $ReferenceRect.rect_size
@@ -61,22 +60,6 @@ func get_random_enemy_per_weights() -> PackedScene:
 	
 	return Globals.parse_pool(ENEMIES)
 
-
-func on_Enemy_dead():
-	
-	player.xp += 10
-	player.update_xp()
-	
-	enemies_left -= 1
-	if enemies_left == 0:
-		
-		# does not increment the wave counter while boss is alive; 
-		# continues spawning enemies but is a standstill at the current wave
-		if not is_boss_alive:
-			wave += 1
-		
-		emit_signal("wave_begun", wave)
-
 func on_wave_begun(_wave_idx: int):
 	
 	player.get_node("CanvasLayer/WaveLabel").text = str(wave)
@@ -89,16 +72,16 @@ func on_wave_begun(_wave_idx: int):
 	if wave % 5 == 0 and not is_boss_alive:
 		is_boss_alive = true
 		
-		var boss_inst: Boss
-		if Globals.BOSS_STAGE.has(get_stage()):
-			boss_inst = Globals.BOSS_STAGE[get_stage()].instance()
-		else:
-			boss_inst = Globals.BOSS_STAGE[null].instance()
+		var boss: Boss
 		
-		var boss: Boss = preload("res://Scenes/Enemies/NormalBoss.tscn").instance()
+		if Globals.BOSS_STAGE.has(get_stage()):
+			boss = Globals.BOSS_STAGE[get_stage()].instance()
+		else:
+			boss = Globals.BOSS_STAGE[null].instance()
+		
 		call_deferred("add_child", boss)
 		boss.position = $ReferenceRect.rect_position + $ReferenceRect.rect_size/2
-		boss.connect("dead", self, "on_Boss_dead")
+		boss.connect("dead", self, "on_Boss_dead", [boss])
 		$AudioStreamPlayer.stream = preload("res://Assets/SoundEffects/Orbital Colossus.mp3")
 		$AudioStreamPlayer.play()
 	
@@ -114,12 +97,60 @@ func set_stage(_val): pass
 func get_stage() -> int:
 	return 1 + (wave-1)/5
 
-func on_Boss_dead():
+onready var audio_tween: Tween = $AudioStreamPlayer/Tween
+func _on_Player_taken_damage(damage):
+	if damage > 0:
+		audio_tween.interpolate_property($AudioStreamPlayer, "pitch_scale", 0.5, 1, 1.5, Tween.TRANS_LINEAR)
+		audio_tween.interpolate_property($AudioStreamPlayer, "volume_db", -25, -17, 1.5, Tween.TRANS_LINEAR)
+		audio_tween.start()
+
+func on_Enemy_dead():
+	slow_screen()
+	
+	player.xp += 10
+	player.update_xp()
+	
+	enemies_left -= 1
+	if enemies_left == 0:
+		
+		# does not increment the wave counter while boss is alive; 
+		# continues spawning enemies but is a standstill at the current wave
+		if not is_boss_alive:
+			wave += 1
+		
+		# while a shop is active (boss item has not been picked up yet),
+		# it should not continue spawning enemies
+		if is_shop_active:
+			return
+		
+		emit_signal("wave_begun", wave)
+
+
+func on_Boss_dead(boss):
+	spawn_shop()
+	
+	
+	
 	is_boss_alive = false
+	is_shop_active = true
 	$AudioStreamPlayer.stream = preload("res://Assets/SoundEffects/Thrust Sequence.mp3")
 	$AudioStreamPlayer.play()
 
+func on_Boss_item_picked(idx: int):
+	is_shop_active = false
+	
+	if enemies_left == 0:
+		wave += 1
+		emit_signal("wave_begun", wave)
+	
+	clear_shop()
+
 func spawn_shop():
+	
+	yield(get_tree(), "idle_frame")
+	
+	var shop: Node = $Shop
+	
 	var cut := 500.0
 	var amount := 5
 	var length: float = $ReferenceRect.get_global_rect().size.x - cut * 2
@@ -134,26 +165,58 @@ func spawn_shop():
 		var item = preload("res://Scenes/Item.tscn").instance()
 		item.type = Globals.parse_pool(Globals.ITEM_POOL)
 		item.paid = true
-		add_child(item)
+		shop.add_child(item)
 		item.position = Vector2(
 			start_pos_x + step * i,
 			start_pos_y
 		)
 	
-	length = $ReferenceRect.get_global_rect().size.x - cut * 3
-	amount = randi() % 3 + 1
+	cut += 150.0
+	amount = 5
+	length = $ReferenceRect.get_global_rect().size.x - cut * 2
+	start_pos_x = $ReferenceRect.get_global_rect().position.x + cut
+	start_pos_y = (
+		$ReferenceRect.get_global_rect().size.y/2 + 
+		$ReferenceRect.get_global_rect().position.y
+	)
 	step = length / amount
 	for i in range(amount):
 		var wrench = preload("res://Scenes/Wrench.tscn").instance()
-		add_child(wrench)
+		shop.add_child(wrench)
 		wrench.position = Vector2(
-			start_pos_x + cut / 2 + step * i,
+			start_pos_x + step * i - 30,
 			start_pos_y + 100
 		)
+	
+	if not get_node_or_null("Weight"):
+		var weight = preload("res://Scenes/Weight.tscn").instance()
+		add_child(weight)
+		weight.name = "Weight"
+		weight.position = Vector2(
+			start_pos_x + length / 2 - 65,
+			start_pos_y - 120
+		)
+	else:
+		get_node("Weight").show()
+		get_node("Weight").set_deferred("monitoring", true)
 
-onready var audio_tween: Tween = $AudioStreamPlayer/Tween
-func _on_Player_taken_damage(damage):
-	if damage > 0:
-		audio_tween.interpolate_property($AudioStreamPlayer, "pitch_scale", 0.5, 1, 1.5, Tween.TRANS_LINEAR)
-		audio_tween.interpolate_property($AudioStreamPlayer, "volume_db", -25, -17, 1.5, Tween.TRANS_LINEAR)
-		audio_tween.start()
+func clear_shop(hide_weight := true):
+	for item in $Shop.get_children():
+		if hide_weight and item.name == "Weight":
+			item.hide()
+			item.set_deferred("monitoring", false)
+		item.queue_free()
+
+# adds a bit of slooowwwwww to the game after every enemy death
+var true_time_scale: float
+func slow_screen():
+	pass
+#	if not $SlowdownTween.is_active():
+#		true_time_scale = Engine.time_scale
+#	$SlowdownTween.interpolate_property(Engine, "time_scale", true_time_scale, true_time_scale/2, 0.05)
+#	$SlowdownTween.start()
+#
+#	yield($SlowdownTween, "tween_completed")
+#
+#	$SlowdownTween.interpolate_property(Engine, "time_scale", Engine.time_scale, true_time_scale, 0.05)
+#	$SlowdownTween.start()

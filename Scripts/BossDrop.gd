@@ -3,13 +3,17 @@ extends Node2D
 onready var items := [$Item, $Item2, $Item3]
 var fade_time := 0.75
 
+signal picked_up(idx)
+
 func _ready():
 	
 	for item in items:
 		item.type = Globals.parse_pool(Globals.ITEM_POOL)
 
 
-func _on_Item_picked_up(_item: int):
+func _on_Item_picked_up(_idx: int):
+	
+	emit_signal("picked_up", _idx)
 	
 	for item in items:
 		item.set_deferred("monitoring", false)

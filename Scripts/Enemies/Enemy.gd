@@ -12,9 +12,6 @@ onready var trails := $Trails.get_children()
 const HPDROP = preload("res://Scenes/HealthDrop.tscn")
 const ITEM = preload("res://Scenes/Item.tscn")
 
-var hp_drop_rate = 10
-var item_drop_rate = 20
-
 var speed_core_multiplier := 1.0
 
 var is_visible := false
@@ -31,7 +28,7 @@ func _ready():
 func _physics_process(delta: float) -> void:
 	
 	for trail in trails:
-		trail.add_point(position+Vector2(0, 10).rotated($Sprite.rotation))
+		trail.add_point(position+Vector2(0, 10).rotated(rotation))
 		
 		var max_points = trail_length if trail == $Trails/LongTrail else thrust_length
 		
@@ -51,19 +48,13 @@ func take_damage(damage: int) -> void:
 
 func die():
 	
-	if randi() % hp_drop_rate == 0 and get_tree().get_nodes_in_group("HealthDrop").size() <= 3:
-		var hp = HPDROP.instance()
-		hp.position = position
-		get_parent().call_deferred("add_child", hp)
-	#elif randi() % item_drop_rate == 0:
-	elif true:
-		for i in range(randi()%3+2):
-			var it = ITEM.instance()
-			it.position = position + Vector2(randf()-0.5, randf()-0.5)*30
-			it.scale /= 1.5
-			it.type = Items.BlueScrap if randi() % 4 == 0 else Items.Scrap
-			#it.type = Globals.parse_pool(Globals.ITEM_POOL)
-			get_parent().call_deferred("add_child", it)
+	for i in range(randi()%4):
+		var it = ITEM.instance()
+		it.position = position + Vector2(randf()-0.5, randf()-0.5)*30
+		it.scale /= 1.5
+		it.type = Items.BlueScrap if randi() % 4 == 0 else Items.Scrap
+		#it.type = Globals.parse_pool(Globals.ITEM_POOL)
+		get_parent().call_deferred("add_child", it)
 	
 	#Globals.remove_trail($Node/LongTrail)
 	$Sprite/SmokeTrail.emitting = false

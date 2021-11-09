@@ -28,8 +28,22 @@ var status_effects_to_time := {}
 
 var items := []
 
+# time left until it becomes hittable again
+var immune_time := 0.0
+
 signal shot(bullet)
 signal taken_damage(damage)
+signal collided_with(enemy)
+
+
+func _physics_process(delta: float) -> void:
+	for col_idx in range(get_slide_count()):
+		var collision = get_slide_collision(col_idx)
+		if collision:
+			emit_signal("collided_with", collision)
+	immune_time -= delta
+	immune_time = clamp(immune_time, 0, 2)
+
 
 func add_item(item):
 	
@@ -70,6 +84,9 @@ func apply_status_effect(effect, duration: float):
 	if not effect in Globals.STATUS_EFFECTS.values():
 		printerr("Effect "+str(effect)+" does not exist in Globals.STATUS_EFFECTS")
 		return
+	
+	if status_effects_to_time.has(effect):
+		return 
 	
 	match effect:
 		Globals.STATUS_EFFECTS.PoisionAcid:
