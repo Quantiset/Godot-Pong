@@ -74,13 +74,19 @@ func boost():
 
 var cached_speed: int
 func stun():
-	cached_speed = max_speed
-	max_speed = 0
+	
+	# we check if cached_speed is zero so that it doesn't set max_speed to 0 permanently
+	if cached_speed == 0:
+		cached_speed = max_speed
+		max_speed = 0
+	
 	$StunTimer.start(stun_duration)
 
 func _on_StunTimer_timeout():
+	#if any speed was added to it while it was stunned
 	cached_speed += max_speed
 	max_speed = cached_speed
+	cached_speed = 0
 
 func _on_VisibilityNotifier2D_screen_entered():
 	is_visible = true

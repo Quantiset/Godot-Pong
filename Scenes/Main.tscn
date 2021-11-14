@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scripts/Main.gd" type="Script" id=1]
-[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/ParallaxBackground.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Assets/SoundEffects/Thrust Sequence.mp3" type="AudioStream" id=3]
 [ext_resource path="res://Scripts/Shaders/Galaxy.shader" type="Shader" id=4]
 
@@ -67,16 +67,12 @@ script = ExtResource( 1 )
 
 [node name="Shop" type="Node2D" parent="."]
 
-[node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 248, 112 )
-
 [node name="Line2D" type="Line2D" parent="."]
 points = PoolVector2Array( 0, 0, 1750, 0, 1750, 1150, 0, 1150, 0, -3 )
 width = 6.0
 default_color = Color( 1, 1, 1, 1 )
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
-modulate = Color( 1, 1, 1, 0.878431 )
 z_index = -1
 color = Color( 0.164706, 0.164706, 0.164706, 1 )
 polygon = PoolVector2Array( 0, 0, 1751, 0, 1750, 1148, 1, 1150, 0, 0, -1206, -37, -1245, 1948, 2684, 1911, 2730, -864, -1208, -822, -1206, -38 )
@@ -84,6 +80,7 @@ polygon = PoolVector2Array( 0, 0, 1751, 0, 1750, 1148, 1, 1150, 0, 0, -1206, -37
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
 [node name="Parallax" type="ParallaxLayer" parent="ParallaxBackground"]
+visible = false
 motion_scale = Vector2( 0.8, 0.8 )
 motion_mirroring = Vector2( 1800, 1200 )
 
@@ -152,6 +149,7 @@ visibility_rect = Rect2( -987.55, -754.852, 1783.93, 1439.1 )
 process_material = SubResource( 5 )
 
 [node name="Parallax2" type="ParallaxLayer" parent="ParallaxBackground"]
+visible = false
 modulate = Color( 1, 1, 1, 0.603922 )
 motion_scale = Vector2( 0.6, 0.6 )
 motion_mirroring = Vector2( 1800, 1200 )
@@ -224,6 +222,7 @@ process_material = SubResource( 5 )
 layer = 2
 
 [node name="Parallax" type="ParallaxLayer" parent="ParallaxBackground2"]
+visible = false
 motion_scale = Vector2( 1.2, 1.2 )
 motion_mirroring = Vector2( 1800, 1200 )
 
@@ -235,6 +234,7 @@ visibility_rect = Rect2( -987.55, -754.852, 1783.93, 1439.1 )
 process_material = SubResource( 5 )
 
 [node name="Parallax2" type="ParallaxLayer" parent="ParallaxBackground2"]
+visible = false
 modulate = Color( 1, 1, 1, 0.603922 )
 motion_scale = Vector2( 1.4, 1.4 )
 motion_mirroring = Vector2( 1800, 1200 )
@@ -245,6 +245,14 @@ amount = 20
 lifetime = 10.0
 visibility_rect = Rect2( -859.365, -680.398, 1845.35, 1382.94 )
 process_material = SubResource( 5 )
+
+[node name="ParallaxBackground3" parent="." instance=ExtResource( 2 )]
+
+[node name="Planet1" parent="ParallaxBackground3" index="1"]
+visible = false
+
+[node name="Planet2" parent="ParallaxBackground3" index="3"]
+visible = false
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PoolVector2Array( 1, 1, 1751, 1, 1748, 1147, 1, 1148, 1, 1, -46, 1, -61, 1222, 1820, 1226, 1803, -75, -48, -47, -46, 1 )
@@ -272,4 +280,4 @@ autoplay = true
 
 [node name="SlowdownTween" type="Tween" parent="."]
 
-[connection signal="taken_damage" from="Player" to="." method="_on_Player_taken_damage"]
+[editable path="ParallaxBackground3"]

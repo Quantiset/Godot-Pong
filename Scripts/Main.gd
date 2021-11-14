@@ -9,10 +9,16 @@ var wave := 1
 
 var stage: int setget set_stage, get_stage
 
-onready var player: KinematicBody2D = $Player
+var player: KinematicBody2D
 
 signal spawned_enemy(enemy)
 signal wave_begun(wave_idx)
+
+
+
+func _init():
+	player = Globals.player_scene.instance()
+	add_child(player)
 
 func _ready():
 	
@@ -128,8 +134,6 @@ func on_Enemy_dead():
 
 func on_Boss_dead(boss):
 	spawn_shop()
-	
-	
 	
 	is_boss_alive = false
 	is_shop_active = true

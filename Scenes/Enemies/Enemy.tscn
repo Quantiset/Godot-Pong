@@ -3,7 +3,7 @@
 [ext_resource path="res://Assets/Enemies/StandardEnemy.png" type="Texture" id=1]
 [ext_resource path="res://Scenes/Trails.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Scripts/Enemies/Enemy.gd" type="Script" id=3]
-[ext_resource path="res://Assets/Player_n.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Player/Player_n.png" type="Texture" id=4]
 [ext_resource path="res://Assets/SoundEffects/laser7.wav" type="AudioStream" id=5]
 
 [sub_resource type="Gradient" id=1]

@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/Players/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Assets/Player/LaserPlayer.png" type="Texture" id=2]
+[ext_resource path="res://Scripts/Players/LaserPlayer.gd" type="Script" id=3]
+
+[node name="LaserPlayer" instance=ExtResource( 1 )]
+script = ExtResource( 3 )
+
+[node name="Sprite" parent="." index="4"]
+texture = ExtResource( 2 )
+
+[editable path="Trails"]
+[editable path="CanvasLayer/BossBar"]

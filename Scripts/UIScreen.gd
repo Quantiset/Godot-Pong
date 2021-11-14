@@ -7,8 +7,14 @@ func _process(delta: float) -> void:
 
 
 
-func _on_TouchScreenButton_pressed():
-	get_tree().change_scene("res://Scenes/Main.tscn")
+func _on_TouchScreenButton_pressed(button: String):
+	match button:
+		"Start":
+			get_tree().change_scene("res://Scenes/Main.tscn")
+		"Quit":
+			get_tree().quit()
+		"Ship":
+			get_tree().change_scene("res://Scenes/ShipSelect.tscn")
 
 
 func _on_TheButton_mouse_entered(button: String):

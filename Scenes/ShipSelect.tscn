@@ -1,0 +1,385 @@
+[gd_scene load_steps=22 format=2]
+
+[ext_resource path="res://Assets/Tiles_1.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Light.png" type="Texture" id=2]
+[ext_resource path="res://Scripts/ShipSelect.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/Shaders/Shine.shader" type="Shader" id=4]
+[ext_resource path="res://icon.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Player/Player.png" type="Texture" id=6]
+[ext_resource path="res://Assets/VCR_OSD_MONO_1.001.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://Assets/TheButton.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Plating.png" type="Texture" id=9]
+[ext_resource path="res://Assets/Sword.png" type="Texture" id=10]
+[ext_resource path="res://Assets/Lightning.png" type="Texture" id=11]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[sub_resource type="DynamicFont" id=4]
+size = 26
+font_data = ExtResource( 7 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 95, 35 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 22
+font_data = ExtResource( 7 )
+
+[sub_resource type="DynamicFont" id=7]
+font_data = ExtResource( 7 )
+
+[sub_resource type="Gradient" id=8]
+offsets = PoolRealArray( 0, 0.46319, 1 )
+colors = PoolColorArray( 0.262745, 0.8, 0.298039, 1, 1, 0.895721, 0.214844, 1, 0.929412, 0.278431, 0.278431, 1 )
+
+[sub_resource type="GradientTexture" id=9]
+gradient = SubResource( 8 )
+width = 100
+
+[sub_resource type="DynamicFont" id=10]
+font_data = ExtResource( 7 )
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 4 )
+shader_param/shine_length = 0.16
+shader_param/offset = 0.359
+shader_param/strength = 1.1
+shader_param/show_texture = false
+
+[sub_resource type="Environment" id=3]
+glow_enabled = true
+glow_strength = 0.8
+glow_blend_mode = 0
+glow_hdr_threshold = 0.1
+glow_bicubic_upscale = true
+
+[node name="ShipSelect" type="Control"]
+margin_left = 30.0
+margin_right = 30.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="ShipSelect" type="Control" parent="."]
+margin_left = 40.0
+margin_right = 89.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ItemList" type="ItemList" parent="ShipSelect"]
+margin_left = 369.0
+margin_top = 44.0
+margin_right = 969.0
+margin_bottom = 515.0
+custom_styles/selected_focus = SubResource( 1 )
+max_columns = 9
+fixed_column_width = 59
+icon_scale = 1.5
+fixed_icon_size = Vector2( 32, 42 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect2" type="TextureRect" parent="ShipSelect"]
+modulate = Color( 1, 1, 1, 0.552941 )
+light_mask = 2
+margin_left = 365.0
+margin_top = 44.0
+margin_right = 901.0
+margin_bottom = 513.0
+mouse_filter = 2
+texture = ExtResource( 1 )
+stretch_mode = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="ShipSelect"]
+modulate = Color( 0.0823529, 0.0862745, 0.0941176, 1 )
+light_mask = 2
+margin_left = 366.0
+margin_top = 45.0
+margin_right = 902.0
+margin_bottom = 514.0
+mouse_filter = 2
+texture = ExtResource( 1 )
+stretch_mode = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect" type="ColorRect" parent="ShipSelect"]
+margin_left = 903.0
+margin_right = 984.0
+margin_bottom = 552.0
+color = Color( 0.117647, 0.117647, 0.117647, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Position2D" type="Position2D" parent="ShipSelect"]
+position = Vector2( 369, 48 )
+
+[node name="ShipUI" type="ColorRect" parent="."]
+margin_left = 28.0
+margin_top = 44.0
+margin_right = 371.0
+margin_bottom = 513.0
+color = Color( 0.172549, 0.164706, 0.196078, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Line2D2" type="Line2D" parent="ShipUI"]
+light_mask = 2
+position = Vector2( -1, -1 )
+points = PoolVector2Array( 342, 469, 342, 179, 343, 1, 0, 1, 0, 169, 0, 169, 342, 169, 0, 169, 0, 210, 342, 210, 0, 210, 0, 317, 342, 317, 0, 317, 0, 469, 343, 469 )
+width = 3.0
+default_color = Color( 0.631373, 0.627451, 0.639216, 1 )
+
+[node name="Line2D" type="Line2D" parent="ShipUI"]
+light_mask = 2
+points = PoolVector2Array( 342, 469, 342, 179, 343, 1, 0, 1, 0, 169, 0, 169, 342, 169, 0, 169, 0, 210, 342, 210, 0, 210, 0, 317, 342, 317, 0, 317, 0, 469, 343, 469 )
+width = 3.0
+default_color = Color( 0.0823529, 0.0862745, 0.0941176, 1 )
+
+[node name="BG" type="ColorRect" parent="ShipUI"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 334.0
+margin_bottom = 154.0
+color = Color( 0.0823529, 0.0862745, 0.0941176, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Sprite" type="Sprite" parent="ShipUI"]
+position = Vector2( 165, 77 )
+scale = Vector2( 4, 4 )
+texture = ExtResource( 6 )
+
+[node name="NameLabel" type="Label" parent="ShipUI"]
+margin_left = 2.0
+margin_top = 171.0
+margin_right = 340.0
+margin_bottom = 205.0
+custom_fonts/font = SubResource( 4 )
+text = "Standard Ship"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ShipButton" type="NinePatchRect" parent="ShipUI"]
+margin_left = 80.0
+margin_top = 462.0
+margin_right = 271.0
+margin_bottom = 545.0
+mouse_filter = 1
+texture = ExtResource( 8 )
+patch_margin_left = 11
+patch_margin_top = 18
+patch_margin_right = 13
+patch_margin_bottom = 29
+__meta__ = {
+"_edit_group_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="ShipUI/ShipButton"]
+shape = SubResource( 5 )
+
+[node name="Label" type="Label" parent="ShipUI/ShipButton"]
+margin_left = 4.0
+margin_top = 10.0
+margin_right = 187.0
+margin_bottom = 63.0
+custom_fonts/font = SubResource( 6 )
+text = "Confirm"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StartingItems" type="Label" parent="ShipUI"]
+margin_left = 12.0
+margin_top = 215.0
+margin_right = 147.0
+margin_bottom = 231.0
+custom_fonts/font = SubResource( 7 )
+text = "Starting Items:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ItemList" type="ItemList" parent="ShipUI/StartingItems"]
+margin_left = -3.0
+margin_top = 21.0
+margin_right = 319.0
+margin_bottom = 65.0
+size_flags_vertical = 0
+max_columns = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="StatIcons" type="Control" parent="ShipUI"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Sword" type="Sprite" parent="ShipUI/StatIcons"]
+position = Vector2( 18, 297 )
+texture = ExtResource( 10 )
+
+[node name="ColorRect" type="ColorRect" parent="ShipUI/StatIcons/Sword"]
+light_mask = 2
+margin_left = 17.0
+margin_top = -7.0
+margin_right = 91.0
+margin_bottom = 7.0
+color = Color( 0.631373, 0.627451, 0.639216, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="ShipUI/StatIcons/Sword"]
+margin_left = 18.0
+margin_top = -6.0
+margin_right = 90.0
+margin_bottom = 6.0
+color = Color( 0.0823529, 0.0862745, 0.0941176, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Gradient" type="TextureProgress" parent="ShipUI/StatIcons/Sword"]
+margin_left = 89.0
+margin_top = -5.0
+margin_right = 189.0
+margin_bottom = -4.0
+rect_scale = Vector2( -0.7, 10 )
+value = 100.0
+texture_progress = SubResource( 9 )
+fill_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Plating" type="Sprite" parent="ShipUI/StatIcons"]
+position = Vector2( 125, 297 )
+texture = ExtResource( 9 )
+offset = Vector2( 0, -1 )
+
+[node name="ColorRect" type="ColorRect" parent="ShipUI/StatIcons/Plating"]
+light_mask = 2
+margin_left = 17.0
+margin_top = -7.0
+margin_right = 91.0
+margin_bottom = 7.0
+color = Color( 0.631373, 0.627451, 0.639216, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="ShipUI/StatIcons/Plating"]
+margin_left = 18.0
+margin_top = -6.0
+margin_right = 90.0
+margin_bottom = 6.0
+color = Color( 0.0823529, 0.0862745, 0.0941176, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Gradient" type="TextureProgress" parent="ShipUI/StatIcons/Plating"]
+margin_left = 89.0
+margin_top = -5.0
+margin_right = 189.0
+margin_bottom = -4.0
+rect_scale = Vector2( -0.7, 10 )
+value = 100.0
+texture_progress = SubResource( 9 )
+fill_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Lightning" type="Sprite" parent="ShipUI/StatIcons"]
+position = Vector2( 232, 297 )
+texture = ExtResource( 11 )
+offset = Vector2( 0, -1 )
+
+[node name="ColorRect" type="ColorRect" parent="ShipUI/StatIcons/Lightning"]
+light_mask = 2
+margin_left = 17.0
+margin_top = -7.0
+margin_right = 91.0
+margin_bottom = 7.0
+color = Color( 0.631373, 0.627451, 0.639216, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorRect2" type="ColorRect" parent="ShipUI/StatIcons/Lightning"]
+margin_left = 18.0
+margin_top = -6.0
+margin_right = 90.0
+margin_bottom = 6.0
+color = Color( 0.0823529, 0.0862745, 0.0941176, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Gradient" type="TextureProgress" parent="ShipUI/StatIcons/Lightning"]
+margin_left = 89.0
+margin_top = -5.0
+margin_right = 189.0
+margin_bottom = -4.0
+rect_scale = Vector2( -0.7, 10 )
+value = 100.0
+texture_progress = SubResource( 9 )
+fill_mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Description" type="Label" parent="ShipUI"]
+margin_left = 13.0
+margin_top = 328.0
+margin_right = 327.0
+margin_bottom = 454.0
+custom_fonts/font = SubResource( 10 )
+text = "asdffadsf faffasffsa asfdfsaadasfdsafdafs "
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Light2D" type="Light2D" parent="."]
+position = Vector2( -117, -62 )
+texture = ExtResource( 2 )
+texture_scale = 0.8
+energy = 0.8
+range_item_cull_mask = 2
+
+[node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 2 )
+position = Vector2( 439, 78 )
+scale = Vector2( 0.9375, 0.9375 )
+texture = ExtResource( 5 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 3 )
+
+[connection signal="item_selected" from="ShipSelect/ItemList" to="." method="_on_ItemList_item_selected"]
+[connection signal="released" from="ShipUI/ShipButton/TouchScreenButton" to="." method="_on_Confirm"]

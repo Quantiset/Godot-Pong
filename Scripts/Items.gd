@@ -725,5 +725,6 @@ class Aries extends ItemReference:
 				collider.take_damage(damage)
 				emitter.take_damage(10)
 				emitter.immune_time += 0.2
-	
+
+
 

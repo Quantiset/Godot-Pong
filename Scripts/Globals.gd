@@ -1,6 +1,8 @@
 extends Node
 
-var rng_seed := 1000
+var player_scene := preload("res://Scenes/Players/Player.tscn")
+
+var rng_seed := 69420
 var randomize_seed := true
 
 enum STATUS_EFFECTS {
@@ -87,6 +89,8 @@ var ITEM_POOL := {
 	Items.Scalar: 10,
 	Items.Dicannon: 8,
 }
+
+var unlocked_ships := [0, 1, 2, 3]
 
 func _ready():
 	

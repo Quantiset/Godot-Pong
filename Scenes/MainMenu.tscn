@@ -162,6 +162,35 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ShipButton" type="NinePatchRect" parent="."]
+margin_left = 403.0
+margin_top = 236.0
+margin_right = 594.0
+margin_bottom = 319.0
+mouse_filter = 1
+texture = ExtResource( 2 )
+patch_margin_left = 11
+patch_margin_top = 18
+patch_margin_right = 13
+patch_margin_bottom = 29
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TouchScreenButton" type="TouchScreenButton" parent="ShipButton"]
+shape = SubResource( 1 )
+
+[node name="Label" type="Label" parent="ShipButton"]
+margin_left = 28.0
+margin_top = 24.0
+margin_right = 171.0
+margin_bottom = 48.0
+custom_fonts/font = SubResource( 2 )
+text = "Ship Select"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="QuitButton" type="NinePatchRect" parent="."]
 margin_left = 401.0
 margin_top = 403.0
@@ -340,7 +369,10 @@ material = SubResource( 10 )
 
 [connection signal="mouse_entered" from="StartButton" to="." method="_on_TheButton_mouse_entered" binds= [ "Start" ]]
 [connection signal="mouse_exited" from="StartButton" to="." method="_on_TheButton_mouse_exited" binds= [ "Start" ]]
-[connection signal="pressed" from="StartButton/TouchScreenButton" to="." method="_on_TouchScreenButton_pressed"]
+[connection signal="pressed" from="StartButton/TouchScreenButton" to="." method="_on_TouchScreenButton_pressed" binds= [ "Start" ]]
+[connection signal="mouse_entered" from="ShipButton" to="." method="_on_TheButton_mouse_entered" binds= [ "Ship" ]]
+[connection signal="mouse_exited" from="ShipButton" to="." method="_on_TheButton_mouse_exited" binds= [ "Ship" ]]
+[connection signal="pressed" from="ShipButton/TouchScreenButton" to="." method="_on_TouchScreenButton_pressed" binds= [ "Ship" ]]
 [connection signal="mouse_entered" from="QuitButton" to="." method="_on_TheButton_mouse_entered" binds= [ "Quit" ]]
 [connection signal="mouse_exited" from="QuitButton" to="." method="_on_TheButton_mouse_exited" binds= [ "Quit" ]]
-[connection signal="pressed" from="QuitButton/TouchScreenButton" to="." method="_on_TouchScreenButton_pressed"]
+[connection signal="pressed" from="QuitButton/TouchScreenButton" to="." method="_on_TouchScreenButton_pressed" binds= [ "Quit" ]]
